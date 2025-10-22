@@ -28,6 +28,14 @@ uv tool install --python 3.13 kimi-cli
 kimi --version
 ```
 
+## 升级
+
+使用以下命令升级 Kimi CLI：
+
+```sh
+uv tool upgrade kimi-cli --no-cache
+```
+
 ## 使用
 
 在命令行中进入你想要 Kimi CLI 操作的项目目录，运行 `kimi` 命令，即可启动 Kimi CLI。例如：
