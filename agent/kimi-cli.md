@@ -1,4 +1,4 @@
-# Kimi CLI 使用说明
+# Kimi CLI
 
 Kimi CLI 是 Moonshot AI 自研的命令行通用智能体工具，它可以帮助你快速完成各种各样的编程和文件处理等任务。
 

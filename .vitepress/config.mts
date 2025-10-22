@@ -2,23 +2,25 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "Kimi Coding Plan 使用说明",
-  description: "Kimi Coding Plan 使用说明",
+  title: "Kimi Coding Plan 文档",
+  description: "Kimi Coding Plan 文档",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     sidebar: [
       {
-        text: '在 Coding Agent 中使用',
+        text: '权益说明',
         items: [
-          { text: 'Kimi CLI', link: '/agent/kimi-cli' },
-          { text: 'Claude Code', link: '/agent/claude-code' }
+          { text: '计费方式', link: '/plan/billing' },
+          { text: '使用条款', link: '/plan/terms-of-service' },
         ]
       },
       {
-        text: 'Coding Plan 权益说明',
+        text: '在 Coding Agent 中使用',
         items: [
-          { text: '计费说明', link: '/plan/billing' },
-          { text: '使用条款', link: '/plan/terms-of-service' },
+          { text: 'Kimi CLI', link: '/agent/kimi-cli' },
+          { text: 'Claude Code', link: '/agent/claude-code' },
+          { text: 'Cline', link: '/agent/cline' },
+          { text: 'Roo Code', link: '/agent/roo-code' },
         ]
       }
     ]
