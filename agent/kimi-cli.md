@@ -37,7 +37,7 @@ cd my-project
 kimi
 ```
 
-首次运行时，Kimi CLI 会提示没有配置 LLM 模型，需输入 `/setup` 元命令，进入配置流程：
+首次运行时，Kimi CLI 会提示没有配置模型，需输入 `/setup` 元命令，进入配置流程：
 
 ![](./screenshots/kimi-cli/setup.png)
 
