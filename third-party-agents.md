@@ -69,7 +69,7 @@ node --eval "
 #### macOS 与 Linux
 
 ```sh
-export ANTHROPIC_BASE_URL=https://api.kimi.com/coding/v1/anthropic
+export ANTHROPIC_BASE_URL=https://api.kimi.com/coding/
 export ANTHROPIC_AUTH_TOKEN=<你的 API Key>  # 这里填在会员页面生成的 API Key
 export ANTHROPIC_MODEL=kimi-for-coding
 export ANTHROPIC_SMALL_FAST_MODEL=kimi-for-coding
@@ -80,7 +80,7 @@ claude
 #### Windows
 
 ```powershell
-$env:ANTHROPIC_BASE_URL="https://api.kimi.com/coding/v1/anthropic";
+$env:ANTHROPIC_BASE_URL="https://api.kimi.com/coding/";
 $env:ANTHROPIC_AUTH_TOKEN="<你的 API Key>"  # 这里填在会员页面生成的 API Key
 $env:ANTHROPIC_MODEL="kimi-for-coding"
 $env:ANTHROPIC_SMALL_FAST_MODEL="kimi-for-coding"
