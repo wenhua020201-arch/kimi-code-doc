@@ -2,7 +2,8 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "Kimi Coding Plan 文档",
+  base: "/coding/docs/",
+  title: "Kimi CLI 与 Coding 权益",
   description: "Kimi Coding Plan 文档",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
