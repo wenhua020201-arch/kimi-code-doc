@@ -1,10 +1,12 @@
-# Claude Code
+# 在第三方 Coding Agent 中使用
 
-## 安装 Claude Code
+## Claude Code
+
+### 安装 Claude Code
 
 若已安装，可跳至下一节。
 
-### macOS 与 Linux
+#### macOS 与 Linux
 
 ```sh
 # MacOS 和 Linux 上安装 nodejs
@@ -32,7 +34,7 @@ node --eval "
 
 > 如果终端提示 `fnm` 命令未找到，请重新打开终端窗口再执行后续命令。
 
-### Windows
+#### Windows
 
 ```powershell
 # 打开 windows 终端中的 powershell 终端
@@ -60,11 +62,11 @@ node --eval "
     }"
 ```
 
-## 配置 Kimi Coding 模型
+### 配置 Kimi For Coding 模型
 
-完成 Claude Code 安装后，请按照一下方式设置环境变量使用 Kimi Coding 模型。
+完成 Claude Code 安装后，请按照一下方式设置环境变量使用 Kimi For Coding 模型。
 
-### macOS 与 Linux
+#### macOS 与 Linux
 
 ```sh
 export ANTHROPIC_BASE_URL=https://api.kimi.com/coding/v1/anthropic
@@ -75,7 +77,7 @@ export ANTHROPIC_SMALL_FAST_MODEL=kimi-for-coding
 claude
 ```
 
-### Windows
+#### Windows
 
 ```powershell
 $env:ANTHROPIC_BASE_URL="https://api.kimi.com/coding/v1/anthropic";
@@ -86,8 +88,35 @@ $env:ANTHROPIC_SMALL_FAST_MODEL="kimi-for-coding"
 claude
 ```
 
-### 确认环境变量是否生效
+#### 确认环境变量是否生效
 
 启动 Claude Code 后，在命令输入框输入 `/status`，确认模型状态。
 
 接下来就可以使用 Claude Code 进行开发了！
+
+## Roo Code
+
+### 安装 Roo Code
+
+若已安装，可跳至下一节。
+
+1. 打开 VS Code，进入扩展视图（`Cmd+Shift+X` / `Ctrl+Shift+X`）。
+2. 搜索 `Roo Code` 并安装 Roo Code 官方扩展。
+3. 安装完成后，活动栏会出现 Roo Code 图标；如未出现，可重启 VS Code。
+
+### 配置 Kimi For Coding 模型
+
+1. 打开 Roo Code 面板，进入设置页。
+2. 在 Providers 区域选择 `Moonshot`（或新建自定义 Provider），按照提示填写：
+   - **Entrypoint**：`api.kimi.com/coding/v1`
+   - **API Key**：输入在会员页面获取的 Kimi CLI API Key
+   - **Model**：`kimi-for-coding`
+3. 如无需浏览器自动化，可关闭相关选项。
+4. 保存后返回 Roo Code 主界面，新建会话即可使用。
+
+### 确认模型是否生效
+
+- Roo Code 侧边栏顶部的模型下拉列表应显示 `kimi-for-coding`。
+- 若提示鉴权失败，请确认 API Key 是否复制完整，或在会员中心重新生成。
+
+完成配置后，即可在 Roo Code 中调用 Kimi For Coding 模型开展代码开发与协作。

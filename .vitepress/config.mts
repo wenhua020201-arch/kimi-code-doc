@@ -11,18 +11,15 @@ export default defineConfig({
     sidebar: [
       {
         text: '权益说明',
-        items: [
-          { text: '计费方式', link: '/plan/billing' },
-          { text: '使用条款', link: '/plan/terms-of-service' },
-        ]
+        link: '/benefits',
       },
       {
-        text: '在 Coding Agent 中使用',
-        items: [
-          { text: 'Kimi CLI', link: '/agent/kimi-cli' },
-          { text: 'Claude Code', link: '/agent/claude-code' },
-          { text: 'Roo Code', link: '/agent/roo-code' },
-        ]
+        text: 'Kimi CLI 使用说明',
+        link: '/kimi-cli',
+      },
+      {
+        text: '在第三方 Coding Agent 中使用',
+        link: '/third-party-agents',
       }
     ]
   }
