@@ -63,6 +63,29 @@ Kimi CLI 不仅仅是一个编程智能体，还可以通过 Ctrl-K 快捷键切
 
 ![](./screenshots/kimi-cli/shell-mode.png)
 
+## 搭配 Zsh 使用
+
+Zsh 用户可以搭配 [zsh-kimi-cli](https://github.com/MoonshotAI/zsh-kimi-cli) 插件，在 shell 中快速调用 Kimi CLI。
+
+使用如下命令安装（以 oh-my-zsh 为例，其它包管理请参考仓库 README）：
+
+```sh
+git clone https://github.com/MoonshotAI/zsh-kimi-cli.git \
+  ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/kimi-cli
+```
+
+然后在 `~/.zshrc` 中启用该插件：
+
+```sh
+plugins=(... kimi-cli)
+```
+
+重新启动 Zsh 之后，即可在 Zsh 中通过 Ctrl-K 进入 Kimi CLI 模式：
+
+![](./screenshots/kimi-cli/zsh-integration.png)
+
+目前 zsh-kimi-cli 插件还在持续更新中，请定期前往 `custom/plugins/kimi-cli` 目录通过 `git pull` 拉取更新。
+
 ## 搭配 Zed 编辑器使用
 
 Kimi CLI 原生提供 [Agent Client Protocol](https://github.com/agentclientprotocol/agent-client-protocol) 支持，可以搭配任何 ACP 客户端使用，例如 [Zed 编辑器](https://zed.dev/)。
@@ -87,35 +110,31 @@ Kimi CLI 原生提供 [Agent Client Protocol](https://github.com/agentclientprot
 
 ![](./screenshots/kimi-cli/zed-new-thread.png)
 
-## 搭配 Zsh 使用
-
-Zsh 用户可以搭配 [zsh-kimi-cli](https://github.com/MoonshotAI/zsh-kimi-cli) 插件，在 shell 中快速调用 Kimi CLI。
-
-使用如下命令安装（以 oh-my-zsh 为例，其它包管理请参考仓库 README）：
-
-```sh
-git clone https://github.com/MoonshotAI/zsh-kimi-cli.git \
-  ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/kimi-cli
-```
-
-然后在 `~/.zshrc` 中启用该插件：
-
-```sh
-plugins=(... kimi-cli)
-```
-
-重新启动 Zsh 之后，即可在 Zsh 中通过 Ctrl-K 进入 Kimi CLI 模式：
-
-![](./screenshots/kimi-cli/zsh-integration.png)
-
-目前 zsh-kimi-cli 插件还在持续更新中，请定期前往 `custom/plugins/kimi-cli` 目录通过 `git pull` 拉取更新。
-
 ## 接入 MCP 工具
 
-Kimi CLI 支持通过 Claude 兼容的 MCP 配置格式指定 MCP 工具。启动时，通过 `--mcp-config-file` 参数指定 MCP 配置文件路径即可。例如：
+Kimi CLI 支持广泛采用的 MCP 配置格式指定 MCP 工具。例如：
+
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {
+        "CONTEXT7_API_KEY": "YOUR_API_KEY"
+      }
+    },
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["-y", "chrome-devtools-mcp@latest"]
+    }
+  }
+}
+```
+
+启动时，通过 `--mcp-config-file` 参数指定 MCP 配置文件路径即可。例如：
 
 ```sh
-kimi --mcp-config-file ~/.cursor/mcp.json
+kimi --mcp-config-file /path/to/mcp.json
 ```
 
 ## 更多用法
