@@ -19,7 +19,6 @@ export default defineConfig({
         items: [
           { text: 'Kimi CLI', link: '/agent/kimi-cli' },
           { text: 'Claude Code', link: '/agent/claude-code' },
-          { text: 'Cline', link: '/agent/cline' },
           { text: 'Roo Code', link: '/agent/roo-code' },
         ]
       }
