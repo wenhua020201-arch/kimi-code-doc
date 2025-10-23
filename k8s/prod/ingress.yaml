@@ -11,7 +11,7 @@ metadata:
   name: kimi-coding-docs
   namespace: agent
 spec:
-  ingressClassName: ingress-nginx-in-nginx
+  ingressClassName: nginx
   rules:
   - host: www.kimi.com
     http:
