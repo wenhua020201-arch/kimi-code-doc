@@ -6,14 +6,14 @@ metadata:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/preserve-trailing-slash: "true"
   labels:
-    env: test
+    env: prod
     app: kimi-coding-docs
   name: kimi-coding-docs
   namespace: agent
 spec:
-  ingressClassName: nginx-in
+  ingressClassName: ingress-nginx-in-nginx
   rules:
-  - host: kimi-coding-docs.deva.msh.team
+  - host: www.kimi.com
     http:
       paths:
       - backend:
@@ -25,5 +25,5 @@ spec:
         pathType: ImplementationSpecific
   tls:
   - hosts:
-    - kimi-coding-docs.deva.msh.team
-    secretName: tls-deva-msh-team
+    - www.kimi.com
+    secretName: tls-kimi-com
