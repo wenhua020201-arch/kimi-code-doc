@@ -4,8 +4,8 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   base: "/coding/docs/",
   lang: "zh-CN",
-  title: "Kimi CLI 与 Coding 权益",
-  description: "Kimi CLI 与 Coding 权益说明",
+  title: "Kimi For Coding",
+  description: "Kimi For Coding 会员权益说明",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     sidebar: [

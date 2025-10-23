@@ -49,7 +49,7 @@ kimi
 
 ![](./screenshots/kimi-cli/setup.png)
 
-Coding 包月计划用户，选择第一个「Kimi Coding Plan」，在随后的提示中，输入在会员页面获得的 API Key，并选择 `kimi-for-coding` 模型；Moonshot AI 开放平台用户，根据提示选择对应的平台，输入 API Key 并选择想要使用的模型。
+Coding 会员权益用户，选择第一个「Kimi For Coding 」，在随后的提示中，输入在会员页面获得的 API Key，并选择 `kimi-for-coding` 模型；Moonshot AI 开放平台用户，根据提示选择对应的平台，输入 API Key 并选择想要使用的模型。
 
 配置完成后，即可开始使用 Kimi CLI，例如：
 
