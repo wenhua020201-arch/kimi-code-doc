@@ -28,7 +28,7 @@ Kimi For Coding 会员权益适用于使用 Kimi CLI 等软件的场合。我们
 
 请注意，Kimi For Coding 会员权益适用于 Kimi CLI，但不禁止用户自行在 Claude Code 和 Roo Code 产品中使用，在非上述产品中使用 Kimi For Coding 会员权益对应的 base\_url 和 API Key 均有可能被我们视为滥用，并可能导致会员权益停用或账号封禁。
 
-**Kimi For Coding **： 会员权益，用于个人开发应用，不要用于企业开发场景，适用于在 Kimi CLI 和其他 Coding Agent 中进行编程相关场景使用，非编程场景或超出限定范围的使用，可能会被判定为违规，导致会员权益暂停。
+**Kimi For Coding**： 会员权益，用于个人开发应用，不要用于企业开发场景，适用于在 Kimi CLI 和其他 Coding Agent 中进行编程相关场景使用，非编程场景或超出限定范围的使用，可能会被判定为违规，导致会员权益暂停。
 
 **Kimi 开放平台：** 预充值按量付费模式，可指定模型，满足更广泛的模型使用场景和产品集成。
 
