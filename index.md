@@ -20,22 +20,22 @@
 
 ## API Key 查询指引
 
-> 图片均为示意图，实际展现内容以线上页面为准。
+> 以下均为示意图，实际权益等展示内容以线上页面为准。
 
 * 方法一：会员详情页查询
 
   * 在会员详情页上，点击 Kimi CLI 蓝字，唤起弹窗
 
-  ![](images/image.png)
+  ![在“会员计划”页的 Kimi CLI 蓝字](screenshots/index/to-the-moon.jpg)
 
   * 在弹窗中复制或重置 API Key、查看用量及额度
 
-  ![](images/image-1.png)
+  ![Kimi CLI API Key 弹窗](screenshots/index/api-key.jpg)
 
 * 方法二：在订阅管理页查询
 
   * 点击左下角用户头像 - 设置 - 管理 - 订阅，进入如下页面
 
-  ![](images/image-2.png)
+  ![在“订阅”页的 Kimi CLI 蓝字](screenshots/index/subscription.jpg)
 
   * 点击 Kimi CLI 蓝字，唤起弹窗，在弹窗中复制或重置 API Key、查看用量及额度

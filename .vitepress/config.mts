@@ -21,6 +21,25 @@ export default defineConfig({
         text: '在第三方 Coding Agent 中使用',
         link: '/third-party-agents',
       }
-    ]
+    ],
+
+    outline: {
+      label: "页面导航"
+    },
+
+    // 文章翻页
+    docFooter: {
+      prev: '上一篇',
+      next: '下一篇'
+    },
+
+    // 移动端 - 外观
+    darkModeSwitchLabel: '外观',
+
+    // 移动端 - 返回顶部
+    returnToTopLabel: '返回顶部',
+
+    // 移动端 - menu
+    sidebarMenuLabel: '菜单',
   }
 })
