@@ -32,6 +32,7 @@ prepare:
 		exit 1; \
 	fi
 	npm run build
+	AWS_CONFIG_FILE=./awsconfig megfile sync ./.vitepress/dist "s3://prod-chat-kimi/coding/docs" --verbose
 
 .PHONY: update-k8s
 update-k8s: version

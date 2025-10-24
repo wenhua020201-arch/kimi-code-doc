@@ -1,0 +1,6 @@
+[default]
+endpoint_url = https://tos-s3-cn-beijing.ivolces.com
+max_attempts = 3
+s3 =
+   addressing_style = virtual
+credential_process = mg-sts volcengine -f aws
