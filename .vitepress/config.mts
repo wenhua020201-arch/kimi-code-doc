@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  base: "https://cdn.kimi.com/coding/docs/",
+  base: "/coding/docs/",
   lang: "zh-CN",
   title: "Kimi For Coding",
   description: "Kimi For Coding 会员权益说明",
@@ -51,14 +51,5 @@ export default defineConfig({
 
     // 移动端 - menu
     sidebarMenuLabel: '菜单',
-  },
-  transformHtml(code, id, ctx) {
-    // 这里是 https:/ 而不是 https:// ，这是 vitepress 的 bug
-    const cdnHtmlUrlPattern = /https:\/cdn\.kimi\.com\/coding\/docs\/([\w\-\/\.]+?\.html)/g;
-    // console.log(id, cdnHtmlUrlPattern.test(code))
-    return code.replace(cdnHtmlUrlPattern, (_match, path) => {
-      // console.log(_match, path)
-      return `/coding/docs/${path}`;
-    });
   },
 })
