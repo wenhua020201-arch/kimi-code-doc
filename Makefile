@@ -1,4 +1,5 @@
 CI_IMAGE ?= msai-cn-beijing.cr.volces.com/agent/kimi-coding-docs
+ENV ?=
 
 .PHONY: help
 help: ## 显示帮助信息
@@ -19,12 +20,6 @@ version: ## 准备下一个版本号
 build: version
 	docker build -t $(CI_IMAGE):$(VERSION) -f Dockerfile .
 	docker push $(CI_IMAGE):$(VERSION)
-	@if [ "$$(uname)" = "Darwin" ]; then \
-		sed -i '' "s|- image: $(CI_IMAGE):.*|- image: $(CI_IMAGE):$(VERSION)|" k8s/deva/deployment.yaml; \
-	else \
-		sed -i "s|- image: $(CI_IMAGE):.*|- image: $(CI_IMAGE):$(VERSION)|" k8s/deva/deployment.yaml; \
-	fi
-	@git add k8s/deva/deployment.yaml
 
 .PHONY: cleanup
 cleanup: version
@@ -38,6 +33,30 @@ prepare:
 	fi
 	npm run build
 
+.PHONY: update-k8s
+update-k8s: version
+	@if [ "$$(uname)" = "Darwin" ]; then \
+		if [ -n "$(ENV)" ]; then \
+			targets="k8s/$(ENV)/deployment.yaml"; \
+		else \
+			targets=$$(ls -1d k8s/*/deployment.yaml 2>/dev/null || true); \
+		fi; \
+		for f in $$targets; do \
+			sed -i '' "s|- image: $(CI_IMAGE):.*|- image: $(CI_IMAGE):$(VERSION)|" "$$f"; \
+			git add "$$f"; \
+		done; \
+	else \
+		if [ -n "$(ENV)" ]; then \
+			targets="k8s/$(ENV)/deployment.yaml"; \
+		else \
+			targets=$$(ls -1d k8s/*/deployment.yaml 2>/dev/null || true); \
+		fi; \
+		for f in $$targets; do \
+			sed -i "s|- image: $(CI_IMAGE):.*|- image: $(CI_IMAGE):$(VERSION)|" "$$f"; \
+			git add "$$f"; \
+		done; \
+	fi
+
 .PHONY: commit
 commit: version
 	@git commit -m "chore: bump deployment to $(VERSION)"
@@ -48,5 +67,5 @@ commit: version
 	@echo "Pushed version $(VERSION) to remote!"
 
 .PHONY: deploy
-deploy: prepare build cleanup commit ## 发布新版本，可以通过 VERSION 直接指定版本号
+deploy: prepare build update-k8s commit cleanup ## 发布新版本，可以通过 VERSION 直接指定版本号
 	@echo "Deployment $(VERSION) has committed!"
