@@ -42,7 +42,8 @@ node --eval "
 # 右键按 Windows 按钮，点击「终端」
 
 # 然后依次执行下面的
-winget install OpenJS.NodeJS
+winget install --id Git.Git -e --source winget # 或者参考 https://git-scm.com/install/windows 用其他办法安装 Git
+winget install OpenJS.NodeJS # 或者参考 https://nodejs.org/zh-cn/download 用其他办法安装 Node.js
 Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 
 # 然后关闭终端窗口，新开一个终端窗口
