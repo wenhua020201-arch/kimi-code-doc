@@ -112,9 +112,9 @@ claude
    - **Entrypoint**：`https://api.kimi.com/coding/v1`
    - **API Key**：输入在会员页面获取的 Kimi For Coding API Key
    - **Model**：`kimi-for-coding`
-   - **Use legacy OpenAI API format**：☑️
-   - **Enable streaming**：☑️
-   - **Include max output tokens**：☑️
+   - **Use legacy OpenAI API format**：✅
+   - **Enable streaming**：✅
+   - **Include max output tokens**：✅
    - **Max Output Tokens**：32768
    - **Context Window Size**：262144
 3. 如无需浏览器自动化，可关闭相关选项。
