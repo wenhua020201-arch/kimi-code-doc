@@ -3,7 +3,7 @@
 **Kimi For Coding** is a premium membership feature under the Kimi Membership Plan, providing individual developers with enhanced AI support for personal software development.
 
 - **Multi-Scenario Compatibility**: Designed to work with Kimi CLI and other commonly used code assistants for smoother workflow integration.
-- **Enhanced response**: 100–500 requests every 5 hours, with sustained output rates of up to 100 tokens per second.
+- **Enhanced Performance**: Supports high-frequency coding interactions, with dynamically managed request limits and output speeds depending on system capacity.
 
 *Actual performance and interoperability may vary. Kimi For Coding is subject to the Membership Terms and may be adjusted or updated periodically.*
 
