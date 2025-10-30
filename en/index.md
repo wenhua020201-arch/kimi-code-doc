@@ -19,7 +19,7 @@
 
 Click Avatar in the lower-left corner → Settings → Manage → Subscription
 
-![The “Kimi For Coding” text in the Subscription page](./screenshots/index/subscription.png)
+![The “Kimi For Coding” text in the Subscription page](./screenshots/index/subscription.jpg)
 
 Click the “Kimi For Coding” text to trigger the pop-up; copy and securely store the key.
 
@@ -27,11 +27,11 @@ Click the “Kimi For Coding” text to trigger the pop-up; copy and securely st
 
 Membership Details page → Click the “Kimi For Coding” link to trigger the pop-up.
 
-![在会员详情页的 Kimi For Coding 蓝字](../zh/screenshots/index/to-the-moon.jpg)
+![在会员详情页的 Kimi For Coding 蓝字](./screenshots/index/to-the-moon.jpg)
 
 Copy or reset the API Key, or check requests quota on the pop-up.
 
-![点击 Kimi For Coding 蓝字后的弹窗](../zh/screenshots/index/api-key.jpg)
+![点击 Kimi For Coding 蓝字后的弹窗](./screenshots/index/api-key.jpg)
 
 ### 2. Configure the Key in Supported Development Tools
 
