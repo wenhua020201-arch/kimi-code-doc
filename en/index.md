@@ -15,11 +15,11 @@
 
 ### 1. Obtain your Kimi For Coding API Key
 
-#### Optiona A - Subscription Management Console
+#### Option A - Subscription Management Console
 
 Click Avatar in the lower-left corner → Settings → Manage → Subscription
 
-![The “Kimi For Coding” text in the Subscription page](./screenshots/index/subscription.jpg)
+![The "Kimi For Coding" text in the Subscription page](./screenshots/index/subscription.jpg)
 
 Click the “Kimi For Coding” text to trigger the pop-up; copy and securely store the key.
 
@@ -27,11 +27,11 @@ Click the “Kimi For Coding” text to trigger the pop-up; copy and securely st
 
 Membership Details page → Click the “Kimi For Coding” link to trigger the pop-up.
 
-![在会员详情页的 Kimi For Coding 蓝字](./screenshots/index/to-the-moon.jpg)
+![The "Kimi For Coding" text in the Membership Details page](./screenshots/index/to-the-moon.jpg)
 
 Copy or reset the API Key, or check requests quota on the pop-up.
 
-![点击 Kimi For Coding 蓝字后的弹窗](./screenshots/index/api-key.jpg)
+![The pop-up of "Kimi For Coding"](./screenshots/index/api-key.jpg)
 
 ### 2. Configure the Key in Supported Development Tools
 

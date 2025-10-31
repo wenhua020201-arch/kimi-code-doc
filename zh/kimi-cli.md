@@ -59,7 +59,7 @@ Coding 会员权益用户，选择第一个「Kimi For Coding 」，在随后的
 
 ## Shell 模式
 
-Kimi CLI 不仅仅是一个编程智能体，还可以通过 Ctrl-K 快捷键切换到 shell 模式。通过该模式，你可以在不离开 Kimi CLI 的情况下，直接执行 shell 命令，方便进行文件操作和查看结果。例如：
+Kimi CLI 不仅仅是一个编程智能体，还可以通过 Ctrl-X 快捷键切换到 shell 模式。通过该模式，你可以在不离开 Kimi CLI 的情况下，直接执行 shell 命令，方便进行文件操作和查看结果。例如：
 
 ![](../screenshots/kimi-cli/shell-mode.png)
 
@@ -80,7 +80,7 @@ git clone https://github.com/MoonshotAI/zsh-kimi-cli.git \
 plugins=(... kimi-cli)
 ```
 
-重新启动 Zsh 之后，即可在 Zsh 中通过 Ctrl-K 进入 Kimi CLI 模式：
+重新启动 Zsh 之后，即可在 Zsh 中通过 Ctrl-X 进入 Kimi CLI 模式：
 
 ![](../screenshots/kimi-cli/zsh-integration.png)
 
