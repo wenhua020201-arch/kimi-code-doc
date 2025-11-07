@@ -112,12 +112,16 @@ claude
 ### 配置 Kimi For Coding 模型
 
 1. 打开 Roo Code 面板，进入设置页。
-2. 在 Providers 区域选择 `Anthropic`，依次填写：
-   - **Anthropic API Key**：输入在会员页面获取的 Kimi For Coding API Key
-   - 勾选 **Use custom base URL**，并在输入框中输入：`https://api.kimi.com/coding`
-   - 勾选 **Enable reasoning** 以启用 Kimi K2 Thinking 模型
+2. 在 Providers 区域选择 `OpenAI Compatible`，按照提示填写：
+   - **Entrypoint**：`https://api.kimi.com/coding/v1`
+   - **API Key**：输入在会员页面获取的 Kimi For Coding API Key
+   - **Model**：`kimi-for-coding`
+   - **Use legacy OpenAI API format**：✅
+   - **Enable streaming**：✅
+   - **Include max output tokens**：✅
    - **Max Output Tokens**：32768
-   - **Max Thinking Tokens**：8192
-3. 保存后返回 Roo Code 主界面，新建会话即可使用。
+   - **Context Window Size**：262144
+3. 如无需浏览器自动化，可关闭相关选项。
+4. 保存后返回 Roo Code 主界面，新建会话即可使用。
 
 完成配置后，即可在 Roo Code 中调用 Kimi For Coding 模型开展代码开发与协作。
