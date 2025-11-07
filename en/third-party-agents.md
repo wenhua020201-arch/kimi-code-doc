@@ -2,6 +2,10 @@
 
 ## Claude Code
 
+::: tip
+In Claude Code, you can toggle Kimi K2 Thinking model by pressing the Tab key.
+:::
+
 ### Install Claude Code
 
 If it is already installed, skip to the next section.

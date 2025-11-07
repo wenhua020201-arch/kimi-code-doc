@@ -59,7 +59,7 @@ Coding 会员权益用户，选择第一个「Kimi For Coding 」，在随后的
 
 ## Thinking 模式
 
-在 Kimi CLI 中，你可以使用 tab 键开关 Thinking 模式。
+在 Kimi CLI 中，你可以使用 tab 键切换 Thinking 模式。
 
 ## Shell 模式
 
