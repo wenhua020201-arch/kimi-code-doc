@@ -51,6 +51,10 @@ After setup, Kimi CLI will be ready to use. You can send `/help` to get more inf
 
 ## Features
 
+### Thinking mode
+
+In Kimi CLI, you can toggle Thinking mode by pressing the Tab key.
+
 ### Shell mode
 
 Kimi CLI is not only a coding agent, but also a shell. You can switch the mode by pressing `Ctrl-X`. In shell mode, you can directly run shell commands without leaving Kimi CLI.

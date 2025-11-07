@@ -57,6 +57,10 @@ Coding 会员权益用户，选择第一个「Kimi For Coding 」，在随后的
 
 ![](../screenshots/kimi-cli/2048-game.png)
 
+## Thinking 模式
+
+在 Kimi CLI 中，你可以使用 tab 键开关 Thinking 模式。
+
 ## Shell 模式
 
 Kimi CLI 不仅仅是一个编程智能体，还可以通过 Ctrl-X 快捷键切换到 shell 模式。通过该模式，你可以在不离开 Kimi CLI 的情况下，直接执行 shell 命令，方便进行文件操作和查看结果。例如：
