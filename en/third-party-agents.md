@@ -119,6 +119,7 @@ If it is already installed, skip to the next section.
    - **Use legacy OpenAI API format**: ✅
    - **Enable streaming**: ✅
    - **Include max output tokens**: ✅
+   - **Enable Reasoning Effort**：Medium
    - **Max Output Tokens**: 32768
    - **Context Window Size**: 262144
 3. If you do not need browser automation, you can disable related options.
