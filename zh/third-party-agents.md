@@ -119,6 +119,7 @@ claude
    - **Use legacy OpenAI API format**：✅
    - **Enable streaming**：✅
    - **Include max output tokens**：✅
+   - **Enable Reasoning Effort**：Medium
    - **Max Output Tokens**：32768
    - **Context Window Size**：262144
 3. 如无需浏览器自动化，可关闭相关选项。
