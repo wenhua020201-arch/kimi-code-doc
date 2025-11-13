@@ -75,9 +75,7 @@ node --eval "
 
 ```sh
 export ANTHROPIC_BASE_URL=https://api.kimi.com/coding/
-export ANTHROPIC_AUTH_TOKEN=<你的 API Key>  # 这里填在会员页面生成的 API Key
-export ANTHROPIC_MODEL=kimi-for-coding
-export ANTHROPIC_SMALL_FAST_MODEL=kimi-for-coding
+export ANTHROPIC_AUTH_TOKEN=sk-kimi-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  # 这里填在会员页面生成的 API Key
 
 claude
 ```
@@ -86,9 +84,7 @@ claude
 
 ```powershell
 $env:ANTHROPIC_BASE_URL="https://api.kimi.com/coding/";
-$env:ANTHROPIC_AUTH_TOKEN="<你的 API Key>"  # 这里填在会员页面生成的 API Key
-$env:ANTHROPIC_MODEL="kimi-for-coding"
-$env:ANTHROPIC_SMALL_FAST_MODEL="kimi-for-coding"
+$env:ANTHROPIC_AUTH_TOKEN="sk-kimi-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"  # 这里填在会员页面生成的 API Key
 
 claude
 ```
