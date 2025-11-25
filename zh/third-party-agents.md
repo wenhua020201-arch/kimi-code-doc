@@ -69,7 +69,7 @@ node --eval "
 
 ### 配置 Kimi For Coding 模型
 
-完成 Claude Code 安装后，请按照一下方式设置环境变量使用 Kimi For Coding 模型。
+完成 Claude Code 安装后，请按照以下方式设置环境变量使用 Kimi For Coding 模型。
 
 #### macOS 与 Linux
 
