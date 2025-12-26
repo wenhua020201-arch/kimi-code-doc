@@ -17,7 +17,23 @@
 
 ## Installation
 
-Kimi CLI is published as a Python package on PyPI. We highly recommend installing it with [uv](https://docs.astral.sh/uv/). If you have not installed uv yet, please follow the instructions [here](https://docs.astral.sh/uv/getting-started/installation/) to install it first.
+### Script install
+
+Linux/macOS:
+
+```sh
+curl -LsSf https://cdn.kimi.com/binaries/kimi-cli/install.sh | bash
+```
+
+Windows (PowerShell):
+
+```powershell
+Invoke-RestMethod https://cdn.kimi.com/binaries/kimi-cli/install.ps1 | Invoke-Expression
+```
+
+### Package manager install
+
+If you prefer more control, install via [uv](https://docs.astral.sh/uv/). If you have not installed uv yet, please follow the instructions [here](https://docs.astral.sh/uv/getting-started/installation/) to install it first.
 
 Once uv is installed, you can install Kimi CLI with:
 
