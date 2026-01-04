@@ -5,6 +5,10 @@ metadata:
     description: "Kimi Coding Documentation"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/preserve-trailing-slash: "true"
+    nginx.ingress.kubernetes.io/server-snippet: |
+      location ~ ^/coding/docs/(.*)$ {
+        return 302 /code/docs/$1;
+      }
   labels:
     env: test
     app: kimi-coding-docs
@@ -21,7 +25,7 @@ spec:
             name: kimi-coding-docs
             port:
               name: http
-        path: /coding/docs/
+        path: /code/docs/
         pathType: ImplementationSpecific
   tls:
   - hosts:
