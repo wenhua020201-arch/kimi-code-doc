@@ -5,10 +5,8 @@ metadata:
     description: "Kimi Coding Documentation"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/preserve-trailing-slash: "true"
-    nginx.ingress.kubernetes.io/server-snippet: |
-      location ~ ^/coding/docs/(.*)$ {
-        return 302 /code/docs/$1;
-      }
+    # 对 /coding/docs/* 做 302 跳转
+    nginx.ingress.kubernetes.io/temporal-redirect: /code/docs/$1
   labels:
     env: prod
     app: kimi-coding-docs
@@ -26,6 +24,14 @@ spec:
             port:
               name: http
         path: /code/docs/
+        pathType: ImplementationSpecific
+      # 1️⃣ 302 跳转入口
+      - backend:
+          service:
+            name: kimi-coding-docs
+            port:
+              name: http
+        path: /coding/docs/(.*)
         pathType: ImplementationSpecific
   tls:
   - hosts:
