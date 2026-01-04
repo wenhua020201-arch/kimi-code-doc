@@ -40,7 +40,7 @@ metadata:
   labels:
     env: prod
     app: kimi-coding-docs
-  name: kimi-coding-docs
+  name: kimi-coding-docs-302
   namespace: agent
 spec:
   ingressClassName: nginx
