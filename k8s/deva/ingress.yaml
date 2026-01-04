@@ -5,8 +5,6 @@ metadata:
     description: "Kimi Coding Documentation"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/preserve-trailing-slash: "true"
-    # 对 /coding/docs/* 做 302 跳转
-    nginx.ingress.kubernetes.io/temporal-redirect: /code/docs/$1
   labels:
     env: test
     app: kimi-coding-docs
@@ -25,6 +23,33 @@ spec:
               name: http
         path: /code/docs/
         pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - kimi-coding-docs.deva.msh.team
+    secretName: tls-deva-msh-team
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    description: "Kimi Coding Documentation"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/preserve-trailing-slash: "true"
+    # 对 /coding/docs/* 做 302 跳转
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      rewrite ^/coding/docs/(.*) /code/docs/$1 redirect;
+  labels:
+    env: test
+    app: kimi-coding-docs
+  name: kimi-coding-docs
+  namespace: agent
+spec:
+  ingressClassName: nginx-in
+  rules:
+  - host: kimi-coding-docs.deva.msh.team
+    http:
+      paths:
       # 1️⃣ 302 跳转入口
       - backend:
           service:
@@ -37,3 +62,4 @@ spec:
   - hosts:
     - kimi-coding-docs.deva.msh.team
     secretName: tls-deva-msh-team
+
