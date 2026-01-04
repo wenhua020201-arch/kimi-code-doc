@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  base: "/coding/docs/",
+  base: "/code/docs/",
   title: "Kimi For Coding",
   rewrites: {
     'zh/:rest*': ':rest*'
