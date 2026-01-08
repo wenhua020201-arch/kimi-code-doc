@@ -1,22 +1,35 @@
 import { defineAdditionalConfig } from "vitepress";
+import kimiCliSidebar from "../kimi-cli/sidebar.json";
 
 export default defineAdditionalConfig({
   lang: 'en-US',
-  description: 'Kimi For Coding Membership Benefits',
+  description: 'Kimi Code Membership Benefits',
   themeConfig: {
     sidebar: [
       {
-        text: 'Benefit Description',
-        link: '/en/benefits',
+        text: 'Kimi Code',
+        items: [
+          { text: 'Kimi Code Membership Benefits', link: '/en/' },
+          { text: 'Benefit Description', link: '/en/benefits' },
+        ],
       },
       {
         text: 'Kimi CLI Guide',
-        link: '/en/kimi-cli',
+        items: [
+          ...kimiCliSidebar.en.items,
+          {
+            text: 'Customization and More',
+            link: 'https://moonshotai.github.io/kimi-cli/en/customization/mcp.html',
+            target: '_blank',
+          },
+        ],
       },
       {
-        text: 'Use in Third-Party Coding Agents',
-        link: '/en/third-party-agents',
-      }
+        text: 'More',
+        items: [
+          { text: 'Use in Third-Party Coding Agents', link: '/en/more/third-party-agents' },
+        ],
+      },
     ],
 
     search: {

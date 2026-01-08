@@ -67,9 +67,9 @@ node --eval "
     }"
 ```
 
-### Configure the Kimi For Coding model
+### Configure the Kimi Code model
 
-After installing Claude Code, set environment variables as follows to use the Kimi For Coding model.
+After installing Claude Code, set environment variables as follows to use the Kimi Code model.
 
 #### macOS and Linux
 
@@ -105,12 +105,12 @@ If it is already installed, skip to the next section.
 2. Search for `Roo Code` and install the official Roo Code extension.
 3. After installation, a Roo Code icon will appear in the Activity Bar. If it does not, restart VS Code.
 
-### Configure the Kimi For Coding model
+### Configure the Kimi Code model
 
 1. Open the Roo Code panel and go to Settings.
 2. In Providers, select `OpenAI Compatible`, then fill in the fields as prompted:
    - **Entrypoint**: `https://api.kimi.com/coding/v1`
-   - **API Key**: Enter the Kimi For Coding API Key retrieved from the membership page
+   - **API Key**: Enter the Kimi Code API Key retrieved from the membership page
    - **Model**: `kimi-for-coding`
    - **Use legacy OpenAI API format**: ✅
    - **Enable streaming**: ✅
@@ -121,6 +121,6 @@ If it is already installed, skip to the next section.
 3. If you do not need browser automation, you can disable related options.
 4. Save, return to the Roo Code main view, and create a new session to start using it.
 
-After configuration, you can invoke the Kimi For Coding model in Roo Code for coding and collaboration.
+After configuration, you can invoke the Kimi Code model in Roo Code for coding and collaboration.
 
 

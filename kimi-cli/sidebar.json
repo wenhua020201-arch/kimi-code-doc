@@ -1,0 +1,58 @@
+{
+  "zh": {
+    "items": [
+      {
+        "text": "开始使用",
+        "link": "/kimi-cli/guides/getting-started"
+      },
+      {
+        "text": "常见使用案例",
+        "link": "/kimi-cli/guides/use-cases"
+      },
+      {
+        "text": "交互与输入",
+        "link": "/kimi-cli/guides/interaction"
+      },
+      {
+        "text": "会话与上下文",
+        "link": "/kimi-cli/guides/sessions"
+      },
+      {
+        "text": "在 IDE 中使用",
+        "link": "/kimi-cli/guides/ides"
+      },
+      {
+        "text": "集成到工具",
+        "link": "/kimi-cli/guides/integrations"
+      }
+    ]
+  },
+  "en": {
+    "items": [
+      {
+        "text": "Getting Started",
+        "link": "/en/kimi-cli/guides/getting-started"
+      },
+      {
+        "text": "Common Use Cases",
+        "link": "/en/kimi-cli/guides/use-cases"
+      },
+      {
+        "text": "Interaction and Input",
+        "link": "/en/kimi-cli/guides/interaction"
+      },
+      {
+        "text": "Sessions and Context",
+        "link": "/en/kimi-cli/guides/sessions"
+      },
+      {
+        "text": "Using in IDEs",
+        "link": "/en/kimi-cli/guides/ides"
+      },
+      {
+        "text": "Integrations with Tools",
+        "link": "/en/kimi-cli/guides/integrations"
+      }
+    ]
+  }
+}

@@ -69,3 +69,7 @@ commit: version
 .PHONY: deploy
 deploy: prepare build update-k8s commit cleanup ## 发布新版本，可以通过 VERSION 直接指定版本号
 	@echo "Deployment $(VERSION) has committed!"
+
+.PHONY: sync-kimi-cli
+sync-kimi-cli: ## 同步 kimi-cli 仓库的 guides 文档
+	@bash scripts/sync-kimi-cli.sh
