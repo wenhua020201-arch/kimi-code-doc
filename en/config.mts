@@ -25,6 +25,12 @@ export default defineAdditionalConfig({
         ],
       },
       {
+        text: 'Kimi Code for VS Code Guide',
+        items: [
+          { text: 'Getting Started', link: '/en/kimi-code-for-vscode/guides/getting-started' },
+        ],
+      },
+      {
         text: 'More',
         items: [
           { text: 'Use in Third-Party Coding Agents', link: '/en/more/third-party-agents' },
