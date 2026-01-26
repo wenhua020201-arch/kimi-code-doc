@@ -14,7 +14,7 @@ export default defineAdditionalConfig({
         ],
       },
       {
-        text: 'Kimi CLI 使用指南',
+        text: 'Kimi Code CLI 使用指南',
         items: [
           ...kimiCliSidebar.zh.items,
           {

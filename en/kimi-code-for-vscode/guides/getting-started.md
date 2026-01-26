@@ -22,7 +22,7 @@ Kimi Code supports two modes:
 
 **Kimi Account**: Click Sign in on the login screen. A browser window opens for authorization. Complete the flow and return to VS Code.
 
-**Kimi API Key**: If you already configured a Kimi API key, click Skip. The extension works without login.
+**API Key**: If you already configured a API key, click Skip. The extension works without login.
 
 ![Kimi Code Gear Icon](images/kimi-code-gear-icon.png)
 
