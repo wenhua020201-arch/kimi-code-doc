@@ -2,7 +2,7 @@
 
 Kimi Code lives inside VS Code so you can ask questions, review diffs, and ship changes with beautiful UI. It reads files you reference, proposes edits as diffs, and runs tools with your approval. You stay in control while moving quickly.
 
-[Need A Image]
+![Kimi Code VS Code](./images/kimi-code-showcase.jpeg)
 
 Kimi Code is a VS Code extension with a native chat panel. It supports file and folder references with @-mentions, slash commands for project scanning and context control, file change tracking with diff view and revert, and MCP server integration for external tools. The panel can live in the Activity Bar, side panel, or a separate tab.
 
@@ -14,7 +14,7 @@ A Kimi account subscription or a Kimi API key.
 
 Install from the [VS Code Marketplace](vscode:extension/moonshot-ai.kimi-code). 
 
-If the extension does not appear, restart VS Code or run "Developer: Reload Window" from the Command Palette.
+If the extension does not appear, restart VS Code or run "Developer: Reload Window" from the Command Palette. (Mac: Cmd+Shift+P, Windows/Linux: Ctrl+Shift+P).
 
 ## Authentication
 
@@ -22,7 +22,7 @@ Kimi Code supports two modes:
 
 **Kimi Account**: Click Sign in on the login screen. A browser window opens for authorization. Complete the flow and return to VS Code.
 
-**Kimi API Key**: If you already configured a CLI API key, click Skip. The extension works without login.
+**Kimi API Key**: If you already configured a Kimi API key, click Skip. The extension works without login.
 
 ![Kimi Code Gear Icon](images/kimi-code-gear-icon.png)
 
@@ -38,7 +38,9 @@ Click the Kimi icon in the Activity Bar, or open from Command Palette with "Kimi
 
 ### Reference Files
 
-Type `@` followed by a file or folder name. For example, `@src/handlers/` references a folder, `@app.ts` references a file, and `@src/app.ts:10-20` references specific lines. Press `Alt+K` to insert the current file or selected code as a reference.
+Type `@` followed by a file or folder name. For example, `@src/handlers/` references a folder, `@app.ts` references a file, and `@src/app.ts:10-20` references specific lines. 
+
+Press `Alt+K` to insert the current file or selected code as a reference.
 
 ### Slash Commands
 
@@ -52,7 +54,9 @@ Paste, drag, or select media files to include them in your message. Supported fo
 
 Switch models from the dropdown in the input bar.
 
-Some models support extended reasoning. The thinking toggle has three behaviors: hidden when the model does not support thinking, switchable when the user can enable or disable it per message, or always on for models like k1-think. When enabled, thinking steps appear collapsed in the response and can be expanded to see the reasoning process.
+Some models support extended reasoning. The thinking toggle has three behaviors: hidden when the model does not support thinking, switchable when the user can enable or disable it per message, or always on for models like k2-thinking. 
+
+When enabled, thinking steps appear collapsed in the response and can be expanded to see the reasoning process.
 
 ## Approvals and Tool Execution
 
@@ -100,28 +104,28 @@ Open Command Palette and type "Kimi Code" to access additional commands: Open in
 
 Configure under the "Kimi" section in VS Code Settings.
 
-| Setting                              | Default | Description                                  |
-| ------------------------------------ | ------- | -------------------------------------------- |
-| `kimi.yoloMode`                      | false   | Auto-approve all tool calls                  |
-| `kimi.autosave`                      | true    | Save files before Kimi reads or writes them  |
-| `kimi.executablePath`                | ""      | Custom path to Kimi CLI (empty uses bundled) |
-| `kimi.enableNewConversationShortcut` | false   | Enable Cmd/Ctrl+N for new conversation       |
-| `kimi.useCtrlEnterToSend`            | false   | Send with Ctrl/Cmd+Enter instead of Enter    |
-| `kimi.environmentVariables`          | {}      | Environment variables passed to CLI          |
+| Setting                              | Default | Description                                       |
+| ------------------------------------ | ------- | ------------------------------------------------- |
+| `kimi.yoloMode`                      | false   | Auto-approve all tool calls                       |
+| `kimi.autosave`                      | true    | Save files before Kimi reads or writes them.      |
+| `kimi.executablePath`                | ""      | Custom path to Kimi Code CLI (empty uses bundled) |
+| `kimi.enableNewConversationShortcut` | false   | Enable Cmd/Ctrl+N for new conversation            |
+| `kimi.useCtrlEnterToSend`            | false   | Send with Ctrl/Cmd+Enter instead of Enter         |
+| `kimi.environmentVariables`          | {}      | Environment variables passed to Kimi Code CLI     |
 
 ## Troubleshooting
 
 **No workspace open**: Open a folder in VS Code. Kimi Code requires a workspace to function.
 
-**CLI not found**: Install the CLI manually and set `kimi.executablePath`, or ensure the bundled CLI is present.
+**CLI not found**: Install the Kimi Code CLI manually and set `kimi.executablePath`, or ensure the bundled Kimi Code CLI is present.
 
-**Login keeps failing**: Try skipping login and using CLI API key mode. Check network connectivity. You can retry from Action Menu later.
+**Login keeps failing**: Try skipping login and using Kimi API key mode. Check network connectivity. You can retry from Action Menu later.
 
-**Nothing happens when sending**: Verify that the CLI is available, a model is configured, and a workspace folder is open. Check "Kimi Code: Show Logs" for errors.
+**Nothing happens when sending**: Verify that the Kimi Code CLI is available, a model is configured, and a workspace folder is open. Check "Kimi Code: Show Logs" for errors.
 
 **Connection timeout**: If no response within 30 seconds, the connection times out. Check network, then retry the message.
 
-**Preflight errors**: Some errors prevent sending, such as CLI not found, version too low, not logged in, or session busy. The error appears as a toast and your input is preserved for retry.
+**Preflight errors**: Some errors prevent sending, such as Kimi Code CLI not found, version too low, not logged in, or session busy. The error appears as a toast and your input is preserved for retry.
 
 ## Example Workflows
 
