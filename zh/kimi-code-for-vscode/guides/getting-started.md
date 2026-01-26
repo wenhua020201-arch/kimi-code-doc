@@ -22,7 +22,7 @@ Kimi Code 支持两种认证模式：
 
 **Kimi 账号模式**：点击登录按钮，浏览器将打开授权页面，完成授权流程后返回 VS Code。
 
-**Kimi API 密钥模式**：若已配置 Kimi API 密钥，可点击跳过登录。插件将在此模式下运行。
+**API Key 模式**：若已配置 API Key，可点击跳过登录。插件将在此模式下运行。
 
 ![Kimi Code Gear Icon](images/kimi-code-gear-icon.png)
 

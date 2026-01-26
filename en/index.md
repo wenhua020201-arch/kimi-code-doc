@@ -1,40 +1,53 @@
 # Kimi Code Membership Benefits
 
-**Kimi Code** is a premium membership feature under the Kimi Membership Plan, providing individual developers with enhanced AI support for personal software development.
+Kimi Code is a premium subscription tier within the Kimi ecosystem, specifically engineered to empower developers with advanced AI capabilities for coding.
 
-- **Multi-Scenario Compatibility**: Designed to work with Kimi CLI and other commonly used code assistants for smoother workflow integration.
-- **Enhanced Performance**: Supports high-frequency coding interactions, with dynamically managed request limits and output speeds depending on system capacity.
+## Key Advantages
 
-*Actual performance and interoperability may vary. Kimi Code is subject to the Membership Terms and may be adjusted or updated periodically.*
+* **Seamless Integration:** Full compatibility with **Kimi Code CLI**, **Claude Code**, and **Roo Code**, fitting perfectly into your existing CI/CD or local workflows.
+* **Elite Performance:** Experience blistering output speeds of up to **100 Tokens/s** with high stability.
+* **Scalable Quotas:** Robust concurrency support with **100-500 requests per 5-hour window** to handle heavy-duty coding sessions.
 
-> New Users: Please visit [kimi.com](https://www.kimi.com/), sign in, click the avatar in the lower-left corner, and navigate to “Membership Plan” to subscribe.
+## Getting Started
 
-> Existing Members: Obtain the API key and check requests quota on the Kimi Code pop-up of membership page.
+> **New Users:** Visit the [Kimi Code Official Site](https://www.kimi.com/code), log in, and select a "Coding Plan" to activate your benefits.
+>
+> **Subscribers:** Manage your credentials or authorized devices via the [Kimi Code Console](https://www.kimi.com/code/console).
 
-## Developer quickstart
+### Step 1: Generate Your Kimi Code API Key
 
-### 1. Obtain your Kimi Code API Key
+For manual integration in third-party agents or custom scripts:
 
-#### Option A - Subscription Management Console
+1.  **Access Console:** Navigate to `Console` -> `API Keys`.
+2.  **Create Key:** Click "Create New Key" to generate a unique identifier.
+    ![Create API Key in Console](../screenshots/kimi-cli/create-api-key.png)
+3.  **Secure Your Key:** Copy the key from the pop-up. **Note:** For security, the key will only be displayed in full once.
+    ![Save API Key](../screenshots/kimi-cli/copy-api-key.png)
 
-Click Avatar in the lower-left corner → Settings → Manage → Subscription
+### Step 2: Configure Your Development Environment
 
-![The "Kimi Code" text in the Subscription page](./screenshots/index/subscription.jpg)
+Choose the guide that matches your setup:
 
-Click the “Kimi Code” text to trigger the pop-up; copy and securely store the key.
+* 📖 [Configuring Kimi Code for Kimi CLI](./kimi-cli/guides/getting-started.html)
+* 🤖 [Using Kimi Code with Claude Code or Roo Code](./more/third-party-agents.html)
 
-#### Option B - Membership Details Page
+## One-Click Authentication
 
-Membership Details page → Click the “Kimi Code” link to trigger the pop-up.
+If you are using an official Kimi coding agent, we provide a streamlined **Login Authentication** feature. This removes the need for manual API key handling by securely binding your device to your Kimi account.
 
-![The "Kimi Code" text in the Membership Details page](./screenshots/index/to-the-moon.jpg)
+#### Using Kimi Code for CLI
+Simply execute the `/login` command in your terminal:
+![CLI Login Demo](../screenshots/kimi-cli/cli-login-demo.png)
 
-Copy or reset the API Key, or check requests quota on the pop-up.
+#### Using Kimi Code for VS Code
+The CLI-based login command is also supported within the VS Code integrated terminal:
+![VS Code Login Demo](../screenshots/kimi-cli/vscode-login-demo.png)
 
-![The pop-up of "Kimi Code"](./screenshots/index/api-key.jpg)
+## Device & Session Management
 
-### 2. Configure the Key in Supported Development Tools
+Authorized devices can be monitored and managed in real-time via the [Kimi Code Console](https://www.kimi.com/code/console).
 
-* [Kimi CLI integration](./kimi-cli/guides/getting-started.html)
-* [Claude Code / Roo Code integration](./more/third-party-agents.html)
+![Device Management Console](../screenshots/kimi-cli/login-device-mgt.png)
 
+> **Session Security Policy:**
+> To protect your account quota, if a device remains **inactive for more than 30 days**, the session will automatically expire. The device record will be removed from the console, and you will need to re-authenticate using the `/login` flow.

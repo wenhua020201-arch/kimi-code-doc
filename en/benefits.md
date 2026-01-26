@@ -8,11 +8,9 @@ Please note that this benefit is for personal development only and may not be us
 
 ### Billing Logic
 
-As part of the Kimi Membership Plan, **Kimi Code** is included in the plan fee. When a member uses the API Key generated from the membership pop-up to program on approved platforms, only the request quota bundled in the plan will be consumed.
-
-No additional payment is required unless the member exceeds the allocated quota or uses unapproved integration methods. In such cases, service access may be restricted.
-
-Request quotas for each membership tier are published and periodically updated on the **Membership Detail Page**. Allocation and refresh frequency may vary across different plans.
+**Kimi Code** quota are included as part of your Kimi Membership benefits; no additional fees are required. You can utilize your credits through the following methods:
+- **API Key Integration**: When using an API Key generated via the [Kimi Code Console](https://www.kimi.com/code/console) on supported platforms, requests will be deducted from your plan's quota, and your available credits will refresh according to your billing cycle.
+- **Direct Account Login**: By logging into your Kimi account within Kimi Code for CLI or Kimi Code for VS Code, your Kimi Code usage will be automatically applied to and deducted from your active subscription plan.
 
 ### Quota Refresh Logic
 
