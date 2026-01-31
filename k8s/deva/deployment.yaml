@@ -26,7 +26,7 @@ spec:
     spec:
       terminationGracePeriodSeconds: 60
       containers:
-      - image: msai-cn-beijing.cr.volces.com/agent/kimi-coding-docs:01309d2
+      - image: msai-cn-beijing.cr.volces.com/agent/kimi-coding-docs:f22f72a
         name: main
         imagePullPolicy: IfNotPresent
         ports:
