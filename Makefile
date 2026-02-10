@@ -18,7 +18,7 @@ version: ## 准备下一个版本号
 
 .PHONY: build
 build: version
-	docker build -t $(CI_IMAGE):$(VERSION) -f Dockerfile .
+	docker build --platform linux/amd64 -t $(CI_IMAGE):$(VERSION) -f Dockerfile .
 	docker push $(CI_IMAGE):$(VERSION)
 
 .PHONY: cleanup
