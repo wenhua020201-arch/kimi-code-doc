@@ -6,7 +6,7 @@ Kimi Code is a premium subscription tier within the Kimi ecosystem, specifically
 
 * **Seamless Integration:** Full compatibility with **Kimi Code CLI**, **Claude Code**, and **Roo Code**, fitting perfectly into your existing CI/CD or local workflows.
 * **Elite Performance:** Experience blistering output speeds of up to **100 Tokens/s** with high stability.
-* **Throughput Capacity:** A 5-hour token budget handles roughly **300–1,200** API calls, enabling continuous workloads.
+* **Throughput Capacity:** A 5-hour token quota supports approximately **300–1,200** API calls, with a maximum concurrency of 30, ensuring uninterrupted operation for complex workloads.
 
 ## Getting Started
 
