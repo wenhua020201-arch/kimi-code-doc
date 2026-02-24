@@ -89,6 +89,8 @@ kimi --yolo
 /yolo
 ```
 
+You can also set `default_yolo = true` in the config file to enable YOLO mode by default on every startup. See [Configuration files](https://moonshotai.github.io/kimi-cli/en/configuration/config-files.html).
+
 When YOLO mode is enabled, a yellow YOLO badge appears in the status bar at the bottom. Enter `/yolo` again to disable it.
 
 ::: warning Note
