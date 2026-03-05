@@ -4,6 +4,8 @@
 
 ::: tip
 在 Claude Code 中，你可以使用 tab 键切换 Kimi K2 Thinking 模型
+
+如果您遇到tool_search调用导致的400错误，可以暂时通过配置环境变量 ENABLE_TOOL_SEARCH=FALSE 解决，后续会迭代兼容方案。
 :::
 
 ### 安装 Claude Code
