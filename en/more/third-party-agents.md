@@ -4,6 +4,8 @@
 
 ::: tip
 In Claude Code, you can toggle Kimi K2 Thinking model by pressing the Tab key.
+
+If you encounter a 400 error caused by the tool_search call, you can temporarily resolve it by setting the environment variable ENABLE_TOOL_SEARCH=FALSE. We will iterate on a compatible solution in the future.
 :::
 
 ### Install Claude Code
