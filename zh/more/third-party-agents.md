@@ -5,7 +5,7 @@
 ::: tip
 在 Claude Code 中，你可以使用 tab 键切换 Kimi K2 Thinking 模型
 
-如果您遇到tool_search调用导致的400错误，可以暂时通过配置环境变量 ENABLE_TOOL_SEARCH=FALSE 解决，后续会迭代兼容方案。
+如果您遇到tool_search调用导致的400错误，可以暂时通过配置环境变量 ENABLE_TOOL_SEARCH=false 解决，后续会迭代兼容方案。
 :::
 
 ### 安装 Claude Code
@@ -48,8 +48,8 @@ node --eval "
 # 右键按 Windows 按钮，点击「终端」
 
 # 然后依次执行下面的
-winget install --id Git.Git -e --source winget # 或者参考 https://git-scm.com/install/windows 用其他办法安装 Git
-winget install OpenJS.NodeJS # 或者参考 https://nodejs.org/zh-cn/download 用其他办法安装 Node.js
+winget install --exact --source winget --id Git.Git # 或者参考 https://git-scm.com/install/windows 用其他办法安装 Git
+winget install --exact --source winget --id OpenJS.NodeJS # 或者参考 https://nodejs.org/zh-cn/download 用其他办法安装 Node.js
 Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 
 # 然后关闭终端窗口，新开一个终端窗口
@@ -76,6 +76,7 @@ node --eval "
 #### macOS 与 Linux
 
 ```sh
+export ENABLE_TOOL_SEARCH=false
 export ANTHROPIC_BASE_URL=https://api.kimi.com/coding/
 export ANTHROPIC_API_KEY=sk-kimi-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  # 这里填在会员页面生成的 API Key
 
@@ -85,6 +86,7 @@ claude
 #### Windows
 
 ```powershell
+$env:ENABLE_TOOL_SEARCH="false"
 $env:ANTHROPIC_BASE_URL="https://api.kimi.com/coding/";
 $env:ANTHROPIC_API_KEY="sk-kimi-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"  # 这里填在会员页面生成的 API Key
 

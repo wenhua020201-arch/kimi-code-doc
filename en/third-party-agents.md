@@ -4,8 +4,6 @@
 
 ::: tip
 In Claude Code, you can toggle Kimi K2 Thinking model by pressing the Tab key.
-
-If you encounter a 400 error caused by the tool_search call, you can temporarily resolve it by setting the environment variable ENABLE_TOOL_SEARCH=false. We will iterate on a compatible solution in the future.
 :::
 
 ### Install Claude Code
@@ -69,16 +67,16 @@ node --eval "
     }"
 ```
 
-### Configure the Kimi Code model
+### Configure the Kimi For Coding model
 
-After installing Claude Code, set environment variables as follows to use the Kimi Code model.
+After installing Claude Code, set environment variables as follows to use the Kimi For Coding model.
 
 #### macOS and Linux
 
 ```sh
 export ENABLE_TOOL_SEARCH=false
 export ANTHROPIC_BASE_URL=https://api.kimi.com/coding/
-export ANTHROPIC_API_KEY=sk-kimi-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx # Fill in the API Key generated on the membership page
+export ANTHROPIC_AUTH_TOKEN=sk-kimi-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx # Fill in the API Key generated on the membership page
 
 claude
 ```
@@ -88,7 +86,7 @@ claude
 ```powershell
 $env:ENABLE_TOOL_SEARCH="false"
 $env:ANTHROPIC_BASE_URL="https://api.kimi.com/coding/";
-$env:ANTHROPIC_API_KEY="sk-kimi-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"  # Fill in the API Key generated on the membership page
+$env:ANTHROPIC_AUTH_TOKEN="sk-kimi-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"  # Fill in the API Key generated on the membership page
 
 claude
 ```
@@ -109,12 +107,12 @@ If it is already installed, skip to the next section.
 2. Search for `Roo Code` and install the official Roo Code extension.
 3. After installation, a Roo Code icon will appear in the Activity Bar. If it does not, restart VS Code.
 
-### Configure the Kimi Code model
+### Configure the Kimi For Coding model
 
 1. Open the Roo Code panel and go to Settings.
 2. In Providers, select `OpenAI Compatible`, then fill in the fields as prompted:
    - **Entrypoint**: `https://api.kimi.com/coding/v1`
-   - **API Key**: Enter the Kimi Code API Key retrieved from the membership page
+   - **API Key**: Enter the Kimi For Coding API Key retrieved from the membership page
    - **Model**: `kimi-for-coding`
    - **Use legacy OpenAI API format**: ✅
    - **Enable streaming**: ✅
@@ -125,6 +123,6 @@ If it is already installed, skip to the next section.
 3. If you do not need browser automation, you can disable related options.
 4. Save, return to the Roo Code main view, and create a new session to start using it.
 
-After configuration, you can invoke the Kimi Code model in Roo Code for coding and collaboration.
+After configuration, you can invoke the Kimi For Coding model in Roo Code for coding and collaboration.
 
 
