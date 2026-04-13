@@ -12,7 +12,7 @@ KimiCode额度作为 Kimi 会员权益之一，其费用包含在套餐费用中
 
 - Kimi订阅会员使用在[Kimi Code控制台](https://www.kimi.com/code/console)生成的 API Key 在我们允许的平台进行编程时，仅消耗套餐内的请求次数并刷新可用额度。
 
-- 在Kimi Code for CLI或者Kimi Code for VScode中使用Kimi账号Login后，也会消耗对应套餐内的Kimi Code额度
+- 在 Kimi Code for CLI 或者 Kimi Code for VS Code 中使用 Kimi 账号 Login 后，也会消耗对应套餐内的 Kimi Code 额度
 
 **不同会员档位的请求额度以会员展示页为准。**
 
