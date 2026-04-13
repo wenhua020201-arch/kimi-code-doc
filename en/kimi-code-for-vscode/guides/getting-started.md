@@ -46,17 +46,25 @@ Press `Alt+K` to insert the current file or selected code as a reference.
 
 Type `/` to open the command menu. Use `/init` to scan the project and generate documentation, or `/compact` to compress context when it gets long.
 
+### Input History
+
+Press `↑` / `↓` in the input box to quickly browse your recently sent messages.
+
 ### Send Media Input
 
-Paste, drag, or select media files to include them in your message. Supported formats include PNG, JPEG, GIF, WebP, HEIC for images, and MP4, WebM, MOV for video. You can attach up to 9 files per message, with images limited to 5MB each, videos to 40MB each, and 80MB total. Models without multimodal support are automatically filtered out when media is attached.
+Paste, drag, or select media files to include them in your message. Supported formats include PNG, JPEG, GIF, WebP, HEIC for images, and MP4, WebM, MOV for video.
+
+- **Paste / Drag**: Original image size must not exceed 5MB; the system will automatically compress (HEIC to JPEG, oversized scaling, quality compression to ~2MB).
+- **File Picker**: When adding via the "+" button or `@` menu, images are limited to 10MB and videos to 20MB.
+- **General Limits**: Up to 9 files per message, with a total size limit of 80MB. Models without multimodal support are automatically filtered out when media is attached.
 
 ## Models and Thinking Mode
 
 Switch models from the dropdown in the input bar.
 
-Some models support extended reasoning. The thinking toggle has three behaviors: hidden when the model does not support thinking, switchable when the user can enable or disable it per message, or always on for models like k2-thinking. 
+Some models support extended reasoning. The thinking toggle has three behaviors: hidden when the model does not support thinking, switchable when the user can enable or disable it per message, or always on for models like k2-thinking.
 
-When enabled, thinking steps appear collapsed in the response and can be expanded to see the reasoning process.
+When enabled, thinking steps appear collapsed in the response and can be expanded to see the reasoning process. Enable `kimi.alwaysExpandThinking` in settings to expand thinking by default.
 
 ## Approvals and Tool Execution
 
@@ -68,17 +76,41 @@ When Kimi proposes to run a tool or write a file, it shows an approval dialog wi
 
 Enable `kimi.yoloMode` in settings to auto-approve all tool calls. Use this when you trust the workflow and want speed.
 
+### Question Dialog
+
+During execution, Kimi may ask you a question (for example, to choose an implementation approach). A question card will appear at the bottom. You can select a preset option or choose "Custom response..." to type your own answer. Kimi will continue execution after you respond.
+
 ## File Change Tracking
 
 When Kimi modifies files, changes are tracked and displayed in the File Changes bar. You see a list of modified files with their status (Added, Modified, or Deleted) along with line counts for additions and deletions.
 
 For each file, you can view the diff in VS Code's native diff view, revert to the original state, or keep the change to clear tracking. Batch actions let you keep all or undo all changes at once. The baseline is captured on first modification within a session, and reverting restores to that baseline.
 
+## Plan Mode
+
+Click the 📋 icon to the left of the input box to enter plan mode. When enabled, Kimi will first output an expandable plan card listing the steps it intends to take. You can review the plan before letting it continue.
+
+- The plan mode button remembers the last setting for each new session.
+- If Kimi is already streaming a response, exiting plan mode requires confirmation to avoid interrupting the current task.
+
+## Message Queue
+
+While Kimi is generating a response, you can continue typing and sending messages. These messages are not lost—they enter the **message queue**. The bottom toolbar shows the queue count; click it to expand the queue panel:
+
+- View the list of pending messages
+- Edit or delete queued messages
+- Reorder messages
+- During streaming, click the ⚡ icon on a queued item to **steer** the current response immediately
+
 ## Conversation History
 
 Click the history dropdown in the header to browse past sessions. Sessions are stored locally and can be searched by keyword. You can delete old sessions or load one to continue where you left off.
 
 The status bar shows context usage percentage along with input and output token counts. Use `/compact` when context gets high.
+
+## Working Directory
+
+Click the gear icon on the right side of the input box (Action Menu) → **Working Directory** to switch the working directory among different subdirectories of the current Workspace. A new session is automatically started after switching so Kimi works with the new directory context. You can select from registered subdirectories or use "Browse..." to pick any subfolder.
 
 ## MCP Servers
 
@@ -90,13 +122,27 @@ Two transport types are supported: stdio for local command-line tools where you 
 
 Recommended servers are available for one-click install, including Playwright for browser automation, Context7 for real-time documentation, and GitHub for API access. Some servers require OAuth authentication. Click Authorize to open the flow, or Reset Auth to clear credentials. Test the connection before saving to verify the server works.
 
+## Action Menu
+
+The gear icon on the right side of the input box opens the Action Menu, which includes:
+
+- **Working Directory**: Switch the current working directory (see "Working Directory" above)
+- **MCP Servers**: Open the MCP server configuration panel
+- **General Config**: Open the Kimi section in VS Code settings
+- **Show Logs**: Open the Kimi Code output log panel for troubleshooting
+- **Reset Kimi**: Reset the Kimi webview; useful if the UI becomes unresponsive
+- **Sign out / Sign in**: Log out or log back in to your Kimi account
+
+You can also run "Kimi Code: Run CLI" from the VS Code Command Palette to launch the Kimi Code CLI directly in the integrated terminal.
+
 ## Commands and Shortcuts
 
 | Shortcut                       | Action                                                           |
 | ------------------------------ | ---------------------------------------------------------------- |
 | `Ctrl+Shift+K` / `Cmd+Shift+K` | Focus the Kimi input box                                         |
 | `Alt+K`                        | Insert current file reference                                    |
-| `Ctrl+N` / `Cmd+N`             | New conversation (requires `kimi.enableNewConversationShortcut`) |
+| `Ctrl+N` / `Cmd+N`             | New conversation (requires `kimi.enableNewConversationShortcut`; enabling this occupies the system "New File" shortcut) |
+| `↑` / `↓`                      | Browse input history in the input box                            |
 
 Open Command Palette and type "Kimi Code" to access additional commands: Open in New Tab, Open in Side Panel, and New Conversation.
 
@@ -112,6 +158,8 @@ Configure under the "Kimi" section in VS Code Settings.
 | `kimi.enableNewConversationShortcut` | false   | Enable Cmd/Ctrl+N for new conversation            |
 | `kimi.useCtrlEnterToSend`            | false   | Send with Ctrl/Cmd+Enter instead of Enter         |
 | `kimi.environmentVariables`          | {}      | Environment variables passed to Kimi Code CLI     |
+| `kimi.alwaysExpandThinking`          | false   | Auto-expand thinking/reasoning sections by default |
+| `kimi.editorContext`                 | never   | Control when to share the active editor's file and cursor position (never / onConversationStart / onFileChange) |
 
 ## Troubleshooting
 
