@@ -4,8 +4,6 @@
 
 ::: tip
 在 Claude Code 中，你可以使用 tab 键切换 Kimi K2 Thinking 模型
-
-如果您遇到tool_search调用导致的400错误，可以暂时通过配置环境变量 ENABLE_TOOL_SEARCH=false 解决，后续会迭代兼容方案。
 :::
 
 ### 安装 Claude Code
@@ -76,7 +74,6 @@ node --eval "
 #### macOS 与 Linux
 
 ```sh
-export ENABLE_TOOL_SEARCH=false
 export ANTHROPIC_BASE_URL=https://api.kimi.com/coding/
 export ANTHROPIC_API_KEY=sk-kimi-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  # 这里填在会员页面生成的 API Key
 
@@ -86,7 +83,6 @@ claude
 #### Windows
 
 ```powershell
-$env:ENABLE_TOOL_SEARCH="false"
 $env:ANTHROPIC_BASE_URL="https://api.kimi.com/coding/";
 $env:ANTHROPIC_API_KEY="sk-kimi-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"  # 这里填在会员页面生成的 API Key
 

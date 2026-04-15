@@ -74,7 +74,6 @@ After installing Claude Code, set environment variables as follows to use the Ki
 #### macOS and Linux
 
 ```sh
-export ENABLE_TOOL_SEARCH=false
 export ANTHROPIC_BASE_URL=https://api.kimi.com/coding/
 export ANTHROPIC_AUTH_TOKEN=sk-kimi-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx # Fill in the API Key generated on the membership page
 
@@ -84,7 +83,6 @@ claude
 #### Windows
 
 ```powershell
-$env:ENABLE_TOOL_SEARCH="false"
 $env:ANTHROPIC_BASE_URL="https://api.kimi.com/coding/";
 $env:ANTHROPIC_AUTH_TOKEN="sk-kimi-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"  # Fill in the API Key generated on the membership page
 
