@@ -86,6 +86,12 @@ The Kimi Code API is compatible with both OpenAI and Anthropic protocols. Choose
 
 Kimi members can create and manage API Keys in the [Kimi Code Console](https://www.kimi.com/code/console) (up to 5 keys; each is shown only once upon creation—please keep it safe).
 
+#### Model ID
+
+When calling the Kimi Code API from third-party tools, always use the model ID `kimi-for-coding`. Whether you're on the OpenAI-compatible or Anthropic-compatible protocol, set the `model` field in the request body to this value.
+
+> **Note**: `kimi-for-coding` is a stable model ID; the backend automatically updates the display name it maps to whenever a newer model is released, so you always get the latest model without changing any client configuration.
+
 #### Configuring in Third-Party Tools
 
 After obtaining an API Key, configure the corresponding Base URL and API Key in the environment variables of the respective tool to start using it. For configuration details, see [Using in Other Coding Agents](/en/third-party-tools/other-coding-agents).
@@ -96,9 +102,9 @@ After obtaining an API Key, configure the corresponding Base URL and API Key in 
 ## Platform Comparison
 
 
-Kimi Code membership benefits are designed specifically for programming scenarios. If you need to call large model capabilities in your own product, or require team collaboration and usage management, please visit the [Kimi Open Platform](https://platform.kimi.com).
+Kimi Code membership benefits are designed specifically for programming scenarios. If you need to call large model capabilities in your own product, or require team collaboration and usage management, please visit the [Kimi Platform](https://platform.kimi.com).
 
-| Comparison Item | Kimi Code Platform | Kimi Open Platform |
+| Comparison Item | Kimi Code Platform | Kimi Platform |
 |--------|---------------|---------------|
 | Base URL | `https://api.kimi.com/coding/v1` | `https://api.moonshot.cn/v1` |
 | Billing | Membership subscription, monthly/annual payment, with rate limiting | Pay-as-you-go, top up and use |

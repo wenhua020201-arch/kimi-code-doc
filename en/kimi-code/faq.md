@@ -11,7 +11,7 @@ If you see the error "No models available for the selected platform" when runnin
 
 > **Note: Distinguish Platforms**
 >
-> Kimi Code membership benefits and the [Kimi Open Platform](https://platform.kimi.com) have different Base URLs. Please ensure your Base URL matches your API Key:
+> Kimi Code membership benefits and the [Kimi Platform](https://platform.kimi.com) have different Base URLs. Please ensure your Base URL matches your API Key:
 
 | Platform | Base URL | Billing | Key Creation Portal |
 |------|---------|---------|-------------|
