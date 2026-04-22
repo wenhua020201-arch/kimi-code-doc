@@ -1,39 +1,78 @@
 import { defineAdditionalConfig } from "vitepress";
-import kimiCliSidebar from "./kimi-cli/sidebar.json";
 
 export default defineAdditionalConfig({
   lang: 'zh-Hans',
-  description: 'Kimi Code 会员权益说明',
+  description: 'Kimi Code 文档',
   themeConfig: {
     sidebar: [
       {
         text: 'Kimi Code',
         items: [
-          { text: 'Kimi Code 会员权益', link: '/' },
-          { text: '权益说明', link: '/benefits' },
+          { text: '产品概览', link: '/' },
+          { text: '常见问题', link: '/kimi-code/faq' },
         ],
       },
       {
-        text: 'Kimi Code CLI 使用指南',
+        text: 'Kimi Code CLI',
         items: [
-          ...kimiCliSidebar.zh.items,
+          { text: '快速开始', link: '/kimi-code-cli/getting-started' },
+          { text: '核心操作', link: '/kimi-code-cli/core-operations' },
           {
-            text: '定制化和更多参考',
-            link: 'https://moonshotai.github.io/kimi-cli/zh/customization/mcp.html',
-            target: '_blank',
+            text: '配置',
+            collapsed: false,
+            items: [
+              { text: '配置文件', link: '/kimi-code-cli/configuration/configuration-files' },
+              { text: '环境变量', link: '/kimi-code-cli/configuration/environment-variables' },
+              { text: '平台与模型', link: '/kimi-code-cli/configuration/providers-and-models' },
+              { text: '数据路径', link: '/kimi-code-cli/configuration/data-locations' },
+              { text: '配置覆盖', link: '/kimi-code-cli/configuration/overrides-and-precedence' },
+            ],
+          },
+          {
+            text: '定制化',
+            collapsed: false,
+            items: [
+              { text: 'MCP', link: '/kimi-code-cli/customization/mcp' },
+              { text: 'Hooks (Beta)', link: '/kimi-code-cli/customization/hooks' },
+              { text: '插件 (Beta)', link: '/kimi-code-cli/customization/plugins' },
+              { text: 'Skills', link: '/kimi-code-cli/customization/skills' },
+              { text: 'Agent 与子 Agent', link: '/kimi-code-cli/customization/sub-agents' },
+              { text: 'Wire 协议', link: '/kimi-code-cli/customization/wire-protocol' },
+            ],
+          },
+          {
+            text: '参考手册',
+            collapsed: true,
+            items: [
+              { text: 'kimi 命令', link: '/kimi-code-cli/reference/kimi-command' },
+              { text: 'kimi acp 子命令', link: '/kimi-code-cli/reference/kimi-acp' },
+              { text: 'kimi info 子命令', link: '/kimi-code-cli/reference/kimi-info' },
+              { text: 'kimi mcp 子命令', link: '/kimi-code-cli/reference/kimi-mcp' },
+              { text: 'kimi term 子命令', link: '/kimi-code-cli/reference/kimi-term' },
+              { text: 'kimi vis 子命令', link: '/kimi-code-cli/reference/kimi-vis' },
+              { text: 'Web UI', link: '/kimi-code-cli/reference/kimi-web' },
+              { text: '斜杠命令速查', link: '/kimi-code-cli/reference/slash-commands' },
+              { text: '键盘快捷键速查', link: '/kimi-code-cli/reference/keyboard-shortcuts' },
+            ],
           },
         ],
       },
       {
-        text: 'Kimi Code for VS Code 指南',
+        text: 'Kimi Code for VS Code',
         items: [
-          { text: '快速开始', link: '/kimi-code-for-vscode/guides/getting-started' },
+          { text: '快速开始', link: '/kimi-code-for-vscode/getting-started' },
+          { text: '基础操作', link: '/kimi-code-for-vscode/core-operations' },
+          { text: '配置', link: '/kimi-code-for-vscode/configuration' },
+          { text: '定制化', link: '/kimi-code-for-vscode/customization' },
         ],
       },
       {
-        text: '更多',
+        text: '在第三方工具中使用',
         items: [
-          { text: '在第三方 Coding Agent 中使用', link: '/more/third-party-agents' },
+          { text: 'JetBrains', link: '/third-party-tools/jetbrains' },
+          { text: 'Zed', link: '/third-party-tools/zed' },
+          { text: 'Zsh', link: '/third-party-tools/zsh' },
+          { text: '在第三方 Coding Agent 中使用', link: '/third-party-tools/other-coding-agents' },
         ],
       },
     ],
@@ -70,7 +109,7 @@ export default defineAdditionalConfig({
       next: '下一篇'
     },
     outline: {
-      label: "页面导航"
+      label: '页面导航'
     },
     notFound: {
       title: '页面未找到',

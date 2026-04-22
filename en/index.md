@@ -1,53 +1,126 @@
-# Kimi Code Membership Benefits
+# Kimi Code Overview
 
-Kimi Code is a premium subscription tier within the Kimi ecosystem, specifically engineered to empower developers with advanced AI capabilities for coding.
 
-## Key Advantages
+## What is Kimi Code
 
-* **Seamless Integration:** Full compatibility with **Kimi Code CLI**, **Claude Code**, and **Roo Code**, fitting perfectly into your existing CI/CD or local workflows.
-* **Elite Performance:** Experience blistering output speeds of up to **100 Tokens/s** with high stability.
-* **Throughput Capacity:** A 5-hour token quota supports approximately **300–1,200** API calls, with a maximum concurrency of 30, ensuring uninterrupted operation for complex workloads.
+
+Kimi Code is an intelligent programming service for developers included in [Kimi membership benefits](https://www.kimi.com/membership/pricing?from=kfc_docs_overview). Built on Kimi's latest flagship models, it provides AI-assisted capabilities—such as code reading, file editing, and command execution—through product forms like CLI and VS Code extension. Subscribers can also obtain an API Key to integrate Kimi Code's model capabilities into third-party development tools and platforms.
+
+
+## Core Advantages
+
+
+- **Continuous model upgrades**: Stay current with Kimi's latest flagship models and continuously gain cutting-edge code understanding, reasoning, and generation capabilities
+- **Broad compatibility**: Seamlessly works with Kimi Code CLI, VS Code, Claude Code, and various other development tools
+- **Ultra-fast response**: Output speed up to 100 Tokens/s
+- **High-frequency concurrency**: Supports approximately 300–1,200 requests per 5-hour window, with up to 30 concurrent requests
+
 
 ## Getting Started
 
-> **New Users:** Visit the [Kimi Code Official Site](https://www.kimi.com/code), log in, and select a "Coding Plan" to activate your benefits.
->
-> **Subscribers:** Manage your credentials or authorized devices via the [Kimi Code Console](https://www.kimi.com/code/console).
 
-### Step 1: Generate Your Kimi Code API Key
+Kimi Code allows members to use their benefits in both the official client and third-party platforms, covering different development scenarios.
 
-For manual integration in third-party agents or custom scripts:
 
-1.  **Access Console:** Navigate to `Console` -> `API Keys`.
-2.  **Create Key:** Click "Create New Key" to generate a unique identifier.
-    ![Create API Key in Console](../screenshots/kimi-cli/create-api-key.png)
-3.  **Secure Your Key:** Copy the key from the pop-up. **Note:** For security, the key will only be displayed in full once.
-    ![Save API Key](../screenshots/kimi-cli/copy-api-key.png)
+### Using the Official Client
 
-### Step 2: Configure Your Development Environment
 
-Choose the guide that matches your setup:
+Choose the client that fits you and install with one click:
 
-* 📖 [Configuring Kimi Code for Kimi CLI](./kimi-cli/guides/getting-started.html)
-* 🤖 [Using Kimi Code with Claude Code or Roo Code](./more/third-party-agents.html)
+#### CLI
 
-## One-Click Authentication
+For developers who prefer terminal operations. Chat with AI in the terminal, letting it read code, edit files, execute commands, search the web, and autonomously complete development tasks.
 
-If you are using an official Kimi coding agent, we provide a streamlined **Login Authentication** feature. This removes the need for manual API key handling by securely binding your device to your Kimi account.
+```bash
+# macOS / Linux
+curl -LsSf https://code.kimi.com/install.sh | bash
+```
 
-#### Using Kimi Code for CLI
-Simply execute the `/login` command in your terminal:
-![CLI Login Demo](../screenshots/kimi-cli/cli-login-demo.png)
+```powershell
+# Windows (PowerShell)
+Invoke-RestMethod https://code.kimi.com/install.ps1 | Invoke-Expression
+```
 
-#### Using Kimi Code for VS Code
-The CLI-based login command is also supported within the VS Code integrated terminal:
-![VS Code Login Demo](../screenshots/kimi-cli/vscode-login-demo.png)
+After installation, run `kimi` in the terminal to start.
 
-## Device & Session Management
+#### VS Code
 
-Authorized devices can be monitored and managed in real-time via the [Kimi Code Console](https://www.kimi.com/code/console).
+For developers who prefer the VS Code editor. Collaborate with AI in the editor sidebar, supporting code completion, file editing, web search, and automated tasks.
 
-![Device Management Console](../screenshots/kimi-cli/login-device-mgt.png)
+Search for "Kimi Code" in the VS Code Extensions marketplace to install, or visit [Visual Studio Marketplace](vscode:extension/moonshot-ai.kimi-code).
 
-> **Session Security Policy:**
-> To protect your account quota, if a device remains **inactive for more than 30 days**, the session will automatically expire. The device record will be removed from the console, and you will need to re-authenticate using the `/login` flow.
+>If the extension doesn't appear after installation, restart VS Code or run "Developer: Reload Window" from the Command Palette (Mac: Cmd+Shift+P, Windows/Linux: Ctrl+Shift+P).
+
+Other editors such as JetBrains and Zed can connect via CLI's ACP protocol. See [JetBrains Configuration](/en/third-party-tools/jetbrains) and [Zed Configuration](/en/third-party-tools/zed) for details.
+
+
+### API Access
+
+
+After installing the official client or connecting a third-party tool, you need to complete authentication before you can use Kimi Code quota.
+
+#### OAuth Automatic Authentication (Official Clients)
+
+Users of Kimi Code CLI or the VS Code extension can connect automatically via OAuth authorization without manually managing an API Key.
+
+**Kimi Code**: Use the `/login` command to automatically log in to the Kimi Code platform, which completes the connection
+
+**Kimi Code for VS Code Extension**: Complete the connection via the login button in the sidebar after installation
+
+#### API Key (Third-Party Tools / Self-Built Apps)
+
+Kimi Code benefits support usage in mainstream Coding Agents — such as Claude Code, Roo Code, OpenCode, and more. It can also work with generic Agent frameworks like OpenClaw and Hermes, allowing you to freely call Kimi's AI capabilities in the tools you're already used to.
+
+If you want to integrate Kimi Code into third-party development tools, you need to manually configure an API Key.
+
+#### Service Endpoint
+
+The Kimi Code API is compatible with both OpenAI and Anthropic protocols. Choose the corresponding Base URL as needed:
+
+  | Protocol | Base URL |
+  |------|----------|
+  | OpenAI Compatible | `https://api.kimi.com/coding/v1` |
+  | Anthropic Compatible | `https://api.kimi.com/coding/` |
+
+#### Obtaining an API Key
+
+Kimi members can create and manage API Keys in the [Kimi Code Console](https://www.kimi.com/code/console) (up to 5 keys; each is shown only once upon creation—please keep it safe).
+
+#### Configuring in Third-Party Tools
+
+After obtaining an API Key, configure the corresponding Base URL and API Key in the environment variables of the respective tool to start using it. For configuration details, see [Using in Other Coding Agents](/en/third-party-tools/other-coding-agents).
+
+> **Note**: Please maintain the tool's real identity identifier when using. Tampering with the client identifier (User-Agent) is considered a violation and may result in suspension of membership benefits.
+
+
+## Platform Comparison
+
+
+Kimi Code membership benefits are designed specifically for programming scenarios. If you need to call large model capabilities in your own product, or require team collaboration and usage management, please visit the [Kimi Open Platform](https://platform.kimi.com).
+
+| Comparison Item | Kimi Code Platform | Kimi Open Platform |
+|--------|---------------|---------------|
+| Base URL | `https://api.kimi.com/coding/v1` | `https://api.moonshot.cn/v1` |
+| Billing | Membership subscription, monthly/annual payment, with rate limiting | Pay-as-you-go, top up and use |
+| Best For | Terminal/IDE Agent programming, multi-file engineering tasks | Product integration, enterprise-level calls, multimodal application development |
+
+
+## Quota and Limits
+
+
+Kimi Code quota refreshes automatically **every 7 days** from the subscription date; unused quota does not carry over. In addition to the weekly quota, there is a **rolling 5-hour frequency window**—even if the total quota is sufficient, too many requests in a short time will trigger rate limiting, which automatically recovers after the window rolls forward.
+
+All logged-in devices and API Keys share the same quota: whether requests originate from CLI, VS Code, or third-party tools, they consume the same account's quota. Devices inactive for more than 30 days are automatically unbound; simply run `/login` again to restore access.
+
+Log in to the [Kimi Code Console](https://www.kimi.com/code/console) to check remaining quota and rate limit status, manage API Keys, and view logged-in devices at any time.
+
+> Kimi Code shares quota with the Kimi membership plan. If the Kimi membership's monthly total quota reaches its limit, the Kimi Code quota will be frozen until the monthly quota resets or the subscription is upgraded. Monthly quota usage can be viewed in the [Subscription](https://www.kimi.com/membership/subscription) section of Kimi homepage settings.
+
+
+## Next Steps
+
+
+- [Kimi Code CLI Quick Start](/en/kimi-code-cli/getting-started) – Install, log in, and start your first conversation
+- [Kimi Code for VS Code Quick Start](/en/kimi-code-for-vscode/getting-started) – Install the extension, log in, and typical workflows
+- [Using in More Third-Party Tools](/en/third-party-tools/other-coding-agents) – Claude Code, Roo Code, and more
+- [FAQ](/en/kimi-code/faq) – Common issues with installation, login, and usage

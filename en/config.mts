@@ -1,39 +1,78 @@
 import { defineAdditionalConfig } from "vitepress";
-import kimiCliSidebar from "../kimi-cli/sidebar.json";
 
 export default defineAdditionalConfig({
   lang: 'en-US',
-  description: 'Kimi Code Membership Benefits',
+  description: 'Kimi Code Documentation',
   themeConfig: {
     sidebar: [
       {
         text: 'Kimi Code',
         items: [
-          { text: 'Kimi Code Membership Benefits', link: '/en/' },
-          { text: 'Benefit Description', link: '/en/benefits' },
+          { text: 'Overview', link: '/en/' },
+          { text: 'FAQ', link: '/en/kimi-code/faq' },
         ],
       },
       {
-        text: 'Kimi Code CLI Guide',
+        text: 'Kimi Code CLI',
         items: [
-          ...kimiCliSidebar.en.items,
+          { text: 'Quick Start', link: '/en/kimi-code-cli/getting-started' },
+          { text: 'Core Operations', link: '/en/kimi-code-cli/core-operations' },
           {
-            text: 'Customization and More',
-            link: 'https://moonshotai.github.io/kimi-cli/en/customization/mcp.html',
-            target: '_blank',
+            text: 'Configuration',
+            collapsed: false,
+            items: [
+              { text: 'Config Files', link: '/en/kimi-code-cli/configuration/configuration-files' },
+              { text: 'Environment Variables', link: '/en/kimi-code-cli/configuration/environment-variables' },
+              { text: 'Providers and Models', link: '/en/kimi-code-cli/configuration/providers-and-models' },
+              { text: 'Data Locations', link: '/en/kimi-code-cli/configuration/data-locations' },
+              { text: 'Config Overrides', link: '/en/kimi-code-cli/configuration/overrides-and-precedence' },
+            ],
+          },
+          {
+            text: 'Customization',
+            collapsed: false,
+            items: [
+              { text: 'MCP', link: '/en/kimi-code-cli/customization/mcp' },
+              { text: 'Hooks (Beta)', link: '/en/kimi-code-cli/customization/hooks' },
+              { text: 'Plugins (Beta)', link: '/en/kimi-code-cli/customization/plugins' },
+              { text: 'Skills', link: '/en/kimi-code-cli/customization/skills' },
+              { text: 'Agents and Subagents', link: '/en/kimi-code-cli/customization/sub-agents' },
+              { text: 'Wire Protocol', link: '/en/kimi-code-cli/customization/wire-protocol' },
+            ],
+          },
+          {
+            text: 'Reference',
+            collapsed: true,
+            items: [
+              { text: 'kimi Command', link: '/en/kimi-code-cli/reference/kimi-command' },
+              { text: 'kimi acp Subcommand', link: '/en/kimi-code-cli/reference/kimi-acp' },
+              { text: 'kimi info Subcommand', link: '/en/kimi-code-cli/reference/kimi-info' },
+              { text: 'kimi mcp Subcommand', link: '/en/kimi-code-cli/reference/kimi-mcp' },
+              { text: 'kimi term Subcommand', link: '/en/kimi-code-cli/reference/kimi-term' },
+              { text: 'kimi vis Subcommand', link: '/en/kimi-code-cli/reference/kimi-vis' },
+              { text: 'Web UI', link: '/en/kimi-code-cli/reference/kimi-web' },
+              { text: 'Slash Commands Quick Reference', link: '/en/kimi-code-cli/reference/slash-commands' },
+              { text: 'Keyboard Shortcuts Quick Reference', link: '/en/kimi-code-cli/reference/keyboard-shortcuts' },
+            ],
           },
         ],
       },
       {
-        text: 'Kimi Code for VS Code Guide',
+        text: 'Kimi Code for VS Code',
         items: [
-          { text: 'Getting Started', link: '/en/kimi-code-for-vscode/guides/getting-started' },
+          { text: 'Quick Start', link: '/en/kimi-code-for-vscode/getting-started' },
+          { text: 'Basic Operations', link: '/en/kimi-code-for-vscode/core-operations' },
+          { text: 'Configuration', link: '/en/kimi-code-for-vscode/configuration' },
+          { text: 'Customization', link: '/en/kimi-code-for-vscode/customization' },
         ],
       },
       {
-        text: 'More',
+        text: 'Use in Third-Party Tools',
         items: [
-          { text: 'Use in Third-Party Coding Agents', link: '/en/more/third-party-agents' },
+          { text: 'JetBrains', link: '/en/third-party-tools/jetbrains' },
+          { text: 'Zed', link: '/en/third-party-tools/zed' },
+          { text: 'Zsh', link: '/en/third-party-tools/zsh' },
+          { text: 'Using in Third-Party Coding Agents', link: '/en/third-party-tools/other-coding-agents' },
         ],
       },
     ],
@@ -70,11 +109,11 @@ export default defineAdditionalConfig({
       next: 'Next page'
     },
     outline: {
-      label: "On this page"
+      label: 'On this page'
     },
     notFound: {
       title: 'PAGE NOT FOUND',
-      quote: 'But if you don\'t change your direction, and if you keep looking, you may end up where you are heading.',
+      quote: "But if you don't change your direction, and if you keep looking, you may end up where you are heading.",
       linkLabel: 'go to home',
       linkText: 'Take me home'
     },
