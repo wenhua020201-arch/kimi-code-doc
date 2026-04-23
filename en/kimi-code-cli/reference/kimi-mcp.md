@@ -1,4 +1,4 @@
-# `kimi mcp` Subcommand
+# `kimi mcp` subcommand
 
 `kimi mcp` is used to manage MCP (Model Context Protocol) server configurations. For concepts and usage of MCP, see [Model Context Protocol](/en/kimi-code-cli/customization/mcp).
 

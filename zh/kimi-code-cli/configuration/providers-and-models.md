@@ -17,8 +17,8 @@ Kimi Code CLI 支持多种 LLM 平台，可以通过配置文件或 `/login` 命
 | 平台 | 说明 |
 | --- | --- |
 | Kimi Code | Kimi Code 平台，支持搜索和抓取服务 |
-| Moonshot AI 开放平台 (moonshot.cn) | 中国区 API 端点 |
-| Moonshot AI Open Platform (moonshot.ai) | 全球区 API 端点 |
+| [platform.kimi.com](https://platform.kimi.com) | 中国区 API 端点 |
+| [platform.kimi.ai](https://platform.kimi.ai) | 全球区 API 端点 |
 
 如需使用其他平台，请手动编辑配置文件。
 
@@ -37,7 +37,7 @@ Kimi Code CLI 支持多种 LLM 平台，可以通过配置文件或 `/login` 命
 
 ### `kimi`
 
-用于连接 Kimi API，包括 Kimi Code 和 Moonshot AI 开放平台。
+用于连接 Kimi API，包括 Kimi Code 和 Kimi Platform。
 
 ```toml
 [providers.kimi-for-coding]

@@ -1,4 +1,4 @@
-# Basic Operations
+# Core Operations
 
 ## Opening the Panel
 

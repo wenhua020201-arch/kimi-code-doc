@@ -1,4 +1,4 @@
-# `kimi term` Subcommand
+# `kimi term` subcommand
 
 The `kimi term` command launches the [Toad](https://github.com/batrachianai/toad) terminal UI, a modern terminal interface built with [Textual](https://textual.textualize.io/).
 

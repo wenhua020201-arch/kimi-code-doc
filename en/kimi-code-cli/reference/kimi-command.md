@@ -153,9 +153,9 @@ Thinking mode requires model support. If not specified, the last session's setti
 
 When not specified, Kimi Code CLI automatically discovers user-level and project-level skills directories in priority order. See [Agent Skills](/en/kimi-code-cli/customization/skills) for details.
 
-## Subcommands
+## subcommands
 
-| Subcommand | Description |
+| subcommand | Description |
 |--------|------|
 | [`kimi login`](#kimi-login) | Log in to your Kimi account |
 | [`kimi logout`](#kimi-logout) | Log out from your Kimi account |

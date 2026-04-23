@@ -45,11 +45,11 @@ export default defineAdditionalConfig({
             collapsed: true,
             items: [
               { text: 'kimi Command', link: '/en/kimi-code-cli/reference/kimi-command' },
-              { text: 'kimi acp Subcommand', link: '/en/kimi-code-cli/reference/kimi-acp' },
-              { text: 'kimi info Subcommand', link: '/en/kimi-code-cli/reference/kimi-info' },
-              { text: 'kimi mcp Subcommand', link: '/en/kimi-code-cli/reference/kimi-mcp' },
-              { text: 'kimi term Subcommand', link: '/en/kimi-code-cli/reference/kimi-term' },
-              { text: 'kimi vis Subcommand', link: '/en/kimi-code-cli/reference/kimi-vis' },
+              { text: 'kimi acp subcommand', link: '/en/kimi-code-cli/reference/kimi-acp' },
+              { text: 'kimi info subcommand', link: '/en/kimi-code-cli/reference/kimi-info' },
+              { text: 'kimi mcp subcommand', link: '/en/kimi-code-cli/reference/kimi-mcp' },
+              { text: 'kimi term subcommand', link: '/en/kimi-code-cli/reference/kimi-term' },
+              { text: 'kimi vis subcommand', link: '/en/kimi-code-cli/reference/kimi-vis' },
               { text: 'Web UI', link: '/en/kimi-code-cli/reference/kimi-web' },
               { text: 'Slash Commands Quick Reference', link: '/en/kimi-code-cli/reference/slash-commands' },
               { text: 'Keyboard Shortcuts Quick Reference', link: '/en/kimi-code-cli/reference/keyboard-shortcuts' },
@@ -61,7 +61,7 @@ export default defineAdditionalConfig({
         text: 'Kimi Code for VS Code',
         items: [
           { text: 'Quick Start', link: '/en/kimi-code-for-vscode/getting-started' },
-          { text: 'Basic Operations', link: '/en/kimi-code-for-vscode/core-operations' },
+          { text: 'Core Operations', link: '/en/kimi-code-for-vscode/core-operations' },
           { text: 'Configuration', link: '/en/kimi-code-for-vscode/configuration' },
           { text: 'Customization', link: '/en/kimi-code-for-vscode/customization' },
         ],
@@ -109,6 +109,7 @@ export default defineAdditionalConfig({
       next: 'Next page'
     },
     outline: {
+      level: 'deep',
       label: 'On this page'
     },
     notFound: {

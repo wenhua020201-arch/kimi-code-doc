@@ -132,8 +132,8 @@ First, confirm that your Key and Base URL belong to the same platform. `api.kimi
 
 | Platform | Base URL | Billing | Key Creation Portal |
 |------|---------|---------|-------------|
-| **Kimi Code** | `https://api.kimi.com/coding/v1` | Kimi membership subscription (with quota) | [www.kimi.com/code/console](https://www.kimi.com/code/console) |
-| **Moonshot Open Platform** | `https://api.moonshot.cn/v1` | Pay-as-you-go | [platform.moonshot.cn](https://platform.moonshot.cn) |
+| **Kimi Code** | OpenAI Compatible: `https://api.kimi.com/coding/v1`<br> Anthropic Compatible: `https://api.kimi.com/coding/` | Kimi membership subscription (with quota) | [www.kimi.com/code/console](https://www.kimi.com/code/console) |
+| **Kimi Platform** | `https://api.moonshot.cn/v1` | Pay-as-you-go | [platform.kimi.ai](https://platform.kimi.ai) |
 
 
 **What to do**: Go back to the corresponding platform's console to recreate a Key, and ensure the `base_url` (also called Entrypoint or Endpoint) configured in your tool matches the Key's platform.

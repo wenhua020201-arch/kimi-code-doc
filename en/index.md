@@ -102,11 +102,11 @@ After obtaining an API Key, configure the corresponding Base URL and API Key in 
 ## Platform Comparison
 
 
-Kimi Code membership benefits are designed specifically for programming scenarios. If you need to call large model capabilities in your own product, or require team collaboration and usage management, please visit the [Kimi Platform](https://platform.kimi.com).
+Kimi Code membership benefits are designed specifically for programming scenarios. If you need to call large model capabilities in your own product, or require team collaboration and usage management, please visit the [Kimi Platform](https://platform.kimi.ai).
 
 | Comparison Item | Kimi Code Platform | Kimi Platform |
 |--------|---------------|---------------|
-| Base URL | `https://api.kimi.com/coding/v1` | `https://api.moonshot.cn/v1` |
+| Base URL | OpenAI Compatible: `https://api.kimi.com/coding/v1`<br> Anthropic Compatible: `https://api.kimi.com/coding/` | `https://api.moonshot.cn/v1` |
 | Billing | Membership subscription, monthly/annual payment, with rate limiting | Pay-as-you-go, top up and use |
 | Best For | Terminal/IDE Agent programming, multi-file engineering tasks | Product integration, enterprise-level calls, multimodal application development |
 

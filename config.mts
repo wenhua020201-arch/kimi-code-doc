@@ -61,7 +61,7 @@ export default defineAdditionalConfig({
         text: 'Kimi Code for VS Code',
         items: [
           { text: '快速开始', link: '/kimi-code-for-vscode/getting-started' },
-          { text: '基础操作', link: '/kimi-code-for-vscode/core-operations' },
+          { text: '核心操作', link: '/kimi-code-for-vscode/core-operations' },
           { text: '配置', link: '/kimi-code-for-vscode/configuration' },
           { text: '定制化', link: '/kimi-code-for-vscode/customization' },
         ],
@@ -109,6 +109,7 @@ export default defineAdditionalConfig({
       next: '下一篇'
     },
     outline: {
+      level: 'deep',
       label: '页面导航'
     },
     notFound: {

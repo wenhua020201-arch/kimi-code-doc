@@ -8,7 +8,9 @@ Kimi Code CLI Shell 模式支持以下键盘快捷键。输入框为空时按 `C
 | `Shift-Tab` | 切换 Plan 模式（只读研究与规划）。开启后提示符变为 `📋`，状态栏显示蓝色 `plan` 标识。也可用 `/plan` 斜杠命令管理 |
 | `Ctrl-C` | 中断当前操作；在输入框中为清空输入；斜杠命令执行时中断命令 |
 | `Ctrl-D` | 退出 Kimi Code CLI（仅在输入框为空时） |
+| `Ctrl-S` | AI 运行中立即注入消息到当前轮次上下文（Steer）。与排队发送（Enter）不同，注入的消息会立即被 AI 看到并响应 |
 | `Ctrl-J` / `Alt-Enter` | 插入换行（默认 `Enter` 为提交消息） |
+| `Enter` | 提交消息。AI 运行中时消息进入队列，当前轮次完成后自动发送 |
 | `Ctrl-O` | 在外部编辑器中编辑当前输入。编辑器优先级：`/editor` 配置 → `$VISUAL` → `$EDITOR` → 自动检测（`code --wait` → `vim` → `vi` → `nano`）。保存后替换输入框内容，不保存则保持不变。粘贴文本占位符在编辑器中自动展开，保存后未修改部分重新折叠 |
 | `Ctrl-V` | 粘贴剪贴板内容。文本超过 1000 字符或 15 行自动折叠为 `[Pasted text #n]`，发送时展开；图片缓存为 `[image:xxx.png,WxH]`（需模型支持 `image_in`）；视频以文件路径插入（需模型支持 `video_in`） |
 | `Ctrl-E` | 展开被截断的审批请求完整内容（全屏分页器）。被截断时显示 "... (truncated, ctrl-e to expand)" 提示。适用于查看较长的 Shell 命令或文件 Diff |

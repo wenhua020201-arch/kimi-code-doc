@@ -11,12 +11,12 @@ If you see the error "No models available for the selected platform" when runnin
 
 > **Note: Distinguish Platforms**
 >
-> Kimi Code membership benefits and the [Kimi Platform](https://platform.kimi.com) have different Base URLs. Please ensure your Base URL matches your API Key:
+> Kimi Code membership benefits and the [Kimi Platform](https://platform.kimi.ai) have different Base URLs. Please ensure your Base URL matches your API Key:
 
 | Platform | Base URL | Billing | Key Creation Portal |
 |------|---------|---------|-------------|
-| **Kimi Code** | `https://api.kimi.com/coding/v1` | Kimi membership subscription (with quota) | [www.kimi.com/code/console](https://www.kimi.com/code/console) |
-| **Moonshot Open Platform** | `https://api.moonshot.cn/v1` | Pay-as-you-go | [platform.moonshot.cn](https://platform.moonshot.cn) |
+| **Kimi Code** | OpenAI Compatible: `https://api.kimi.com/coding/v1`<br> Anthropic Compatible: `https://api.kimi.com/coding/` | Kimi membership subscription (with quota) | [www.kimi.com/code/console](https://www.kimi.com/code/console) |
+| **Kimi Platform** | `https://api.moonshot.cn/v1` | Pay-as-you-go | [platform.kimi.ai](https://platform.kimi.ai) |
 
 ### Invalid API key
 

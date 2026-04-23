@@ -17,8 +17,8 @@ After configuration, Kimi Code CLI automatically saves settings to `~/.kimi/conf
 | Platform | Description |
 | --- | --- |
 | Kimi Code | Kimi Code platform, supports search and fetch services |
-| Moonshot AI Open Platform (moonshot.cn) | China region API endpoint |
-| Moonshot AI Open Platform (moonshot.ai) | Global region API endpoint |
+| [platform.kimi.com](https://platform.kimi.com) | China region API endpoint |
+| [platform.kimi.ai](https://platform.kimi.ai) | Global region API endpoint |
 
 For other platforms, please manually edit the configuration file.
 
@@ -37,7 +37,7 @@ The `type` field in `providers` configuration specifies the API provider type. D
 
 ### `kimi`
 
-For connecting to the Kimi API, including Kimi Code and Moonshot AI Open Platform.
+For connecting to the Kimi API, including Kimi Code and Kimi Platform.
 
 ```toml
 [providers.kimi-for-coding]

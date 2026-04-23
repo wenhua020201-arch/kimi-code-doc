@@ -132,7 +132,7 @@ Kimi Code CLI 也可以运行 Shell 命令并分析结果：
 
 | 平台 | Base URL | 计费方式 | Key 创建入口 |
 |------|---------|---------|-------------|
-| **Kimi Code** | `https://api.kimi.com/coding/v1` | Kimi 会员订阅（含额度） | [Kimi Code 控制台](https://www.kimi.com/code/console) |
+| **Kimi Code** | Open AI 兼容： `https://api.kimi.com/coding/v1`<br> Anthropic 兼容：`https://api.kimi.com/coding/` | Kimi 会员订阅（含额度） | [Kimi Code 控制台](https://www.kimi.com/code/console) |
 | **Kimi 开放平台** | `https://api.moonshot.cn/v1` | 按量付费 | [Kimi 开放平台官网 ](https://platform.kimi.com) |
 
 

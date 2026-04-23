@@ -1,4 +1,4 @@
-# `kimi info` Subcommand
+# `kimi info` subcommand
 
 `kimi info` displays version and protocol information for Kimi Code CLI.
 
