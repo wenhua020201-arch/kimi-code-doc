@@ -244,6 +244,25 @@ rl.on("close", () => {
 });
 ```
 
+## Bundling a Skill
+
+A plugin may optionally ship a single `SKILL.md` alongside its `plugin.json`. When present, Kimi Code CLI discovers it automatically on startup — no extra registration is needed, because `~/.kimi/plugins/` is treated as a skills root (see [Skills](./skills.md) for how skill discovery works).
+
+**Directory layout**
+
+```
+my-plugin/
+├── plugin.json
+├── SKILL.md          # Optional: bundled skill
+└── scripts/
+```
+
+The skill's name is taken from the `name` frontmatter in `SKILL.md` if set, otherwise from the plugin directory name. The skill is discovered with `extra` scope, so same-name project-level or user-level skills still take priority over it.
+
+**Limitations**
+
+- Only one `SKILL.md` per plugin is discovered. Nested layouts like `<plugin>/skills/<name>/SKILL.md` are **not** scanned.
+
 ## Complete Example
 
 ```json

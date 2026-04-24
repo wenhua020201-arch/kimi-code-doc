@@ -244,6 +244,25 @@ rl.on("close", () => {
 });
 ```
 
+## 附带 Skill
+
+插件可以在根目录（与 `plugin.json` 同级）放一个 `SKILL.md`。Kimi Code CLI 启动时会自动发现，无需额外注册——因为 `~/.kimi/plugins/` 会被整体作为一个 skills root 加载（skill 发现机制详见 [Skills](./skills.md)）。
+
+**目录结构**
+
+```
+my-plugin/
+├── plugin.json
+├── SKILL.md          # 可选：随插件分发的 skill
+└── scripts/
+```
+
+Skill 名称优先取 `SKILL.md` frontmatter 中的 `name`，否则使用插件目录名。该 skill 以 `extra` 作用域被发现，因此同名的项目级或用户级 skill 仍会覆盖它。
+
+**限制**
+
+- 一个插件只能被发现一个 `SKILL.md`。类似 `<plugin>/skills/<name>/SKILL.md` 的嵌套布局**不会**被扫到。
+
 ## 完整示例
 
 ```json
