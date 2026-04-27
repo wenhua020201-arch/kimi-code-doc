@@ -17,7 +17,7 @@ kimi term [OPTIONS]
 所有额外的选项会透传给内部的 `kimi acp` 命令。例如：
 
 ```sh
-kimi term --work-dir /path/to/project --model kimi-k2
+kimi term --work-dir /path/to/project --model kimi-for-coding
 ```
 
 常用选项：

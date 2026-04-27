@@ -22,7 +22,7 @@ Kimi Code CLI 支持通过环境变量覆盖配置或控制运行行为。本页
 覆盖配置文件中供应商的 `base_url` 字段。
 
 ```sh
-export KIMI_BASE_URL="https://api.moonshot.cn/v1"
+export KIMI_BASE_URL="https://api.kimi.com/coding/v1"
 ```
 
 ### `KIMI_API_KEY`
@@ -38,7 +38,7 @@ export KIMI_API_KEY="sk-xxx"
 覆盖配置文件中模型的 `model` 字段（API 调用时使用的模型标识符）。
 
 ```sh
-export KIMI_MODEL_NAME="kimi-k2-thinking-turbo"
+export KIMI_MODEL_NAME="kimi-for-coding"
 ```
 
 ### `KIMI_MODEL_MAX_CONTEXT_SIZE`

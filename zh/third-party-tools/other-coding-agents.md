@@ -51,7 +51,7 @@ $env:ANTHROPIC_API_KEY="你的API Key"
 claude
 ```
 
-启动后输入 `/status` 确认模型已生效。使用 Tab 键可切换到 Kimi K2 Thinking 模型。
+启动后输入 `/status` 确认模型已生效。使用 Tab 键可开启 Thinking 模式。
 
 ---
 

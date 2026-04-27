@@ -22,7 +22,7 @@ The following environment variables take effect when using `kimi` type providers
 Overrides the provider's `base_url` field in the configuration file.
 
 ```sh
-export KIMI_BASE_URL="https://api.moonshot.cn/v1"
+export KIMI_BASE_URL="https://api.kimi.com/coding/v1"
 ```
 
 ### `KIMI_API_KEY`
@@ -38,7 +38,7 @@ export KIMI_API_KEY="sk-xxx"
 Overrides the model's `model` field in the configuration file (the model identifier used in API calls).
 
 ```sh
-export KIMI_MODEL_NAME="kimi-k2-thinking-turbo"
+export KIMI_MODEL_NAME="kimi-for-coding"
 ```
 
 ### `KIMI_MODEL_MAX_CONTEXT_SIZE`

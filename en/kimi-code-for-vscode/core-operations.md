@@ -45,7 +45,7 @@ While Kimi is responding, you can continue typing and sending in the input box. 
 
 Switch models via the dropdown menu in the input bar.
 
-Some models support extended reasoning capabilities. Thinking mode toggle has three states: hidden when the model doesn't support thinking mode, manually enable/disable by the user, or always on like the k2-thinking model.
+Some models support extended reasoning capabilities. Thinking mode toggle has two states: hidden when the model doesn't support thinking mode, or manually enable/disable by the user.
 
 After enabling, thinking steps are collapsed by default in the response; you can expand to view the reasoning process. Enable `kimi.alwaysExpandThinking` in settings to expand thinking by default.
 

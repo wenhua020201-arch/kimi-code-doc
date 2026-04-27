@@ -1062,7 +1062,7 @@ kimi-agent --continue
 kimi-agent --session <session-id>
 
 # 使用指定模型
-kimi-agent --model k2
+kimi-agent --model kimi-for-coding
 
 # YOLO 模式（跳过审批）
 kimi-agent --yolo

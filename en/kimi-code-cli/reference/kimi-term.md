@@ -17,7 +17,7 @@ When you run `kimi term`, it automatically starts a `kimi acp` server in the bac
 All extra options are passed through to the internal `kimi acp` command. For example:
 
 ```sh
-kimi term --work-dir /path/to/project --model kimi-k2
+kimi term --work-dir /path/to/project --model kimi-for-coding
 ```
 
 Common options:

@@ -119,9 +119,9 @@ custom_headers = { "X-Custom-Header" = "value" }
 示例：
 
 ```toml
-[models.kimi-k2-thinking-turbo]
-provider = "moonshot-cn"
-model = "kimi-k2-thinking-turbo"
+[models.kimi-for-coding]
+provider = "kimi-for-coding"
+model = "kimi-for-coding"
 max_context_size = 262144
 capabilities = ["thinking", "image_in"]
 ```

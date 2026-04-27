@@ -129,7 +129,7 @@ capabilities = ["thinking", "image_in"]
 
 ### `always_thinking`
 
-表示模型始终使用 Thinking 模式，无法关闭。例如 `kimi-k2-thinking-turbo` 等名称中包含 "thinking" 的模型通常具有此能力。使用这类模型时，`/model` 命令不会提示选择 Thinking 模式的开关。
+表示模型始终使用 Thinking 模式，无法关闭。当前 Kimi Code 平台暂无此类模型。
 
 ### `image_in`
 

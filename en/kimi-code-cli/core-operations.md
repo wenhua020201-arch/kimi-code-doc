@@ -334,7 +334,7 @@ You can use the `/model` command to switch models and Thinking mode. After selec
 kimi --thinking
 ```
 
-> Tip: Thinking mode requires support from the current model. Some models (like `kimi-k2-thinking-turbo`) always use thinking mode and cannot be disabled.
+> Tip: Thinking mode requires support from the current model.
 
 ### Print Mode
 

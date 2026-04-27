@@ -51,7 +51,7 @@ $env:ANTHROPIC_API_KEY="你的API Key"
 claude
 ```
 
-After starting, enter `/status` to confirm the model is active. Use the Tab key to switch to the Kimi K2 Thinking model.
+After starting, enter `/status` to confirm the model is active. Use the Tab key to enable Thinking mode.
 
 ---
 

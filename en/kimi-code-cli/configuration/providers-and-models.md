@@ -129,7 +129,7 @@ Declares that the model supports Thinking mode. When enabled, the model performs
 
 ### `always_thinking`
 
-Indicates the model always uses Thinking mode and cannot be disabled. For example, models with "thinking" in their name like `kimi-k2-thinking-turbo` typically have this capability. When using such models, the `/model` command will not prompt for the Thinking mode toggle.
+Indicates the model always uses Thinking mode and cannot be disabled. Currently, the Kimi Code platform does not have any models with this capability.
 
 ### `image_in`
 

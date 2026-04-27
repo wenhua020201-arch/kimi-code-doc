@@ -61,7 +61,7 @@ For the complete list of environment variables, see [Environment Variables](/en/
 Example:
 
 ```sh
-KIMI_API_KEY="sk-xxx" KIMI_MODEL_NAME="kimi-k2-thinking-turbo" kimi
+KIMI_API_KEY="sk-xxx" KIMI_MODEL_NAME="kimi-for-coding" kimi
 ```
 
 ## Configuration Priority Example
@@ -89,4 +89,4 @@ Here are the configuration sources in different scenarios:
 | `kimi` | Config file | Config file | Config file |
 | `KIMI_API_KEY=sk-env kimi` | Config file | Environment variable | Config file |
 | `kimi --model other` | Config file | Config file | CLI parameter |
-| `KIMI_MODEL_NAME=k2 kimi` | Config file | Config file | Environment variable |
+| `KIMI_MODEL_NAME=kimi-for-coding kimi` | Config file | Config file | Environment variable |
