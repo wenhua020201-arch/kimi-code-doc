@@ -34,7 +34,6 @@ Set environment variables before starting Claude Code:
 **macOS / Linux**
 
 ```sh
-export ENABLE_TOOL_SEARCH=false
 export ANTHROPIC_BASE_URL=https://api.kimi.com/coding/
 export ANTHROPIC_API_KEY=你的API Key
 
@@ -44,14 +43,13 @@ claude
 **Windows**
 
 ```powershell
-$env:ENABLE_TOOL_SEARCH="false"
 $env:ANTHROPIC_BASE_URL="https://api.kimi.com/coding/"
 $env:ANTHROPIC_API_KEY="你的API Key"
 
 claude
 ```
 
-After starting, enter `/status` to confirm the model is active. Use the Tab key to enable Thinking mode.
+After starting, enter `/status` to confirm the model is active. Use the keyboard shortcut to enable Thinking mode: `Option+T` on macOS, `Alt+T` on Windows and Linux.
 
 ---
 
