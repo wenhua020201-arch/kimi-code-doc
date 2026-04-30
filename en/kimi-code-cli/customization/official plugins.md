@@ -26,7 +26,7 @@ Confirm that `kimi-datasource` appears in the output.
 
 │
 
-<span class="step-num">③</span> **Start using Kimi**
+<span class="step-num">③</span> **Start Kimi and use the plugin**
 
 Trigger it via a slash command:
 
