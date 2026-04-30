@@ -4,6 +4,23 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   base: "/code/docs/",
   title: "Kimi Code Docs",
+  head: [
+    ['style', {}, `
+      .vp-doc .custom-block.details {
+        background-color: #ffffff;
+        border: 1px solid #e5e5e5;
+        border-radius: 8px;
+        margin-bottom: 6px;
+      }
+      .vp-doc .custom-block.details .custom-block-title {
+        font-size: 18px;
+        font-weight: 600;
+      }
+      .vp-doc .step-num {
+        font-size: 1.3em;
+      }
+    `]
+  ],
   rewrites: {
     'zh/:rest*': ':rest*'
   },

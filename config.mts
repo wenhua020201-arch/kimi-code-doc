@@ -32,10 +32,11 @@ export default defineAdditionalConfig({
             text: '定制化',
             collapsed: false,
             items: [
+              { text: '官方插件 <span style="background:#3451b2;color:#fff;font-size:11px;padding:1px 6px;border-radius:4px;margin-left:6px">NEW</span>', link: '/kimi-code-cli/customization/official-plugins' },
               { text: 'MCP', link: '/kimi-code-cli/customization/mcp' },
               { text: 'Hooks (Beta)', link: '/kimi-code-cli/customization/hooks' },
-              { text: '插件 (Beta)', link: '/kimi-code-cli/customization/plugins' },
               { text: 'Skills', link: '/kimi-code-cli/customization/skills' },
+              { text: '自定义插件 (Beta)', link: '/kimi-code-cli/customization/plugins' },
               { text: 'Agent 与子 Agent', link: '/kimi-code-cli/customization/sub-agents' },
               { text: 'Wire 协议', link: '/kimi-code-cli/customization/wire-protocol' },
             ],
