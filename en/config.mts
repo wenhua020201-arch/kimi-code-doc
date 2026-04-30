@@ -32,10 +32,11 @@ export default defineAdditionalConfig({
             text: 'Customization',
             collapsed: false,
             items: [
+              { text: 'Official Plugins <span style="background:#3451b2;color:#fff;font-size:11px;padding:1px 6px;border-radius:4px;margin-left:6px">NEW</span>', link: '/en/kimi-code-cli/customization/official plugins' },
               { text: 'MCP', link: '/en/kimi-code-cli/customization/mcp' },
               { text: 'Hooks (Beta)', link: '/en/kimi-code-cli/customization/hooks' },
-              { text: 'Plugins (Beta)', link: '/en/kimi-code-cli/customization/plugins' },
               { text: 'Skills', link: '/en/kimi-code-cli/customization/skills' },
+              { text: 'Custom Plugins (Beta)', link: '/en/kimi-code-cli/customization/plugins' },
               { text: 'Agents and Subagents', link: '/en/kimi-code-cli/customization/sub-agents' },
               { text: 'Wire Protocol', link: '/en/kimi-code-cli/customization/wire-protocol' },
             ],

@@ -1,4 +1,4 @@
-# Plugins (Beta)
+# Custom Plugins (Beta)
 
 > Beta feature: The plugin system is currently in Beta. Implementation details and configuration definitions may change in future versions. Use with caution in production environments and watch for updates.
 
