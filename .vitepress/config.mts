@@ -12,6 +12,10 @@ export default defineConfig({
         border-radius: 8px;
         margin-bottom: 6px;
       }
+      html.dark .vp-doc .custom-block.details {
+        background-color: var(--vp-c-bg-soft);
+        border-color: var(--vp-c-divider);
+      }
       .vp-doc .custom-block.details .custom-block-title {
         font-size: 18px;
         font-weight: 600;
