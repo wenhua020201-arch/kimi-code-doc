@@ -1,40 +1,32 @@
 # Wire Protocol
 
-The Wire Protocol is like Kimi Code CLI's **"telephone wire"** — it defines how Kimi talks to the outside world.
-
-Think of Kimi as a smart assistant that normally chats with you through the terminal. But sometimes, you want other programs (like your own app, a web interface, or an IDE plugin) to talk to this assistant too. The Wire Protocol makes that happen: it lets external programs have structured, two-way conversations with Kimi.
+Wire mode is Kimi Code CLI's low-level communication protocol for structured bidirectional communication with external programs.
 
 ## What is Wire
 
-Simply put, Wire is the **"relay"** inside Kimi Code CLI.
+Wire is the message-passing layer used internally by Kimi Code CLI. When you interact via terminal, the Shell UI receives AI output through Wire and displays it; when you integrate with IDEs via ACP, the ACP server also communicates with the agent core through Wire.
 
-When you chat with Kimi in the terminal, the interface you see (the Shell UI) receives Kimi's replies through Wire and shows them to you. When you integrate Kimi into an IDE (via ACP), the IDE also talks to Kimi's core brain through Wire.
-
-Wire mode (`--wire`) exposes this "telephone wire" so any external program can dial Kimi directly. With Wire mode, you can:
-
-- Build a pretty web-based chat interface for Kimi
-- Embed Kimi into your own app
-- Write automated tests to check if Kimi behaves as expected
+Wire mode (`--wire`) exposes this communication protocol, allowing external programs to interact directly with Kimi Code CLI. This is suitable for building custom UIs or embedding Kimi Code CLI into other applications.
 
 ```sh
 kimi --wire
 ```
 
-> **When do you NOT need Wire?**
-> If you just want to send Kimi some text and get a simple reply, Print mode (the default) is enough. Wire is for scenarios that need **real-time two-way conversation** — like interrupting Kimi while it's speaking, asking follow-up questions, or watching Kimi's thought process step by step.
+## Use Cases
 
----
+Wire mode is mainly used for:
 
-## How Wire Talks
+- **Custom UI**: Build web, desktop, or mobile frontends for Kimi Code CLI
+- **Application integration**: Embed Kimi Code CLI into other applications
+- **Automated testing**: Programmatic testing of agent behavior
 
-Wire uses a format called **JSON-RPC 2.0** to pass messages. You can think of it as a **"standardized sticky note"**:
+> If you only need simple non-interactive input/output, Print mode is simpler. Wire mode is for scenarios requiring full control and bidirectional communication.
 
-- Both sides write notes in JSON format
-- Each note takes exactly one line (one line = one message)
-- Every note must say: who you are, what you want, and what tracking number this message has
-- The current protocol version is `1.7`
+## Wire Protocol
 
-Here are the base building blocks:
+Wire uses a JSON-RPC 2.0 based protocol for bidirectional communication via stdin/stdout. The current protocol version is `1.7`. Each message is a single line of JSON conforming to the JSON-RPC 2.0 specification.
+
+### Protocol Type Definitions
 
 ```typescript
 /** JSON-RPC 2.0 request message base structure */
@@ -73,65 +65,12 @@ interface JSONRPCError {
 }
 ```
 
-### Three Sticky Note Formats
-
-**Format 1: Request — I ask you something, you must answer me**
-
-```json
-{
-  "jsonrpc": "2.0",
-  "method": "the feature you want to call",
-  "id": "tracking number for this message",
-  "params": { "specific parameter": "..." }
-}
-```
-
-The `id` is like a **tracking number** on a package. When I send it out, I stick a number on it; when you reply, you stick the same number on your reply, so I know which answer goes with which question.
-
-**Format 2: Notification — I tell you something, you don't need to reply**
-
-```json
-{
-  "jsonrpc": "2.0",
-  "method": "event name",
-  "params": { "specific content": "..." }
-}
-```
-
-Notice: notifications have no `id`, because they don't need a reply.
-
-**Format 3: Response — Answering someone else's request**
-
-When successful:
-```json
-{
-  "jsonrpc": "2.0",
-  "id": "tracking number",
-  "result": { "result": "..." }
-}
-```
-
-When it fails:
-```json
-{
-  "jsonrpc": "2.0",
-  "id": "tracking number",
-  "error": { "code": error code, "message": "reason for error" }
-}
-```
-
----
-
-## What Both Sides Can Say
-
-Below is a complete list of all the "conversation commands" in the Wire Protocol. **Client → Agent** means "external program sends to Kimi", and **Agent → Client** means "Kimi sends to external program".
-
-### `initialize` —— Handshake
+### `initialize`
 
 - **Direction**: Client → Agent
-- **Type**: Request (needs a response)
+- **Type**: Request (requires response)
 
-Like two people introducing themselves on a phone call. When the external program starts the connection, it sends an `initialize` first, telling Kimi: "I am such-and-such program, I support these features, and here are the tools I want to register for you." Kimi replies: "Hello, I am Kimi Code CLI, version X, and here are the slash commands I support..."
+Optional handshake request for negotiating protocol version, submitting external tool definitions, and retrieving the slash command list.
 
 ```typescript
 /** initialize request parameters */
@@ -227,14 +166,6 @@ interface ExternalToolsResult {
 }
 ```
 
-Kimi's reply tells you:
-- Its version
-- What slash commands are available
-- Which of your registered external tools succeeded and which failed
-- What hook events it supports
-
-If Kimi doesn't support handshakes (older versions), it returns a `-32601 method not found` error. In that case, the external program should automatically fall back to no-handshake mode.
-
 **Request example**
 
 ```json
@@ -247,14 +178,14 @@ If Kimi doesn't support handshakes (older versions), it returns a `-32601 method
 {"jsonrpc": "2.0", "id": "550e8400-e29b-41d4-a716-446655440000", "result": {"protocol_version": "1.7", "server": {"name": "Kimi Code CLI", "version": "1.14.0"}, "slash_commands": [{"name": "init", "description": "Analyze the codebase ...", "aliases": []}], "capabilities": {"supports_question": true}, "external_tools": {"accepted": ["open_in_ide"], "rejected": []}}}
 ```
 
----
+If the server does not support the `initialize` method, the client will receive a `-32601 method not found` error and should automatically fall back to no-handshake mode.
 
-### `prompt` —— Tell Kimi to Start Working
+### `prompt`
 
 - **Direction**: Client → Agent
-- **Type**: Request (needs a response)
+- **Type**: Request (requires response)
 
-This is the most important command. Sending a `prompt` to Kimi is like saying: "The user asked a question, please handle it." Kimi starts thinking, looking up information, writing code... The whole process takes a while. During this time, Kimi keeps sending `event` notifications with progress updates, and also sends `request` messages to ask you to confirm certain things. Only when Kimi is completely done will it return the final result for the `prompt`.
+Send user input and run an agent turn. After calling, the agent starts processing and sends `event` notifications and `request` messages during execution, returning a response only when the turn completes.
 
 ```typescript
 /** prompt request parameters */
@@ -271,13 +202,6 @@ interface PromptResult {
   steps?: number
 }
 ```
-
-When Kimi finishes, the result fields mean:
-
-| Field | Meaning |
-|-------|---------|
-| `status` | Completion status: `finished` (normal completion), `cancelled` (was cancelled), `max_steps_reached` (too many steps, stopped automatically) |
-| `steps` | If stopped because of too many steps, tells you how many steps were actually executed |
 
 **Request example**
 
@@ -297,25 +221,19 @@ When Kimi finishes, the result fields mean:
 {"jsonrpc": "2.0", "id": "6ba7b810-9dad-11d1-80b4-00c04fd430c8", "error": {"code": -32001, "message": "LLM is not set"}}
 ```
 
-**Common error codes**
-
-| Error code | Meaning |
-|------------|---------|
-| `-32000` | A task is already running; wait for the previous one to finish before sending another |
-| `-32001` | LLM (large language model) not configured yet — Kimi doesn't know who to ask for thinking |
-| `-32002` | The specified LLM is not supported |
+| code | Description |
+|------|-------------|
+| `-32000` | A turn is already in progress |
+| `-32001` | LLM not configured |
+| `-32002` | Specified LLM not supported |
 | `-32003` | LLM service error |
 
----
-
-### `replay` —— Playback History
+### `replay`
 
 - **Direction**: Client → Agent
-- **Type**: Request (needs a response)
+- **Type**: Request (requires response)
 
-Ask Kimi to replay the previous conversation history. Like watching a video replay, Kimi re-sends every `event` and `request` in the original order. Note: replay is read-only; any `request` messages that appear during replay (like confirmation requests from back then) do not need real replies.
-
-If there is no history, Kimi simply tells you: 0 events, 0 requests.
+Trigger a history replay. The server reads `wire.jsonl` from the session directory and re-sends the recorded `event` and `request` messages in order. Replay is read-only; clients should not respond to replayed `request` messages. If there is no history, the server returns `events: 0` and `requests: 0`.
 
 ```typescript
 /** replay request has no parameters, params can be empty object or omitted */
@@ -344,16 +262,12 @@ interface ReplayResult {
 {"jsonrpc": "2.0", "id": "6ba7b812-9dad-11d1-80b4-00c04fd430c8", "result": {"status": "finished", "events": 42, "requests": 3}}
 ```
 
----
-
-### `steer` —— Chime In Midway
+### `steer`
 
 - **Direction**: Client → Agent
-- **Type**: Request (needs a response)
+- **Type**: Request (requires response)
 
-Imagine Kimi is busy working (a `prompt` task hasn't finished yet), and you suddenly want to add: "Wait, what I just said should be implemented in Python." You send a `steer` message. Kimi will append your words to the context after the current step finishes, then continue to the next step.
-
-This is different from sending another `prompt`: `prompt` starts a brand new task, while `steer` is "adding a line" to the task already in progress.
+Inject a user message into an active agent turn. Unlike `prompt`, `steer` does not start a new turn but injects the message into the currently running turn. The injected message is appended to the context as a standard user message after the current step finishes, allowing you to "steer" the AI's behavior before the next step begins. A `SteerInput` event is emitted when the message is consumed.
 
 ```typescript
 /** steer request parameters */
@@ -368,8 +282,6 @@ interface SteerResult {
   status: "steered"
 }
 ```
-
-If there is no task currently running, an error is returned: `No agent turn is in progress`.
 
 **Request example**
 
@@ -391,18 +303,16 @@ If no turn is in progress:
 {"jsonrpc": "2.0", "id": "7ca7c810-9dad-11d1-80b4-00c04fd430c8", "error": {"code": -32000, "message": "No agent turn is in progress"}}
 ```
 
----
-
-### `set_plan_mode` —— Switch Plan Mode
+### `set_plan_mode`
 
 - **Direction**: Client → Agent
-- **Type**: Request (needs a response)
+- **Type**: Request (requires response)
 
-Control whether Kimi enters "plan mode." In plan mode, Kimi first writes a detailed plan for you to review, and only starts working after you give the thumbs-up.
+Set plan mode to a specific state. After calling, the agent updates plan mode and sends a `StatusUpdate` event with the new state.
 
-This feature needs advance "notice": you must declare `supports_plan_mode: true` during `initialize`, or Kimi won't even know your program can handle plan mode, and won't enable the related tools.
+This feature requires capability negotiation: the client must declare `capabilities.supports_plan_mode: true` during `initialize` for the agent to enable plan mode tools (`EnterPlanMode`, `ExitPlanMode`). If the client does not declare support, these tools are automatically hidden from the LLM's tool list.
 
-Plan mode state is saved, so it survives restarts.
+Plan mode state is persisted to the session, so it survives process restarts and is restored when the session resumes.
 
 ```typescript
 /** set_plan_mode request parameters */
@@ -440,14 +350,12 @@ If plan mode is not supported in the current environment:
 {"jsonrpc": "2.0", "id": "8da7d810-9dad-11d1-80b4-00c04fd430c8", "error": {"code": -32000, "message": "Plan mode is not supported"}}
 ```
 
----
-
-### `cancel` —— Cancel the Current Task
+### `cancel`
 
 - **Direction**: Client → Agent
-- **Type**: Request (needs a response)
+- **Type**: Request (requires response)
 
-Like shouting "Stop!" The currently running `prompt` or `replay` gets interrupted, and the part already completed returns with a `cancelled` status.
+Cancel the currently running agent turn or replay. After calling, the in-progress `prompt` request will return `{"status": "cancelled"}`, and replay will return `{"status": "cancelled"}` with the message counts sent so far.
 
 ```typescript
 /** cancel request has no parameters, params can be empty object or omitted */
@@ -477,18 +385,12 @@ If no turn is in progress:
 {"jsonrpc": "2.0", "id": "6ba7b811-9dad-11d1-80b4-00c04fd430c8", "error": {"code": -32000, "message": "No agent turn is in progress"}}
 ```
 
----
-
-### `event` —— Kimi Reports Progress
+### `event`
 
 - **Direction**: Agent → Client
 - **Type**: Notification (no response needed)
 
-While Kimi is working, it keeps sending `event` messages telling you: "I've started working," "I'm writing code now," "I found this," "I've finished saying this..." These are one-way broadcasts — you just listen, no need to reply.
-
-Each `event` contains:
-- `type`: the event type (see the event type list below)
-- `payload`: the specific content
+Events emitted by the agent during a turn. No `id` field, client doesn't need to respond.
 
 ```typescript
 /** event notification parameters, contains serialized Wire message */
@@ -504,21 +406,12 @@ interface EventParams {
 {"jsonrpc": "2.0", "method": "event", "params": {"type": "ContentPart", "payload": {"type": "text", "text": "Hello"}}}
 ```
 
----
-
-### `request` —— Kimi Has Something to Ask You
+### `request`
 
 - **Direction**: Agent → Client
-- **Type**: Request (needs a response)
+- **Type**: Request (requires response)
 
-While working, Kimi may need your help to confirm some things. For example: "I'm about to run `rm -rf /`, do you agree?" Or: "I want to call your registered external tool `open_in_ide` with parameter `README.md`, is that okay?" Or: "I have three options, which one do you choose?"
-
-All of these must wait for your reply before Kimi can continue. If you don't reply, Kimi just stands there waiting.
-
-`request` has three types:
-- `ApprovalRequest`: approval request (like confirming before a dangerous operation)
-- `ToolCallRequest`: external tool call request
-- `QuestionRequest`: structured question (a popup asking you to choose a plan)
+Requests from the agent to the client, used for approval confirmation or external tool calls. The client must respond before the agent can continue execution.
 
 ```typescript
 /** request parameters, contains serialized Wire message */
@@ -534,7 +427,8 @@ interface RequestParams {
 {"jsonrpc": "2.0", "method": "request", "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479", "params": {"type": "ApprovalRequest", "payload": {"id": "approval-1", "tool_call_id": "tc-1", "sender": "Shell", "action": "run shell command", "description": "Run command `ls`", "display": []}}}
 ```
 
-Your reply (approve):
+**Approval response example**
+
 ```json
 {"jsonrpc": "2.0", "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479", "result": {"request_id": "approval-1", "response": "approve"}}
 ```
@@ -545,30 +439,27 @@ Your reply (approve):
 {"jsonrpc": "2.0", "method": "request", "id": "a3bb189e-8bf9-3888-9912-ace4e6543002", "params": {"type": "ToolCallRequest", "payload": {"id": "tc-1", "name": "open_in_ide", "arguments": "{\"path\":\"README.md\"}"}}}
 ```
 
-Your reply (success):
+**External tool call response example**
+
 ```json
 {"jsonrpc": "2.0", "id": "a3bb189e-8bf9-3888-9912-ace4e6543002", "result": {"tool_call_id": "tc-1", "return_value": {"is_error": false, "output": "Opened", "message": "Opened README.md in IDE", "display": []}}}
 ```
 
----
+### Standard Error Codes
 
-## Standard Error Codes
+All requests may return JSON-RPC 2.0 standard errors:
 
-If the JSON format itself is broken, or the method called doesn't exist, JSON-RPC 2.0 standard errors are returned:
+| code | Description |
+|------|-------------|
+| `-32700` | Invalid JSON format |
+| `-32600` | Invalid request (e.g., missing required fields) |
+| `-32601` | Method not found |
+| `-32602` | Invalid method parameters |
+| `-32603` | Internal error |
 
-| Error code | Meaning |
-|------------|---------|
-| `-32700` | The received JSON is broken and can't be parsed |
-| `-32600` | The request format is wrong, like missing required fields |
-| `-32601` | The method called doesn't exist (for example, older versions don't support `initialize`) |
-| `-32602` | The method parameters are wrong |
-| `-32603` | Kimi had an internal error |
+## Wire Message Types
 
----
-
-## Events Kimi Reports
-
-The various events Kimi sends through the `event` method can be understood as **"Kimi's live diary."** Each event has a `type` (event name) and `payload` (specific content).
+Wire messages are transmitted via `event` and `request` methods, in format `{"type": "...", "payload": {...}}`. The following describes all message types using TypeScript-style type definitions.
 
 ```typescript
 /** Union type of all Wire messages */
@@ -598,9 +489,9 @@ type Event =
 type Request = ApprovalRequest | ToolCallRequest | QuestionRequest | HookRequest
 ```
 
-### `TurnBegin` —— A New Turn Starts
+### `TurnBegin`
 
-Kimi received user input and is getting ready to process it. The `payload` contains what the user said.
+Turn started.
 
 ```typescript
 interface TurnBegin {
@@ -609,9 +500,9 @@ interface TurnBegin {
 }
 ```
 
-### `TurnEnd` —— This Turn is Done
+### `TurnEnd`
 
-Everything has been handled, this turn is over. If cancelled midway, this event might not be sent.
+Turn ended. This event is sent after all other events in the turn. If the turn is interrupted, this event may be omitted.
 
 ```typescript
 interface TurnEnd {
@@ -619,9 +510,9 @@ interface TurnEnd {
 }
 ```
 
-### `StepBegin` —— Starting Step N
+### `StepBegin`
 
-Kimi breaks a big task into many small steps, and sends this event every time a new step starts. The `payload` contains the step number `n`, starting from 1.
+Step started.
 
 ```typescript
 interface StepBegin {
@@ -630,17 +521,21 @@ interface StepBegin {
 }
 ```
 
-### `StepInterrupted` —— Step Was Interrupted
+### `StepInterrupted`
 
-A step was interrupted before it finished (for example, the user shouted "stop"). No additional fields.
+Step interrupted, no additional fields.
 
-### `CompactionBegin` / `CompactionEnd` —— Context Compression
+### `CompactionBegin`
 
-Kimi's "brain" has limited capacity (context length limit). When the conversation gets too long, Kimi automatically compresses previous memories into a summary to free up space. A `CompactionBegin` event is sent when compression starts, and a `CompactionEnd` event is sent when it's done.
+Context compaction started, no additional fields.
 
-### `StatusUpdate` —— Status Update
+### `CompactionEnd`
 
-Kimi regularly reports its "health status":
+Context compaction ended, no additional fields.
+
+### `StatusUpdate`
+
+Status update.
 
 ```typescript
 interface StatusUpdate {
@@ -670,18 +565,9 @@ interface TokenUsage {
 }
 ```
 
-| Field | Meaning |
-|-------|---------|
-| `context_usage` | How full the brain is, as a percentage (between 0 and 1) |
-| `context_tokens` | How many tokens are currently remembered |
-| `max_context_tokens` | The maximum number of tokens the brain can hold |
-| `token_usage` | Token usage statistics for the current step |
-| `message_id` | Message ID for the current step |
-| `plan_mode` | Whether plan mode is on |
+### `ContentPart`
 
-### `ContentPart` —— What Kimi Says
-
-Kimi's reply can be made up of many types of content: text, thinking process, images, audio, video. Each piece of content is a `ContentPart`.
+Message content part. Serialized with `type` as `"ContentPart"`, specific type distinguished by `payload.type`.
 
 ```typescript
 type ContentPart =
@@ -736,17 +622,9 @@ interface VideoURLPart {
 }
 ```
 
-| Type | Meaning |
-|------|---------|
-| `text` | Plain text |
-| `think` | Kimi's thinking process (internal monologue) |
-| `image_url` | Image link (can be a web address or a base64-encoded data URI) |
-| `audio_url` | Audio link |
-| `video_url` | Video link |
+### `ToolCall`
 
-### `ToolCall` —— Kimi Decides to Call a Tool
-
-When Kimi wants to perform an action (like reading a file, running a command, or searching the web), it sends a `ToolCall` event telling you which tool it wants to call and what parameters to pass.
+Tool call.
 
 ```typescript
 interface ToolCall {
@@ -765,15 +643,9 @@ interface ToolCall {
 }
 ```
 
-| Field | Meaning |
-|-------|---------|
-| `id` | Unique ID for this tool call |
-| `name` | Tool name |
-| `arguments` | Parameters (JSON string) |
+### `ToolCallPart`
 
-### `ToolCallPart` —— Fragment of Tool Arguments
-
-If the tool arguments are very long, Kimi might send them in multiple pieces, a little bit at a time. This situation is rare.
+Tool call argument fragment (streaming).
 
 ```typescript
 interface ToolCallPart {
@@ -782,9 +654,9 @@ interface ToolCallPart {
 }
 ```
 
-### `ToolResult` —— Tool Finished Running
+### `ToolResult`
 
-The tool has finished, and the result is sent back. It contains:
+Tool execution result.
 
 ```typescript
 interface ToolResult {
@@ -807,17 +679,9 @@ interface ToolReturnValue {
 }
 ```
 
-| Field | Meaning |
-|-------|---------|
-| `tool_call_id` | Which `ToolCall` this result belongs to |
-| `is_error` | Whether an error occurred |
-| `output` | Raw output returned to Kimi |
-| `message` | Explanatory message for Kimi to read |
-| `display` | Content blocks shown to the user (like code diffs or todo lists) |
+### `ApprovalResponse`
 
-### `ApprovalResponse` —— Approval Result
-
-The user (or external program) responded to an approval request: approve, reject, or approve for the whole session.
+Approval response event, indicates an approval request has been completed.
 
 ```typescript
 interface ApprovalResponse {
@@ -830,18 +694,9 @@ interface ApprovalResponse {
 }
 ```
 
-| Result | Meaning |
-|--------|---------|
-| `approve` | Approve this operation |
-| `approve_for_session` | Approve, and don't ask again for similar operations this session |
-| `reject` | Reject; you can attach feedback to tell Kimi why |
+### `SubagentEvent`
 
-### `SubagentEvent` —— Sub-Agent Activity
-
-When Kimi sends a "minion" (a sub-agent) to do work, everything that happens on the minion's side is passed back through this event. It contains:
-- Which minion it is (`agent_id`)
-- What type of minion it is (`subagent_type`)
-- What specific event the minion sent (nested `event`)
+Subagent event.
 
 ```typescript
 interface SubagentEvent {
@@ -856,9 +711,9 @@ interface SubagentEvent {
 }
 ```
 
-### `SteerInput` —— User Added Input Midway
+### `SteerInput`
 
-When the user sends a `steer` message, Kimi sends this event after the current step finishes and before the next step begins, confirming that the added input has been incorporated into the context.
+Indicates that the user appended follow-up input to the current running turn. This event is emitted after the current step finishes and the input is appended to context, before the next step begins.
 
 ```typescript
 interface SteerInput {
@@ -867,11 +722,9 @@ interface SteerInput {
 }
 ```
 
-### `PlanDisplay` —— Plan Display
+### `PlanDisplay`
 
-In plan mode, Kimi has written a plan and wants to show it to you. The `payload` contains:
-- `content`: the full Markdown content of the plan
-- `file_path`: where the plan file is saved
+Plan content display event. When the agent calls `ExitPlanMode` to submit a plan for user approval in plan mode, this event is sent first to display the plan content inline in the chat. Clients should render it as a bordered panel or similar visually distinct element, and show the file path for reference.
 
 ```typescript
 interface PlanDisplay {
@@ -882,12 +735,9 @@ interface PlanDisplay {
 }
 ```
 
-### `HookTriggered` —— Hook Started Running
+### `HookTriggered`
 
-A hook was triggered and started executing. It tells you:
-- What type of event triggered it (`event`)
-- Who the target is (`target`, like a specific tool name)
-- How many matching hooks are running in parallel (`hook_count`)
+Hook execution started event. Sent when configured hooks are triggered and begin executing, to notify the client that hooks are running.
 
 ```typescript
 interface HookTriggered {
@@ -900,13 +750,9 @@ interface HookTriggered {
 }
 ```
 
-### `HookResolved` —— Hook Finished Running
+### `HookResolved`
 
-The hook has finished. The result is either allow or block:
-- `action: allow` — let it through, continue executing
-- `action: block` — stop it right here
-- `reason` — if blocked, why
-- `duration_ms` — how many milliseconds it took
+Hook execution completed event. Sent when hooks finish executing, containing the result and duration information.
 
 ```typescript
 interface HookResolved {
@@ -923,13 +769,9 @@ interface HookResolved {
 }
 ```
 
----
+### `ApprovalRequest`
 
-## Confirmations Kimi Asks For
-
-### `ApprovalRequest` —— Please Give the Thumbs-Up
-
-Kimi is about to do something that might need your approval (like running a shell command or deleting a file). You must reply with `approve`, `approve_for_session`, or `reject`.
+Approval request, sent via `request` method, client must respond before agent can continue.
 
 ```typescript
 interface ApprovalRequest {
@@ -958,23 +800,9 @@ interface ApprovalRequest {
 }
 ```
 
-| Field | Meaning |
-|-------|---------|
-| `id` | Request ID |
-| `tool_call_id` | Associated tool call ID |
-| `sender` | Who initiated it (like "Shell") |
-| `action` | Type of action |
-| `description` | Specific description |
-| `display` | Content shown to the user |
-| `source_kind` | From a foreground turn or background agent |
-| `source_id` | Source identifier |
-| `agent_id` | If from a sub-agent, the sub-agent's ID |
-| `subagent_type` | Type of sub-agent |
-| `source_description` | Human-readable source description |
-
 **Response format**
 
-The client needs to return `ApprovalResponse` as the response result:
+Client needs to return `ApprovalResponse` as the response result:
 
 ```typescript
 interface ApprovalResponse {
@@ -985,15 +813,15 @@ interface ApprovalResponse {
 }
 ```
 
-| response | Meaning |
-|----------|---------|
+| response | Description |
+|----------|-------------|
 | `approve` | Approve this operation |
 | `approve_for_session` | Approve similar operations for this session |
-| `reject` | Reject the operation; optionally include `feedback` to tell the model what to do instead |
+| `reject` | Reject operation; optionally include `feedback` to instruct the model on what to do instead |
 
-### `ToolCallRequest` —— Call Your External Tool
+### `ToolCallRequest`
 
-Kimi wants to call an external tool you registered during `initialize`. You need to execute this tool and return the result.
+External tool call request, sent via `request` method. When the agent calls an external tool registered via `initialize`, this request is sent. The client must execute the tool and return a `ToolResult`.
 
 ```typescript
 interface ToolCallRequest {
@@ -1006,15 +834,9 @@ interface ToolCallRequest {
 }
 ```
 
-| Field | Meaning |
-|-------|---------|
-| `id` | Tool call ID |
-| `name` | Tool name |
-| `arguments` | Parameters (JSON string) |
-
 **Response format**
 
-The client needs to return `ToolResult` as the response result:
+Client needs to return `ToolResult` as the response result:
 
 ```typescript
 interface ToolResult {
@@ -1023,9 +845,11 @@ interface ToolResult {
 }
 ```
 
-### `QuestionRequest` —— Popup Asking You to Choose
+### `QuestionRequest`
 
-Kimi has a few options and can't decide, so it wants you to pick. This feature requires you to declare `supports_question: true` during `initialize`, or Kimi won't use this tool.
+Structured question request, sent via `request` method. When the agent uses the `AskUserQuestion` tool, this request is sent. The client must respond before the agent can continue execution.
+
+This feature requires capability negotiation: the client must declare `capabilities.supports_question: true` during `initialize` for the agent to send `QuestionRequest`. If the client does not declare support, the `AskUserQuestion` tool is automatically hidden from the LLM's tool list, preventing the LLM from invoking unsupported interactions.
 
 ```typescript
 interface QuestionRequest {
@@ -1056,18 +880,6 @@ interface QuestionOption {
 }
 ```
 
-| Field | Meaning |
-|-------|---------|
-| `id` | Request ID |
-| `tool_call_id` | Associated tool call ID |
-| `questions` | List of questions (1 to 4) |
-| `questions[].question` | Question text |
-| `questions[].header` | Short label |
-| `questions[].options` | Options (2 to 4) |
-| `questions[].multi_select` | Whether multiple selection is allowed |
-
-Each option has a `label` (label) and `description` (description).
-
 **Request example**
 
 ```json
@@ -1076,7 +888,7 @@ Each option has a `label` (label) and `description` (description).
 
 **Response format**
 
-The client needs to return `QuestionResponse` as the response result:
+Client needs to return `QuestionResponse` as the response result:
 
 ```typescript
 interface QuestionResponse {
@@ -1093,15 +905,17 @@ interface QuestionResponse {
 {"jsonrpc": "2.0", "id": "b1a2c3d4-e5f6-7890-abcd-ef1234567890", "result": {"request_id": "q-1", "answers": {"Which language should I use?": "Python"}}}
 ```
 
-If the user doesn't want to answer or your program doesn't support it, you can return empty `answers`:
+If the client does not support structured questions or the user closed the question panel, an empty `answers` can be returned:
 
 ```json
 {"jsonrpc": "2.0", "id": "b1a2c3d4-e5f6-7890-abcd-ef1234567890", "result": {"request_id": "q-1", "answers": {}}}
 ```
 
-### `HookRequest` —— Hook Processing Request
+### `HookRequest`
 
-If you subscribed to a hook event, when the event triggers, Kimi hands control over to you and lets you decide whether to allow it through.
+Hook processing request, sent via `request` method. When a Wire client subscribes to hook events, the server sends this request to let the client handle hook logic and return an allow/block decision.
+
+This feature requires capability negotiation: the client must declare subscribed hook event types via the `hooks` parameter during `initialize` for the server to send corresponding `HookRequest` messages.
 
 ```typescript
 interface HookRequest {
@@ -1118,17 +932,9 @@ interface HookRequest {
 }
 ```
 
-| Field | Meaning |
-|-------|---------|
-| `id` | Request ID |
-| `subscription_id` | Your subscription ID |
-| `event` | Event type |
-| `target` | Target (tool name or agent name) |
-| `input_data` | Complete event data |
-
 **Response format**
 
-The client needs to return `HookResponse` as the response result:
+Client needs to return `HookResponse` as the response result:
 
 ```typescript
 interface HookResponse {
@@ -1141,20 +947,9 @@ interface HookResponse {
 }
 ```
 
-Your reply:
-```json
-{
-  "request_id": "request ID",
-  "action": "allow" | "block",
-  "reason": "explanation"
-}
-```
+### `DisplayBlock`
 
----
-
-## Display Blocks
-
-Sometimes Kimi's results need to show special-formatted content to the user. These contents are wrapped in a `DisplayBlock`.
+Display block types used by the `display` field in `ToolResult` and `ApprovalRequest`.
 
 ```typescript
 type DisplayBlock =
@@ -1210,20 +1005,11 @@ interface ShellDisplayBlock {
 }
 ```
 
-| Type | Purpose |
-|------|---------|
-| `brief` | Short text summary |
-| `diff` | Code difference comparison (includes file path, old content, new content) |
-| `todo` | Todo list (each item has a title and status: `pending`, `in_progress`, `done`) |
-| `shell` | Shell command related display |
-
----
-
-## Rust Wire Server
+## Kimi Agent (Rust) Wire Server
 
 > Note: Kimi Agent is currently experimental. APIs and behavior may change in subsequent versions.
 
-Kimi Agent (Rust) is a Rust version of Kimi's core brain, built specifically for Wire mode. If you only need the Wire protocol service, it provides a lighter alternative — like swapping a big desktop phone for a sleek mobile one. The Rust implementation lives at [`MoonshotAI/kimi-agent-rs`](https://github.com/MoonshotAI/kimi-agent-rs).
+Kimi Agent (Rust) is a Rust implementation of the Kimi Code CLI core, designed specifically for Wire mode. If you only need Wire protocol service, Kimi Agent (Rust) provides a lighter-weight alternative. The Rust implementation is at [`MoonshotAI/kimi-agent-rs`](https://github.com/MoonshotAI/kimi-agent-rs).
 
 ### Features
 

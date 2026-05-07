@@ -2,40 +2,28 @@
 
 > Beta 功能：插件系统目前处于 Beta 阶段，具体的实现细节和配置定义可能会在未来版本中调整。请谨慎在生产环境中使用，并关注后续更新。
 
-插件就像是给 Kimi 配的「瑞士军刀」——你可以自己做一把小刀、一把剪刀、一把开瓶器……然后装进 Kimi 的工具箱里。Kimi 遇到合适的任务时，就会自动拿出对应的工具来用。
-
-和 MCP 服务器相比，插件更轻量、更简单，不需要常驻后台运行。它本质上就是一些本地脚本，适合封装你自己项目里常用的功能。
+插件系统让你可以为 Kimi Code CLI 添加自定义工具，扩展 AI 的能力。与 MCP 服务器不同，插件是轻量级的本地工具包，适合封装项目特定的脚本和实用程序。
 
 ## 插件是什么
 
-一个插件就是一个文件夹，文件夹里必须有一个叫 `plugin.json` 的文件。这个文件相当于插件的「身份证」，上面写着：
-- 我叫什么名字
-- 我能干什么
-- 我有哪些工具
+一个插件就是一个包含 `plugin.json` 文件的目录。插件可以声明多个「工具」，每个工具是一个可执行命令（Python、TypeScript、Shell 脚本等），AI 可以调用这些工具来完成特定任务。
 
-插件可以声明多个「工具」，每个工具就是一个可执行脚本（Python、TypeScript、Shell 脚本等都可以）。Kimi 就像一个聪明的管家，它会阅读 `plugin.json`，了解每个工具的用途，然后在需要的时候自动调用。
+例如，你可以创建一个插件来：
 
-**你能用插件做什么？**
+- 封装内部 API 的调用脚本
+- 提供项目特定的代码生成工具
+- 集成专有服务或数据库查询
 
-- 封装公司内部 API 的调用脚本，让 Kimi 能查业务数据
-- 写一套项目专属的代码生成工具，比如自动生成页面模板
-- 连接私有服务或数据库，让 Kimi 能查内部资料
+插件与 Agent Skills 的区别：
 
-**插件和 Skill 有什么区别？**
-
-打个比方：
-- **Skill** 就像一本「操作手册」——Kimi 读了之后知道该怎么做，但还得自己动手
-- **Plugin** 就像一把「电动螺丝刀」——Kimi 按一下按钮，工具自己就把活干了，然后把结果拿回来
-
-Skill 提供的是「知识」，Plugin 提供的是「行动力」。
+- **Skills**：通过 `SKILL.md` 提供知识性指导，AI 读取后遵循其中的规范
+- **Plugins**：通过 `plugin.json` 声明可执行工具，AI 可以直接调用工具获取结果
 
 ## 安装插件
 
-用 `kimi plugin` 命令管理插件，就像手机里的 App Store 一样简单。
+使用 `kimi plugin` 命令管理插件。
 
 **从本地目录安装**
-
-你已经写好了一个插件文件夹，直接告诉 Kimi 在哪：
 
 ```sh
 kimi plugin install /path/to/my-plugin
@@ -43,42 +31,38 @@ kimi plugin install /path/to/my-plugin
 
 **从 ZIP 文件安装**
 
-把插件打包成 zip，传给 Kimi：
-
 ```sh
 kimi plugin install my-plugin.zip
 ```
 
 **从 Git 仓库安装**
 
-插件代码放在 GitHub 上？一行命令搞定：
-
 ```sh
-# 安装仓库根目录的插件
+# 安装根目录的插件
 kimi plugin install https://github.com/user/repo.git
 
-# 安装子目录里的插件（一个仓库里有多个插件时常用）
+# 安装子目录中的插件（多插件仓库）
 kimi plugin install https://github.com/user/repo.git/plugins/my-plugin
 
-# 指定分支（注意用浏览器里看到的 URL 格式）
+# 指定分支（使用浏览器 URL 格式）
 kimi plugin install https://github.com/user/repo/tree/develop/plugins/my-plugin
 ```
 
-> 如果 Git 仓库根目录没有 `plugin.json`，Kimi 会主动检查根目录和直接子目录，列出所有可用的插件让你挑。
+当 Git 仓库根目录没有 `plugin.json` 时，Kimi Code CLI 会检查根目录及其直接子目录，并列出可用的插件供你选择。
 
-**查看已安装的插件**
+**列出已安装插件**
 
 ```sh
 kimi plugin list
 ```
 
-**查看某个插件的详情**
+**查看插件详情**
 
 ```sh
 kimi plugin info my-plugin
 ```
 
-**卸载插件**
+**移除插件**
 
 ```sh
 kimi plugin remove my-plugin
@@ -86,30 +70,30 @@ kimi plugin remove my-plugin
 
 ## 创建插件
 
-写插件只需要三步，比做一道番茄炒蛋还简单：
+创建插件只需要三步：
 
-1. 创建一个文件夹
-2. 写一份 `plugin.json`
-3. 写工具脚本
+1. 创建一个目录
+2. 编写 `plugin.json` 文件
+3. 实现工具脚本
 
-**文件夹结构**
+**目录结构**
 
 ```
 my-plugin/
-├── plugin.json       # 插件身份证（必须有）
-├── config.json       # 配置文件（可选，用来存密码等敏感信息）
-└── scripts/          # 工具脚本放在这里
+├── plugin.json       # 插件配置（必需）
+├── config.json       # 插件配置（可选，用于凭证注入）
+└── scripts/          # 工具脚本
     ├── greet.py
     └── calc.ts
 ```
 
-**`plugin.json` 怎么写**
+**`plugin.json` 格式**
 
 ```json
 {
   "name": "my-plugin",
   "version": "1.0.0",
-  "description": "我的项目专用插件",
+  "description": "My custom plugin for project X",
   "config_file": "config.json",
   "inject": {
     "api_key": "api_key",
@@ -118,14 +102,14 @@ my-plugin/
   "tools": [
     {
       "name": "greet",
-      "description": "生成一句问候语",
+      "description": "Generate a greeting message",
       "command": ["python3", "scripts/greet.py"],
       "parameters": {
         "type": "object",
         "properties": {
           "name": {
             "type": "string",
-            "description": "要问候的名字"
+            "description": "Name to greet"
           }
         },
         "required": ["name"]
@@ -137,38 +121,29 @@ my-plugin/
 
 **字段说明**
 
-| 字段 | 必填 | 含义 |
-|------|------|------|
-| `name` | 是 | 插件名字，只能用小写字母、数字和连字符（`-`） |
-| `version` | 是 | 版本号，按语义化版本写（比如 `1.0.0`） |
-| `description` | 否 | 插件是干嘛的，Kimi 会读这个来了解你的插件 |
-| `config_file` | 否 | 配置文件路径，用来存密码等敏感信息 |
-| `inject` | 否 | 凭证注入配置，下面会详细讲 |
-| `tools` | 否 | 工具列表，没有工具的话插件就只能当 Skill 用了 |
+| 字段 | 说明 | 是否必填 |
+|------|------|----------|
+| `name` | 插件名称，只能使用小写字母、数字和连字符 | 是 |
+| `version` | 插件版本，语义化版本格式 | 是 |
+| `description` | 插件描述 | 否 |
+| `config_file` | 配置文件路径，用于凭证注入 | 否 |
+| `inject` | 凭证注入映射，键为目标路径，值为源变量名 | 否 |
+| `tools` | 工具列表 | 否 |
 
 **工具字段说明**
 
-| 字段 | 必填 | 含义 |
-|------|------|------|
-| `name` | 是 | 工具名字 |
-| `description` | 是 | 工具是干嘛的，Kimi 靠这个决定什么时候调用它 |
-| `command` | 是 | 怎么运行这个工具，写成字符串数组（比如 `["python3", "scripts/greet.py"]`） |
-| `parameters` | 否 | 工具需要什么参数，用 JSON Schema 格式描述 |
-
-`parameters` 这部分看起来很吓人，其实就是回答三个问题：
-1. 需要什么参数？
-2. 每个参数是什么类型？
-3. 哪些参数必须给？
-
-上面的例子中，`greet` 工具需要一个 `name` 参数，类型是字符串，而且是必填的。
+| 字段 | 说明 | 是否必填 |
+|------|------|----------|
+| `name` | 工具名称 | 是 |
+| `description` | 工具描述 | 是 |
+| `command` | 执行命令，字符串数组 | 是 |
+| `parameters` | JSON Schema 格式的参数定义 | 否 |
 
 ## 凭证注入
 
-如果你的插件需要调用 LLM API（比如你自己的大模型服务），你可能需要 API 密钥和接口地址。手动把密钥写死在脚本里不安全，Kimi 提供了一种「凭证注入」机制。
+如果你的插件需要调用 LLM API，可以通过 `inject` 配置自动获取 Kimi Code CLI 的凭证配置。
 
-**原理**：你在 `plugin.json` 里声明「我需要这两个东西」，安装时 Kimi 会自动把自己当前的 API 密钥和 base URL 填进你的 `config.json` 里。之后你的脚本读取 `config.json` 就能拿到密钥了。
-
-**配置示例**
+**`inject` 配置示例**
 
 ```json
 {
@@ -180,16 +155,12 @@ my-plugin/
 }
 ```
 
-这句话的意思是：
-- Kimi 把自己的 `api_key` 填到你 `config.json` 里的 `llm.api_key` 位置
-- Kimi 把自己的 `base_url` 填到你 `config.json` 里的 `llm.endpoint` 位置
-
 **支持的注入变量**
 
-| 变量名 | 含义 |
+| 变量名 | 说明 |
 |--------|------|
-| `api_key` | LLM 提供商的 API 密钥（支持 OAuth token 和普通 API key） |
-| `base_url` | LLM API 的接口地址 |
+| `api_key` | LLM 提供商的 API 密钥，支持 OAuth token 和静态 API key |
+| `base_url` | LLM API 的基础 URL |
 
 **`config.json` 模板**
 
@@ -202,22 +173,22 @@ my-plugin/
 }
 ```
 
-安装时 Kimi 会自动把空字符串替换成真实的值。如果你之后换了 LLM 提供商或者重新授权了，重启 Kimi 就会自动刷新配置文件里的凭证。**不需要重新安装插件。**
+安装时，Kimi Code CLI 会将当前配置的 API 密钥和 base URL 注入到指定的配置文件中。如果配置了 OAuth，会自动获取并注入有效的 token。之后在应用启动时，Kimi Code CLI 也会尝试将最新的凭证（如刷新后的 OAuth token）写入已安装插件的配置文件中。
 
-> **关于环境变量名的小坑**
-> `inject` 里的键名（比如 `llm.api_key`）也会被当成环境变量名传给工具脚本。但点号（`.`）在有些环境里不好用（比如 Shell 里 `$llm.api_key` 会报错）。解决办法：
-> - **Node.js**：用 `process.env["llm.api_key"]`
-> - **Python**：用 `os.environ["llm.api_key"]`
-> 
-> 如果你想要更友好的环境变量名，建议用下划线大写格式（比如 `LLM_API_KEY`），并相应调整 `config.json` 的结构。
+> 一般情况下，不需要为了更新凭证而重新安装插件：切换 LLM 提供商或重新授权后，重启 Kimi Code CLI 即可自动刷新配置文件中的凭证，插件工具在实际运行时也会通过环境变量获得当前有效的凭证。只有在修改了插件本身的配置结构（例如 `config_file` 或 `inject` 映射）时，才需要重新安装插件。
+
+> 关于 inject 键名：`inject` 中的键名（如 `llm.api_key`）也会被用作环境变量名传递给插件工具子进程。由于这些名称包含点号，在某些运行环境中访问可能不便（例如 POSIX shell 中 `$llm.api_key` 是无效的）。你可以通过字典/映射方式访问：
+> - **Node.js**: `process.env["llm.api_key"]`
+> - **Python**: `os.environ["llm.api_key"]`
+> 如果希望使用更友好的环境变量名，建议在插件中使用大写下划线格式（如 `LLM_API_KEY`），并相应调整配置文件结构。
 
 ## 工具脚本规范
 
-工具脚本怎么和 Kimi 对话？靠标准输入（stdin）和标准输出（stdout）。
+工具脚本通过标准输入接收参数，通过标准输出返回结果。
 
-**Kimi 怎么把参数传给脚本**
+**输入格式**
 
-Kimi 会把参数写成 JSON，通过「管道」塞进脚本的标准输入：
+脚本从 `stdin` 接收 JSON 对象：
 
 ```json
 {
@@ -225,9 +196,9 @@ Kimi 会把参数写成 JSON，通过「管道」塞进脚本的标准输入：
 }
 ```
 
-**脚本怎么把结果还给 Kimi**
+**输出格式**
 
-脚本把结果写到标准输出。如果想返回结构化的数据，建议输出 JSON：
+脚本向 `stdout` 输出的内容会作为字符串返回给 Agent。如果需要结构化输出，建议输出 JSON 文本：
 
 ```json
 {
@@ -242,14 +213,10 @@ Kimi 会把参数写成 JSON，通过「管道」塞进脚本的标准输入：
 import json
 import sys
 
-# 从标准输入读取参数
 params = json.load(sys.stdin)
 name = params.get("name", "Guest")
 
-# 生成结果
 result = {"content": f"Hello, {name}!"}
-
-# 写到标准输出
 print(json.dumps(result))
 ```
 
@@ -277,48 +244,48 @@ rl.on("close", () => {
 });
 ```
 
-## 给插件配一本「说明书」（附带 Skill）
+## 附带 Skill
 
-插件文件夹里除了 `plugin.json`，还可以放一个 `SKILL.md`。这相当于给插件配了一本「使用说明书」——Kimi 启动时会自动发现它，不需要额外注册。
-
-为什么需要说明书？因为 `plugin.json` 只能告诉 Kimi「这个工具是干嘛的」，但 `SKILL.md` 可以告诉 Kimi「在什么情况下应该用哪个工具、怎么用、要注意什么」。
+插件可以在根目录（与 `plugin.json` 同级）放一个 `SKILL.md`。Kimi Code CLI 启动时会自动发现，无需额外注册——因为 `~/.kimi/plugins/` 会被整体作为一个 skills root 加载（skill 发现机制详见 [Skills](./skills.md)）。
 
 **目录结构**
 
 ```
 my-plugin/
 ├── plugin.json
-├── SKILL.md          # 可选：插件的使用说明书
+├── SKILL.md          # 可选：随插件分发的 skill
 └── scripts/
 ```
 
-`SKILL.md` 的名字优先取文件开头的 frontmatter 里的 `name`，如果没有就用文件夹名。这个 Skill 以 `extra` 作用域被发现，也就是说，如果其他地方有同名的 Skill，会覆盖掉插件自带的这个。
+Skill 名称优先取 `SKILL.md` frontmatter 中的 `name`，否则使用插件目录名。该 skill 以 `extra` 作用域被发现，因此同名的项目级或用户级 skill 仍会覆盖它。
 
-> **限制**：一个插件只能带一本说明书。类似 `my-plugin/skills/xxx/SKILL.md` 这种嵌套结构是扫不到的。
+**限制**
 
-## 一个完整的插件示例
+- 一个插件只能被发现一个 `SKILL.md`。类似 `<plugin>/skills/<name>/SKILL.md` 的嵌套布局**不会**被扫到。
+
+## 完整示例
 
 ```json
 {
   "name": "sample-plugin",
   "version": "1.0.0",
-  "description": "演示 Skill + Tool 的组合用法",
+  "description": "Sample plugin demonstrating Skills + Tools",
   "tools": [
     {
       "name": "py_greet",
-      "description": "生成问候语（Python 工具）",
+      "description": "Generate a greeting message (Python tool)",
       "command": ["python3", "scripts/greet.py"],
       "parameters": {
         "type": "object",
         "properties": {
           "name": {
             "type": "string",
-            "description": "名字"
+            "description": "Name to greet"
           },
           "lang": {
             "type": "string",
             "enum": ["en", "zh", "ja"],
-            "description": "语言"
+            "description": "Language"
           }
         },
         "required": ["name"]
@@ -326,14 +293,14 @@ my-plugin/
     },
     {
       "name": "ts_calc",
-      "description": "计算数学表达式（TypeScript 工具）",
+      "description": "Evaluate a math expression (TypeScript tool)",
       "command": ["npx", "tsx", "scripts/calc.ts"],
       "parameters": {
         "type": "object",
         "properties": {
           "expression": {
             "type": "string",
-            "description": "数学表达式"
+            "description": "Math expression to evaluate"
           }
         },
         "required": ["expression"]
@@ -343,10 +310,10 @@ my-plugin/
 }
 ```
 
-## 插件装在哪里
+## 插件安装位置
 
-所有插件都安装在 `~/.kimi/plugins/` 目录下。每个插件是一个独立的子文件夹，里面包含完整的 `plugin.json` 和脚本文件。
+插件安装在 `~/.kimi/plugins/` 目录下。每个插件是一个独立的子目录，包含完整的 `plugin.json` 和脚本文件。
 
-> **插件 vs MCP 服务器**
-> - **MCP**：像是一个 24 小时营业的服务台，适合需要持续运行、复杂流程、跨程序通信的场景
-> - **Plugin**：像是一把随手可取的工具，适合简单脚本、项目专用功能、快速试错
+> 插件与 MCP 服务器是互补的扩展机制：
+> - **MCP**：适合需要持续运行的服务、复杂的工具编排、跨进程通信
+> - **插件**：适合简单的脚本封装、项目特定的工具、快速原型开发
