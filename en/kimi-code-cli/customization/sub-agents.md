@@ -1,34 +1,38 @@
 # Agents and Subagents
 
-An agent defines the AI's behavior, including system prompts, available tools, and subagents. You can use built-in agents or create custom agents.
+Think of an **Agent** as Kimi's "personality."
 
-## Built-in Agents
+It is the same brain (the AI model), but with a different personality, the behavior changes completely. Some personalities are great at writing code, some excel at analysis, some are cautious and ask you at every step, and some are bold and just dive right in. Kimi Code CLI lets you switch between built-in personalities, or you can write your own personality configuration file.
 
-Kimi Code CLI provides two built-in agents. You can select one at startup with the `--agent` parameter:
+A **Subagent** is like a "temp worker" or "sidekick" for the main agent — when a specialized job comes up, the main agent can call in a sidekick to handle it. Once the sidekick finishes, they hand the results back, and the main agent keeps steering the ship.
+
+## Built-in personalities
+
+Kimi Code CLI comes with two personalities out of the box. You can pick one at startup using the `--agent` parameter:
 
 ```sh
 kimi --agent okabe
 ```
 
-### `default`
+### `default` — the default personality
 
-The default agent, suitable for general use. Enabled tools:
+Suitable for most situations. This personality has a full toolbox: it can read and write files, run commands, search the web, manage a todo list, launch background tasks, make plans — an all-rounder.
 
-`Agent`, `AskUserQuestion`, `SetTodoList`, `Shell`, `ReadFile`, `ReadMediaFile`, `Glob`, `Grep`, `WriteFile`, `StrReplaceFile`, `SearchWeb`, `FetchURL`, `EnterPlanMode`, `ExitPlanMode`, `TaskList`, `TaskOutput`, `TaskStop`
+Its tools include: `Agent` (call a sidekick), `AskUserQuestion` (ask you something), `SetTodoList` (todo list), `Shell` (run commands), `ReadFile` (read files), `ReadMediaFile` (read images/videos), `Glob` (find files), `Grep` (search content), `WriteFile` (write files), `StrReplaceFile` (replace file content), `SearchWeb` (search the web), `FetchURL` (fetch webpage content), `EnterPlanMode` / `ExitPlanMode` (plan mode), `TaskList` / `TaskOutput` / `TaskStop` (background task management).
 
-### `okabe`
+### `okabe` — the experimental personality
 
-An experimental agent for testing new prompts and tools. Adds `SendDMail` on top of `default`.
+Built on top of `default`, this one adds an extra `SendDMail` tool for sending delayed messages (checkpoint rollback scenarios). It is still experimental and not something most people need day-to-day.
 
-## Custom Agent Files
+## Writing your own personality
 
-Agents are defined in YAML format. Load a custom agent with the `--agent-file` parameter:
+If the built-in personalities do not suit your taste, you can write a YAML configuration file to create your own Kimi.
 
 ```sh
 kimi --agent-file /path/to/my-agent.yaml
 ```
 
-**Basic structure**
+**The simplest configuration**
 
 ```yaml
 version: 1
@@ -41,9 +45,14 @@ agent:
     - "kimi_cli.tools.file:WriteFile"
 ```
 
-**Inheritance and overrides**
+What this means:
+- `name`: the personality's name
+- `system_prompt_path`: the path to the system prompt file (relative to this YAML file)
+- `tools`: which tools this personality is allowed to use
 
-Use `extend` to inherit another agent's configuration and only override what you need to change:
+**Standing on the shoulders of giants (inheritance and overrides)**
+
+You do not have to build a personality from scratch. You can inherit an existing one and only change the parts you care about:
 
 ```yaml
 version: 1
@@ -55,23 +64,27 @@ agent:
     - "kimi_cli.tools.web:FetchURL"
 ```
 
-`extend: default` inherits from the built-in default agent. You can also specify a relative path to inherit from another agent file.
+`extend: default` inherits from the built-in default agent. You can also specify a relative path to inherit from another agent file you wrote.
 
 **Configuration fields**
 
-| Field | Description | Required |
-|-------|-------------|----------|
-| `extend` | Agent to inherit from, can be `default` or a relative path | No |
-| `name` | Agent name | Yes (optional when inheriting) |
-| `system_prompt_path` | System prompt file path, relative to agent file | Yes (optional when inheriting) |
-| `system_prompt_args` | Custom arguments passed to system prompt, merged when inheriting | No |
-| `tools` | Tool list, format is `module:ClassName` | Yes (optional when inheriting) |
-| `exclude_tools` | Tools to exclude | No |
-| `subagents` | Subagent definitions | No |
+| Field | Required | Description |
+|-------|----------|-------------|
+| `extend` | No | Who to inherit from — can be `default` or a relative path to another YAML file |
+| `name` | Yes (optional when inheriting) | Personality name |
+| `system_prompt_path` | Yes (optional when inheriting) | System prompt file path, relative to the agent file |
+| `system_prompt_args` | No | Custom arguments passed to the system prompt, merged when inheriting |
+| `tools` | Yes (optional when inheriting) | Tool list, format is `module:ClassName` |
+| `exclude_tools` | No | Tools to exclude |
+| `subagents` | No | Subagent definitions |
 
-## System Prompt Built-in Parameters
+## System prompt — the soul
 
-The system prompt file is a Markdown template that can use `${VAR}` syntax to reference variables and supports the Jinja2 `{% include %}` directive to include other files. Built-in variables include:
+The system prompt is a Markdown file that tells Kimi "who you are, what you are good at, and how you should work." Think of it as an "onboarding manual" written for Kimi.
+
+This manual supports variable substitution: using the `${variable_name}` syntax, Kimi replaces variables with actual values at startup. It also supports Jinja2's `{% include %}` directive to pull in other files.
+
+**Built-in variables**
 
 | Variable | Description |
 |----------|-------------|
@@ -82,7 +95,9 @@ The system prompt file is a Markdown template that can use `${VAR}` syntax to re
 | `${KIMI_SKILLS}` | Loaded skills list |
 | `${KIMI_ADDITIONAL_DIRS_INFO}` | Information about additional directories added via `--add-dir` or `/add-dir` |
 
-You can also define custom parameters via `system_prompt_args`:
+**Custom variables**
+
+You can define your own variables in the YAML:
 
 ```yaml
 agent:
@@ -90,7 +105,7 @@ agent:
     MY_VAR: "custom value"
 ```
 
-Then use `${MY_VAR}` in the prompt.
+Then reference them in the prompt with `${MY_VAR}`.
 
 **System prompt example**
 
@@ -104,9 +119,13 @@ Working directory: ${KIMI_WORK_DIR}
 ${MY_VAR}
 ```
 
-## Defining Subagents in Agent Files
+## Subagents — calling sidekicks
 
-Subagents can handle specific types of tasks. After defining subagents in an agent file, the main agent can launch them via the `Agent` tool:
+The main agent cannot do everything itself. When a specialized job comes up, it can call a "sidekick" (subagent) to handle it.
+
+**How to define a sidekick**
+
+Write this in the personality configuration file:
 
 ```yaml
 version: 1
@@ -121,7 +140,9 @@ agent:
       description: "Code review expert"
 ```
 
-Subagent files are also standard agent format, typically inheriting from the main agent:
+Here we defined two sidekicks: `coder` (the programmer) and `reviewer` (the code reviewer). Each sidekick has its own configuration file.
+
+A sidekick's configuration file uses the same format as the main agent, and usually inherits from the main agent:
 
 ```yaml
 # coder-sub.yaml
@@ -133,46 +154,49 @@ agent:
       You are now running as a subagent...
 ```
 
-## Built-in Subagent Types
+## Built-in sidekick types
 
-The default agent configuration includes three built-in subagent types, each with different tool policies and use cases:
+Even if you do not define your own sidekicks, the default personality comes with three "professional temp workers" built in, each with their own specialty:
 
-| Type | Purpose | Available tools |
-|------|---------|-----------------|
+| Type | What they are good at | Tools in their toolbox |
+|------|-----------------------|------------------------|
 | `coder` | General software engineering: read/write files, run commands, search code | `Shell`, `ReadFile`, `Glob`, `Grep`, `WriteFile`, `StrReplaceFile`, `SearchWeb`, `FetchURL` |
-| `explore` | Fast read-only codebase exploration: search, read, summarize | `Shell`, `ReadFile`, `Glob`, `Grep`, `SearchWeb`, `FetchURL` (no write tools) |
-| `plan` | Implementation planning and architecture design: analyze files, create plans | `ReadFile`, `Glob`, `Grep`, `SearchWeb`, `FetchURL` (no Shell, no write tools) |
+| `explore` | Fast read-only exploration: look around the codebase without making changes | `Shell`, `ReadFile`, `Glob`, `Grep`, `SearchWeb`, `FetchURL` (**no write tools**) |
+| `plan` | Planning and architecture design: analyze the current state and create a plan | `ReadFile`, `Glob`, `Grep`, `SearchWeb`, `FetchURL` (**no Shell, no write tools**) |
 
-All subagent types are prohibited from nesting the `Agent` tool (subagents cannot create their own subagents). The `Agent` tool is only available to the root agent.
+> Sidekicks cannot call their own sidekicks (no nesting). The `Agent` tool is only available to the main agent.
 
-## How Subagents Run
+## How sidekicks work
 
-Subagents launched via the `Agent` tool run in an isolated context and return results to the main agent when complete. Each subagent instance maintains its own context history and metadata under `subagents/<agent_id>/` in the session directory, and can be resumed across multiple invocations. Advantages of this approach:
+The main agent summons a sidekick through the `Agent` tool. The sidekick works in an isolated room, separate from the main agent's desk. When finished, the sidekick tidies up the results and hands them back to the main agent.
 
-- Isolated context, avoiding pollution of main agent's conversation history
-- Multiple independent tasks can be processed in parallel
-- Subagents can have targeted system prompts
-- Persistent instances preserve context across multiple calls
+Each sidekick instance keeps its own "archive room" (`subagents/<agent_id>/`) where work records are stored. The next time the main agent calls the same sidekick ID, it picks up where it left off, carrying its previous memory.
 
-## Built-in Tools List
+**Why this is useful:**
+- **Isolation**: a sidekick's ramblings do not pollute the main agent's memory
+- **Parallel**: you can send multiple sidekicks to work on different tasks at the same time
+- **Specialized**: each sidekick can have its own custom "onboarding manual"
+- **Persistent**: the same instance can retain memory across multiple summons
 
-The following are all built-in tools in Kimi Code CLI.
+## Available tools
 
-### `Agent`
+Below is Kimi Code CLI's complete toolbox. Think of it as the set of tools each personality can pick from.
+
+### `Agent` — summon a sidekick
 
 - **Path**: `kimi_cli.tools.agent:Agent`
 - **Description**: Start or resume a subagent instance for a focused task. Three built-in subagent types are available: `coder` (general software engineering), `explore` (fast read-only codebase exploration), and `plan` (implementation planning and architecture design). Each instance maintains its own context history and supports foreground or background execution.
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `description` | string | Short task description (3-5 words) |
+| `description` | string | Short task description (3–5 words) |
 | `prompt` | string | Detailed task description |
 | `subagent_type` | string | Built-in subagent type, default `coder` |
 | `model` | string | Optional model override |
 | `resume` | string | Optional agent instance ID to resume an existing instance |
 | `run_in_background` | bool | Whether to run in background, default false |
 
-### `AskUserQuestion`
+### `AskUserQuestion` — ask the user a question
 
 - **Path**: `kimi_cli.tools.ask_user:AskUserQuestion`
 - **Description**: Present structured questions and options to the user during execution, collecting preferences or decisions. Suitable for scenarios where the user needs to choose between approaches, resolve ambiguous instructions, or provide requirements. Should not be overused — only call when the user's choice genuinely affects subsequent actions.
@@ -187,7 +211,9 @@ The following are all built-in tools in Kimi Code CLI.
 | `questions[].options[].description` | string | Option description |
 | `questions[].multi_select` | bool | Allow multiple selections, default false |
 
-### `SetTodoList`
+> Do not overuse this tool. Only ask when your choice truly affects what happens next.
+
+### `SetTodoList` — todo list
 
 - **Path**: `kimi_cli.tools.todo:SetTodoList`
 - **Description**: Manage todo list, track task progress
@@ -198,7 +224,7 @@ The following are all built-in tools in Kimi Code CLI.
 | `todos[].title` | string | Todo item title |
 | `todos[].status` | string | Status: `pending`, `in_progress`, `done` |
 
-### `Shell`
+### `Shell` — run commands
 
 - **Path**: `kimi_cli.tools.shell:Shell`
 - **Description**: Execute shell commands. Requires user approval. Uses the appropriate shell for the OS (bash/zsh on Unix, PowerShell on Windows).
@@ -212,7 +238,7 @@ The following are all built-in tools in Kimi Code CLI.
 
 When `run_in_background=true`, the command is launched as a background task and the tool immediately returns a task ID, allowing the AI to continue working. The system automatically sends a notification when the task completes. Ideal for long-running builds, tests, watchers, and servers.
 
-### `ReadFile`
+### `ReadFile` — read a file
 
 - **Path**: `kimi_cli.tools.file:ReadFile`
 - **Description**: Read text file content. Max 1000 lines per read, max 2000 characters per line. Files outside working directory require absolute paths. Every read returns the total number of lines in the file.
@@ -223,7 +249,7 @@ When `run_in_background=true`, the command is launched as a background task and 
 | `line_offset` | int | Starting line number, default 1. Supports negative values to read from the end of the file (e.g., `-100` reads the last 100 lines); absolute value cannot exceed 1000 |
 | `n_lines` | int | Number of lines to read, default/max 1000 |
 
-### `ReadMediaFile`
+### `ReadMediaFile` — read images/videos
 
 - **Path**: `kimi_cli.tools.file:ReadMediaFile`
 - **Description**: Read image or video files. Max file size 100MB. Only available when the model supports image/video input. Files outside working directory require absolute paths.
@@ -232,7 +258,7 @@ When `run_in_background=true`, the command is launched as a background task and 
 |-----------|------|-------------|
 | `path` | string | File path |
 
-### `Glob`
+### `Glob` — find files by pattern
 
 - **Path**: `kimi_cli.tools.file:Glob`
 - **Description**: Match files and directories by pattern. Returns max 1000 matches, patterns starting with `**` not allowed. Can also search within discovered skill roots, and `~` in paths is expanded to the user's home directory.
@@ -243,7 +269,7 @@ When `run_in_background=true`, the command is launched as a background task and 
 | `directory` | string | Search directory, defaults to working directory |
 | `include_dirs` | bool | Include directories, default true |
 
-### `Grep`
+### `Grep` — text search
 
 - **Path**: `kimi_cli.tools.file:Grep`
 - **Description**: Search file content with regular expressions, based on ripgrep
@@ -263,7 +289,7 @@ When `run_in_background=true`, the command is launched as a background task and 
 | `multiline` | bool | Enable multiline matching |
 | `head_limit` | int | Limit output lines |
 
-### `WriteFile`
+### `WriteFile` — write a file
 
 - **Path**: `kimi_cli.tools.file:WriteFile`
 - **Description**: Write files. Requires user approval. Absolute paths are required when writing files outside the working directory.
@@ -274,7 +300,7 @@ When `run_in_background=true`, the command is launched as a background task and 
 | `content` | string | File content |
 | `mode` | string | `overwrite` (default) or `append` |
 
-### `StrReplaceFile`
+### `StrReplaceFile` — replace file content
 
 - **Path**: `kimi_cli.tools.file:StrReplaceFile`
 - **Description**: Edit files using string replacement. Requires user approval. Absolute paths are required when editing files outside the working directory.
@@ -287,7 +313,7 @@ When `run_in_background=true`, the command is launched as a background task and 
 | `edit.new` | string | Replacement string |
 | `edit.replace_all` | bool | Replace all matches, default false |
 
-### `SearchWeb`
+### `SearchWeb` — search the web
 
 - **Path**: `kimi_cli.tools.web:SearchWeb`
 - **Description**: Search the web. Requires search service configuration (auto-configured on Kimi Code platform).
@@ -298,7 +324,7 @@ When `run_in_background=true`, the command is launched as a background task and 
 | `limit` | int | Number of results, default 5, max 20 |
 | `include_content` | bool | Include page content, default false |
 
-### `FetchURL`
+### `FetchURL` — fetch a webpage
 
 - **Path**: `kimi_cli.tools.web:FetchURL`
 - **Description**: Fetch webpage content, returns extracted main text. Uses fetch service if configured, otherwise uses local HTTP request.
@@ -307,7 +333,7 @@ When `run_in_background=true`, the command is launched as a background task and 
 |-----------|------|-------------|
 | `url` | string | URL to fetch |
 
-### `Think`
+### `Think` — record thoughts
 
 - **Path**: `kimi_cli.tools.think:Think`
 - **Description**: Let the agent record thinking process, suitable for complex reasoning scenarios
@@ -316,7 +342,7 @@ When `run_in_background=true`, the command is launched as a background task and 
 |-----------|------|-------------|
 | `thought` | string | Thinking content |
 
-### `SendDMail`
+### `SendDMail` — send a delayed message
 
 - **Path**: `kimi_cli.tools.dmail:SendDMail`
 - **Description**: Send delayed message (D-Mail), for checkpoint rollback scenarios
@@ -326,14 +352,14 @@ When `run_in_background=true`, the command is launched as a background task and 
 | `message` | string | Message to send |
 | `checkpoint_id` | int | Checkpoint ID to send back to (>= 0) |
 
-### `EnterPlanMode`
+### `EnterPlanMode` — enter plan mode
 
 - **Path**: `kimi_cli.tools.plan.enter:EnterPlanMode`
 - **Description**: Request to enter plan mode. After calling, an approval request is presented to the user, who can approve or reject entering plan mode. In YOLO mode, this is only used when the user explicitly requests planning or when there is significant architectural ambiguity.
 
 This tool takes no parameters.
 
-### `ExitPlanMode`
+### `ExitPlanMode` — submit a plan
 
 - **Path**: `kimi_cli.tools.plan:ExitPlanMode`
 - **Description**: Submit a plan for user approval while in plan mode. Before calling, the plan must be written to the plan file. This tool reads the plan file content and presents it to the user for approval. The user can select an implementation path (exit plan mode and start execution), reject (stay in plan mode and wait for feedback), or provide revision comments.
@@ -342,7 +368,7 @@ This tool takes no parameters.
 |-----------|------|-------------|
 | `options` | list \| null | When the plan contains multiple alternative implementation paths, list 2–3 options for the user to choose from. Each option has a `label` (1–8 word short name, may append "(Recommended)") and an optional `description` (brief summary). The labels "Approve", "Reject", and "Revise" are reserved and cannot be used. |
 
-### `TaskList`
+### `TaskList` — view background tasks
 
 - **Path**: `kimi_cli.tools.background:TaskList`
 - **Description**: List background tasks in the current session. Useful for re-enumerating task IDs after context compaction or checking which tasks are still running.
@@ -352,7 +378,7 @@ This tool takes no parameters.
 | `active_only` | bool | List only active tasks, default true |
 | `limit` | int | Maximum number of tasks to return (1–100), default 20 |
 
-### `TaskOutput`
+### `TaskOutput` — view background task output
 
 - **Path**: `kimi_cli.tools.background:TaskOutput`
 - **Description**: Retrieve output and status of a background task. Returns a non-blocking status/output snapshot by default; if output is truncated, use `ReadFile` to page through the full log.
@@ -363,7 +389,7 @@ This tool takes no parameters.
 | `block` | bool | Whether to wait for task completion, default false |
 | `timeout` | int | Maximum wait time in seconds when `block=true` (0–3600), default 30 |
 
-### `TaskStop`
+### `TaskStop` — stop a background task
 
 - **Path**: `kimi_cli.tools.background:TaskStop`
 - **Description**: Stop a running background task. Requires user approval. Use only when a task must be cancelled; for normal completion, wait for the automatic notification. Not available in plan mode.
@@ -373,17 +399,15 @@ This tool takes no parameters.
 | `task_id` | string | Task ID to stop |
 | `reason` | string | Reason for stopping (optional), default "Stopped by TaskStop" |
 
-## Tool Security Boundaries
+## Security boundaries
 
-**Workspace scope**
+### Workspace scope
 
 - File reading and writing are typically done within the working directory (and additional directories added via `--add-dir` or `/add-dir`)
 - Absolute paths are required when reading files outside the workspace
 - Write and edit operations require user approval; absolute paths are required when operating on files outside the workspace
 
-**Approval mechanism**
-
-The following operations require user approval:
+### Operations requiring approval
 
 | Operation | Approval Required |
 |-----------|-------------------|

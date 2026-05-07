@@ -1,34 +1,38 @@
 # Agent 与子 Agent
 
-Agent 定义了 AI 的行为方式，包括系统提示词、可用工具和子 Agent。你可以使用内置 Agent，也可以创建自定义 Agent。
+你可以把 **Agent** 理解为 Kimi 的「人格设定」。
 
-## 内置 Agent
+同一个大脑（AI 模型），配上不同的「人格」，表现会完全不同。有的 Agent 擅长写代码，有的擅长做分析，有的比较谨慎每一步都要问你，有的比较大胆直接开干。Kimi Code CLI 允许你切换内置人格，也可以自己写一个人格配置文件。
 
-Kimi Code CLI 提供两个内置 Agent。启动时可以通过 `--agent` 参数选择：
+而 **子 Agent** 就像是主 Agent 的「临时工」——遇到专门的活儿时，主 Agent 可以喊一个小弟来干，干完小弟把结果交回来，主 Agent 继续统筹全局。
+
+## 内置人格
+
+Kimi Code CLI 自带两种人格，启动时可以用 `--agent` 参数挑选：
 
 ```sh
 kimi --agent okabe
 ```
 
-### `default`
+### `default` —— 默认人格
 
-默认 Agent，适合通常情况使用。启用的工具：
+适合绝大多数场景。这个人格手头有一大堆工具：能读写文件、运行命令、搜索网页、管理待办事项、启动后台任务、制定计划……是一个全能型选手。
 
-`Agent`、`AskUserQuestion`、`SetTodoList`、`Shell`、`ReadFile`、`ReadMediaFile`、`Glob`、`Grep`、`WriteFile`、`StrReplaceFile`、`SearchWeb`、`FetchURL`、`EnterPlanMode`、`ExitPlanMode`、`TaskList`、`TaskOutput`、`TaskStop`
+它手里的工具包括：`Agent`（召唤小弟）、`AskUserQuestion`（问你问题）、`SetTodoList`（待办清单）、`Shell`（执行命令）、`ReadFile`（读文件）、`ReadMediaFile`（读图片/视频）、`Glob`（找文件）、`Grep`（搜内容）、`WriteFile`（写文件）、`StrReplaceFile`（替换文件内容）、`SearchWeb`（搜网页）、`FetchURL`（抓网页内容）、`EnterPlanMode` / `ExitPlanMode`（计划模式）、`TaskList` / `TaskOutput` / `TaskStop`（后台任务管理）。
 
-### `okabe`
+### `okabe` —— 实验性人格
 
-实验性 Agent，用于实验新的提示词和工具。在 `default` 的基础上额外启用 `SendDMail`。
+在 `default` 的基础上多了一个 `SendDMail` 工具，用于发送延迟消息（检查点回滚场景）。目前还在实验阶段，普通人一般用不上。
 
-## 自定义 Agent 文件
+## 自己写一个人格
 
-Agent 使用 YAML 格式定义。通过 `--agent-file` 参数加载自定义 Agent：
+如果内置人格不合你胃口，你可以写一份 YAML 配置文件，定制属于你自己的 Kimi。
 
 ```sh
 kimi --agent-file /path/to/my-agent.yaml
 ```
 
-**基本结构**
+**最简单的配置**
 
 ```yaml
 version: 1
@@ -41,48 +45,59 @@ agent:
     - "kimi_cli.tools.file:WriteFile"
 ```
 
-**继承与覆盖**
+这份配置的意思是：
+- `name`：这个人格的名字
+- `system_prompt_path`：系统提示词文件的路径（相对于这个 YAML 文件的位置）
+- `tools`：这个人格能使用哪些工具
 
-使用 `extend` 可以继承其他 Agent 的配置，只覆盖需要修改的部分：
+**站在巨人的肩膀上（继承与覆盖）**
+
+你不需要从零写一个人格，可以继承现有的人格，只改你想改的部分：
 
 ```yaml
 version: 1
 agent:
-  extend: default  # 继承默认 Agent
-  system_prompt_path: ./my-prompt.md  # 覆盖系统提示词
-  exclude_tools:  # 排除某些工具
+  extend: default  # 继承默认人格的所有配置
+  system_prompt_path: ./my-prompt.md  # 只换提示词
+  exclude_tools:  # 去掉一些不想让它用的工具
     - "kimi_cli.tools.web:SearchWeb"
     - "kimi_cli.tools.web:FetchURL"
 ```
 
-`extend: default` 会继承内置的默认 Agent。你也可以指定相对路径继承其他 Agent 文件。
+`extend: default` 表示继承内置的默认人格。你也可以写相对路径，继承你自己写的其他人格文件。
 
-**配置字段**
+**配置字段说明**
 
-| 字段 | 说明 | 是否必填 |
-|------|------|----------|
-| `extend` | 继承的 Agent，可以是 `default` 或相对路径 | 否 |
-| `name` | Agent 名称 | 是（继承时可省略） |
-| `system_prompt_path` | 系统提示词文件路径，相对于 Agent 文件 | 是（继承时可省略） |
-| `system_prompt_args` | 传递给系统提示词的自定义参数，继承时会合并 | 否 |
-| `tools` | 工具列表，格式为 `模块:类名` | 是（继承时可省略） |
-| `exclude_tools` | 要排除的工具 | 否 |
-| `subagents` | 子 Agent 定义 | 否 |
+| 字段 | 必填 | 含义 |
+|------|------|------|
+| `extend` | 否 | 继承谁，可以是 `default` 或另一个 YAML 文件的路径 |
+| `name` | 是（继承时可省略） | 人格名字 |
+| `system_prompt_path` | 是（继承时可省略） | 系统提示词文件路径 |
+| `system_prompt_args` | 否 | 传给提示词的自定义参数，继承时会合并 |
+| `tools` | 是（继承时可省略） | 工具列表，格式为 `模块:类名` |
+| `exclude_tools` | 否 | 要排除的工具 |
+| `subagents` | 否 | 子 Agent 定义 |
 
-## 系统提示词内置参数
+## 系统提示词 —— 人格的「灵魂」
 
-系统提示词文件是一个 Markdown 模板，可以使用 `${VAR}` 语法引用变量，也支持 Jinja2 的 `{% include %}` 指令来引入其他文件。内置变量包括：
+系统提示词是一个 Markdown 文件，它告诉 Kimi「你是谁、你擅长什么、你应该怎么做事」。你可以把它理解为给 Kimi 写的「入职培训手册」。
 
-| 变量 | 说明 |
+这个手册支持变量替换：用 `${变量名}` 的语法，Kimi 启动时会把变量替换成实际的值。也支持 Jinja2 的 `{% include %}` 指令来引入其他文件。
+
+**内置变量**
+
+| 变量 | 含义 |
 |------|------|
 | `${KIMI_NOW}` | 当前时间（ISO 格式） |
 | `${KIMI_WORK_DIR}` | 工作目录路径 |
-| `${KIMI_WORK_DIR_LS}` | 工作目录文件列表 |
-| `${KIMI_AGENTS_MD}` | 从项目根目录到工作目录逐层合并的 `AGENTS.md` 内容（包括 `.kimi/AGENTS.md`） |
-| `${KIMI_SKILLS}` | 加载的 Skills 列表 |
-| `${KIMI_ADDITIONAL_DIRS_INFO}` | 通过 `--add-dir` 或 `/add-dir` 添加的额外目录信息 |
+| `${KIMI_WORK_DIR_LS}` | 工作目录里的文件列表 |
+| `${KIMI_AGENTS_MD}` | 从项目根目录到工作目录逐层合并的 `AGENTS.md` 内容 |
+| `${KIMI_SKILLS}` | 当前加载的所有 Skills 列表 |
+| `${KIMI_ADDITIONAL_DIRS_INFO}` | 通过 `--add-dir` 添加的额外目录信息 |
 
-你也可以通过 `system_prompt_args` 定义自定义参数：
+**自定义变量**
+
+你可以在 YAML 里定义自己的变量：
 
 ```yaml
 agent:
@@ -90,9 +105,9 @@ agent:
     MY_VAR: "自定义值"
 ```
 
-然后在提示词中使用 `${MY_VAR}`。
+然后在提示词里用 `${MY_VAR}` 引用。
 
-**系统提示词示例**
+**提示词示例**
 
 ```markdown
 # My Agent
@@ -104,9 +119,13 @@ Working directory: ${KIMI_WORK_DIR}
 ${MY_VAR}
 ```
 
-## 在 Agent 文件中定义子 Agent
+## 子 Agent —— 喊小弟来帮忙
 
-子 Agent 可以处理特定类型的任务。在 Agent 文件中定义子 Agent 后，主 Agent 可以通过 `Agent` 工具启动它们：
+主 Agent 不可能什么事都亲力亲为。遇到专门的活儿，它可以喊一个「小弟」（子 Agent）来处理。
+
+**怎么定义小弟**
+
+在人格配置文件里写：
 
 ```yaml
 version: 1
@@ -115,279 +134,229 @@ agent:
   subagents:
     coder:
       path: ./coder-sub.yaml
-      description: "处理编码任务"
+      description: "负责写代码"
     reviewer:
       path: ./reviewer-sub.yaml
-      description: "代码审查专家"
+      description: "负责审代码"
 ```
 
-子 Agent 文件也是标准的 Agent 格式，通常会继承主 Agent：
+这里定义了两个小弟：`coder`（程序员）和 `reviewer`（代码审查员）。每个小弟都有自己的配置文件。
+
+小弟的配置文件和主 Agent 格式一样，通常会继承主 Agent：
 
 ```yaml
 # coder.yaml
 version: 1
 agent:
-  extend: ./agent.yaml  # 继承主 Agent
+  extend: ./agent.yaml  # 继承主 Agent 的配置
   system_prompt_args:
     ROLE_ADDITIONAL: |
-      你现在作为子 Agent 运行...
+      你现在作为专职程序员运行，专注于代码实现...
 ```
 
-## 内置子 Agent 类型
+## 内置的小弟类型
 
-默认 Agent 配置包含三种内置子 Agent 类型，各自有不同的工具策略和适用场景：
+即使你不自己定义小弟，默认人格也自带三种「专业临时工」，各有所长：
 
-| 类型 | 用途 | 可用工具 |
-|------|------|---------|
-| `coder` | 通用软件工程：读写文件、运行命令、搜索代码 | `Shell`、`ReadFile`、`Glob`、`Grep`、`WriteFile`、`StrReplaceFile`、`SearchWeb`、`FetchURL` |
-| `explore` | 快速只读代码探索：搜索、阅读、总结 | `Shell`、`ReadFile`、`Glob`、`Grep`、`SearchWeb`、`FetchURL`（无写入工具） |
-| `plan` | 实现规划与架构设计：分析文件、制定方案 | `ReadFile`、`Glob`、`Grep`、`SearchWeb`、`FetchURL`（无 Shell、无写入工具） |
+| 类型 | 擅长什么 | 手里有什么工具 |
+|------|---------|--------------|
+| `coder` | 通用软件工程：读写文件、运行命令、搜索代码 | Shell、ReadFile、Glob、Grep、WriteFile、StrReplaceFile、SearchWeb、FetchURL |
+| `explore` | 快速只读探索：看看代码里有什么，不做修改 | Shell、ReadFile、Glob、Grep、SearchWeb、FetchURL（**没有写入工具**） |
+| `plan` | 做规划和架构设计：分析现状、制定方案 | ReadFile、Glob、Grep、SearchWeb、FetchURL（**没有 Shell、没有写入工具**） |
 
-所有子 Agent 类型均不可嵌套使用 `Agent` 工具（即子 Agent 不能创建自己的子 Agent）。`Agent` 工具仅在根 Agent 中可用。
+> 所有小弟都不能再召唤自己的小弟（子 Agent 不能嵌套）。`Agent` 工具只有主 Agent 能直接用。
 
-## 子 Agent 的运行方式
+## 小弟是怎么干活的
 
-通过 `Agent` 工具启动的子 Agent 会在独立的上下文中运行，完成后将结果返回给主 Agent。每个子 Agent 实例在会话目录的 `subagents/<agent_id>/` 下维护独立的上下文历史和元数据，可以被多次恢复继续使用。这种方式的优势：
+主 Agent 通过 `Agent` 工具召唤小弟。小弟会在一个独立的工作间里干活，和主 Agent 的办公桌互不干扰。干完之后，小弟把结果整理好交给主 Agent。
 
-- 隔离上下文，避免污染主 Agent 的对话历史
-- 可以并行处理多个独立任务
-- 子 Agent 可以有针对性的系统提示词
-- 持久实例可跨多次调用保留上下文
+每个小弟实例都会在自己的「档案室」（`subagents/<agent_id>/`）里保存工作记录，下次主 Agent 喊同一个 ID 的小弟时，它会带着之前的记忆继续工作。
 
-## 内置工具列表
+**这样做的好处：**
+- 隔离：小弟的胡言乱语不会污染主 Agent 的记忆
+- 并行：可以同时派多个小弟去干不同的活
+- 专业：每个小弟可以有自己的专属「入职培训」
+- 持久：同一个实例可以跨多次召唤保持记忆
 
-以下是 Kimi Code CLI 内置的所有工具。
+## Kimi 有哪些工具可用
+
+下面列出 Kimi Code CLI 内置的所有工具。你可以理解为这是 Kimi 的「工具箱」，每个人格可以挑选自己想用的工具。
+
+### `Agent` —— 召唤小弟
+
+- **功能**：启动或恢复一个子 Agent 实例，让它去处理专门的任务
+- **参数**：
+  - `description`：任务简介（3-5 个词）
+  - `prompt`：任务详细说明
+  - `subagent_type`：用哪种小弟，默认 `coder`
+  - `model`：要不要换个 AI 模型来做这个任务（可选）
+  - `resume`：恢复之前的小弟实例（可选）
+  - `run_in_background`：让小弟在后台干活，默认 `false`
 
-### `Agent`
+### `AskUserQuestion` —— 问用户问题
 
-- **路径**：`kimi_cli.tools.agent:Agent`
-- **描述**：启动或恢复子 Agent 实例处理聚焦任务。内置三种子 Agent 类型：`coder`（通用软件工程）、`explore`（快速只读代码探索）、`plan`（实现规划与架构设计）。每个实例维护独立的上下文历史，支持前台或后台运行。
+- **功能**：在干活过程中突然停下来问你问题，比如「有三个方案，你选哪个？」
+- **适用场景**：需要你在多个方案中选一个、指令模糊需要澄清、收集需求信息
+- **参数**：
+  - `questions`：问题列表（1-4 个）
+  - 每个问题有 `question`（问题文本）、`header`（短标签）、`options`（选项列表）、`multi_select`（是否多选）
+  - 每个选项有 `label`（标签）和 `description`（说明）
 
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| `description` | string | 任务简短描述（3-5 词） |
-| `prompt` | string | 任务详细描述 |
-| `subagent_type` | string | 内置子 Agent 类型，默认 `coder` |
-| `model` | string | 可选的模型覆盖 |
-| `resume` | string | 可选的 Agent 实例 ID，用于恢复现有实例 |
-| `run_in_background` | bool | 是否在后台运行，默认 false |
+> 不要滥用这个工具，只在你的选择真正影响后续操作时才问。
 
-### `AskUserQuestion`
+### `SetTodoList` —— 待办清单
 
-- **路径**：`kimi_cli.tools.ask_user:AskUserQuestion`
-- **描述**：在执行过程中向用户展示结构化问题和选项，收集用户偏好或决策。适用于需要用户在多个方案中做出选择、解决模糊指令或收集需求信息的场景。不应过度使用——只在用户的选择真正影响后续操作时才调用。
+- **功能**：管理待办事项，跟踪任务进度
+- **参数**：
+  - `todos`：待办列表，每个事项有 `title`（标题）和 `status`（状态：`pending` 待办 / `in_progress` 进行中 / `done` 完成）
 
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| `questions` | array | 问题列表（1–4 个问题） |
-| `questions[].question` | string | 问题文本，以 `?` 结尾 |
-| `questions[].header` | string | 短标签，最多 12 字符（如 `Auth`、`Style`） |
-| `questions[].options` | array | 可选项（2–4 个），系统会自动添加 "Other" 选项 |
-| `questions[].options[].label` | string | 选项标签（1–5 词），推荐选项可追加 `(Recommended)` |
-| `questions[].options[].description` | string | 选项说明 |
-| `questions[].multi_select` | bool | 是否允许多选，默认 false |
+### `Shell` —— 执行命令
 
-### `SetTodoList`
+- **功能**：运行 Shell 命令（Unix 用 bash/zsh，Windows 用 PowerShell）
+- **注意**：每次执行都需要你审批
+- **参数**：
+  - `command`：要执行的命令
+  - `timeout`：超时时间（秒），默认 60，前台最多 300，后台最多 86400
+  - `run_in_background`：是否后台运行，默认 `false`
+  - `description`：后台任务的描述（后台运行时必须填）
 
-- **路径**：`kimi_cli.tools.todo:SetTodoList`
-- **描述**：管理待办事项列表，跟踪任务进度
+后台任务启动后，Kimi 立刻拿到任务 ID 继续干别的，任务完成后系统会自动通知。
 
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| `todos` | array | 待办事项列表 |
-| `todos[].title` | string | 待办事项标题 |
-| `todos[].status` | string | 状态：`pending`、`in_progress`、`done` |
+### `ReadFile` —— 读文件
 
-### `Shell`
+- **功能**：读取文本文件内容
+- **限制**：一次最多读 1000 行，每行最多 2000 字符
+- **参数**：
+  - `path`：文件路径
+  - `line_offset`：从第几行开始读，默认 1。支持负数表示从末尾读（如 `-100` 读最后 100 行）
+  - `n_lines`：读多少行，默认/最大 1000
 
-- **路径**：`kimi_cli.tools.shell:Shell`
-- **描述**：执行 Shell 命令。需要用户审批。根据操作系统使用对应的 Shell（Unix 使用 bash/zsh，Windows 使用 PowerShell）。
+### `ReadMediaFile` —— 读图片/视频
 
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| `command` | string | 要执行的命令 |
-| `timeout` | int | 超时时间（秒），默认 60，前台最大 300 / 后台最大 86400 |
-| `run_in_background` | bool | 是否作为后台任务运行，默认 false |
-| `description` | string | 后台任务的简短描述，`run_in_background=true` 时必填 |
+- **功能**：读取图片或视频文件，发给 AI 看
+- **限制**：最大 100MB，只有模型支持多模态时才有效
+- **参数**：
+  - `path`：文件路径
 
-设置 `run_in_background=true` 后，命令会作为后台任务启动，工具立即返回任务 ID，AI 可以继续执行其他操作。任务完成时系统自动发送通知。适用于耗时的构建、测试、监控等场景。
+### `Glob` —— 按模式找文件
 
-### `ReadFile`
+- **功能**：按通配符模式搜索文件和目录，比如 `*.py`、`src/**/*.ts`
+- **限制**：最多返回 1000 个结果，不允许以 `**` 开头的模式
+- **参数**：
+  - `pattern`：匹配模式
+  - `directory`：搜索目录，默认当前工作目录
+  - `include_dirs`：是否包含目录，默认 `true`
 
-- **路径**：`kimi_cli.tools.file:ReadFile`
-- **描述**：读取文本文件内容。单次最多读取 1000 行，每行最多 2000 字符。工作目录外的文件需使用绝对路径。每次读取都会在消息中返回文件总行数。
+### `Grep` —— 文本搜索
 
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| `path` | string | 文件路径 |
-| `line_offset` | int | 起始行号，默认 1。支持负数表示从文件末尾读取（如 `-100` 读取最后 100 行），绝对值不超过 1000 |
-| `n_lines` | int | 读取行数，默认/最大 1000 |
+- **功能**：用正则表达式搜索文件内容，底层基于 ripgrep
+- **参数**：
+  - `pattern`：正则表达式
+  - `path`：搜索路径
+  - `glob`：文件过滤（如 `*.js`）
+  - `type`：文件类型（如 `py`、`js`、`go`）
+  - `output_mode`：输出模式：`files_with_matches`（只返回文件名）、`content`（返回匹配内容）、`count_matches`（返回匹配数）
+  - `-B` / `-A` / `-C`：显示匹配行前后多少行
+  - `-n`：显示行号
+  - `-i`：忽略大小写
+  - `multiline`：支持多行匹配
+  - `head_limit`：限制输出数量
 
-### `ReadMediaFile`
+### `WriteFile` —— 写文件
 
-- **路径**：`kimi_cli.tools.file:ReadMediaFile`
-- **描述**：读取图片或视频文件。文件最大 100MB。仅当模型支持图片/视频输入时可用。工作目录外的文件需使用绝对路径。
+- **功能**：创建新文件或覆盖现有文件
+- **注意**：需要用户审批，写工作目录外文件时必须用绝对路径
+- **参数**：
+  - `path`：文件路径（绝对路径）
+  - `content`：文件内容
+  - `mode`：`overwrite`（覆盖，默认）或 `append`（追加）
 
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| `path` | string | 文件路径 |
+### `StrReplaceFile` —— 替换文件内容
 
-### `Glob`
+- **功能**：在文件中查找一段文字并替换成另一段
+- **注意**：需要用户审批，编辑工作目录外文件时必须用绝对路径
+- **参数**：
+  - `path`：文件路径（绝对路径）
+  - `edit`：编辑操作，可以是单个或列表
+  - `edit.old`：要替换的原字符串
+  - `edit.new`：新字符串
+  - `edit.replace_all`：是否替换所有匹配项，默认 `false`
 
-- **路径**：`kimi_cli.tools.file:Glob`
-- **描述**：按模式匹配文件和目录。最多返回 1000 个匹配项，不允许以 `**` 开头的模式。支持搜索已发现的 Skill 根目录，路径中的 `~` 会自动展开为用户主目录。
+### `SearchWeb` —— 搜索网页
 
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| `pattern` | string | Glob 模式（如 `*.py`、`src/**/*.ts`） |
-| `directory` | string | 搜索目录，默认工作目录 |
-| `include_dirs` | bool | 是否包含目录，默认 true |
+- **功能**：上网搜索资料
+- **参数**：
+  - `query`：搜索关键词
+  - `limit`：结果数量，默认 5，最多 20
+  - `include_content`：是否包含网页正文，默认 `false`
 
-### `Grep`
+### `FetchURL` —— 抓取网页
 
-- **路径**：`kimi_cli.tools.file:Grep`
-- **描述**：使用正则表达式搜索文件内容，基于 ripgrep 实现
+- **功能**：打开一个网页，提取主要文字内容
+- **参数**：
+  - `url`：网页地址
 
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| `pattern` | string | 正则表达式模式 |
-| `path` | string | 搜索路径，默认当前目录 |
-| `glob` | string | 文件过滤（如 `*.js`） |
-| `type` | string | 文件类型（如 `py`、`js`、`go`） |
-| `output_mode` | string | 输出模式：`files_with_matches`（默认）、`content`、`count_matches` |
-| `-B` | int | 显示匹配行前 N 行 |
-| `-A` | int | 显示匹配行后 N 行 |
-| `-C` | int | 显示匹配行前后 N 行 |
-| `-n` | bool | 显示行号 |
-| `-i` | bool | 忽略大小写 |
-| `multiline` | bool | 启用多行匹配 |
-| `head_limit` | int | 限制输出行数 |
+### `Think` —— 记录思考
 
-### `WriteFile`
+- **功能**：让 Kimi 把思考过程记下来，适合复杂推理场景
+- **参数**：
+  - `thought`：思考内容
 
-- **路径**：`kimi_cli.tools.file:WriteFile`
-- **描述**：写入文件。写入操作需要用户审批。写入工作目录外文件时，必须使用绝对路径。
+### `SendDMail` —— 发送延迟消息
 
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| `path` | string | 绝对路径 |
-| `content` | string | 文件内容 |
-| `mode` | string | `overwrite`（默认）或 `append` |
+- **功能**：发送延迟消息（D-Mail），用于检查点回滚场景
+- **参数**：
+  - `message`：消息内容
+  - `checkpoint_id`：目标检查点 ID
 
-### `StrReplaceFile`
+### `EnterPlanMode` —— 进入计划模式
 
-- **路径**：`kimi_cli.tools.file:StrReplaceFile`
-- **描述**：使用字符串替换编辑文件。编辑操作需要用户审批。编辑工作目录外文件时，必须使用绝对路径。
+- **功能**：请求进入计划模式。调用后会弹出确认框，问你同不同意。在 YOLO 模式下，只有用户明确要求规划或存在重大架构分歧时才会用。
+- **参数**：无
 
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| `path` | string | 绝对路径 |
-| `edit` | object/array | 单个编辑或编辑列表 |
-| `edit.old` | string | 要替换的原字符串 |
-| `edit.new` | string | 替换后的字符串 |
-| `edit.replace_all` | bool | 是否替换所有匹配项，默认 false |
+### `ExitPlanMode` —— 提交计划方案
 
-### `SearchWeb`
+- **功能**：在计划模式下写好方案后，提交给用户审批。调用前需要先把方案写入 plan 文件。
+- **用户的选择**：可以选某个方案开始执行、拒绝、或提修改意见
+- **参数**：
+  - `options`：如果有多个可选方案，列出 2-3 个供用户选择（每个有 `label` 标签和 `description` 说明）
 
-- **路径**：`kimi_cli.tools.web:SearchWeb`
-- **描述**：搜索网页。需要配置搜索服务（Kimi Code 平台自动配置）。
+### `TaskList` —— 查看后台任务
 
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| `query` | string | 搜索关键词 |
-| `limit` | int | 结果数量，默认 5，最大 20 |
-| `include_content` | bool | 是否包含页面内容，默认 false |
+- **功能**：列出当前正在跑的后台任务
+- **参数**：
+  - `active_only`：只看正在运行的，默认 `true`
+  - `limit`：最多返回多少个，默认 20
 
-### `FetchURL`
+### `TaskOutput` —— 查看后台任务输出
 
-- **路径**：`kimi_cli.tools.web:FetchURL`
-- **描述**：抓取网页内容，返回提取的主要文本内容。如果配置了抓取服务会优先使用，否则使用本地 HTTP 请求。
+- **功能**：查看某个后台任务的输出和状态
+- **参数**：
+  - `task_id`：任务 ID
+  - `block`：是否等到任务完成，默认 `false`
+  - `timeout`：等待的最大秒数，默认 30
 
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| `url` | string | 要抓取的 URL |
+### `TaskStop` —— 停止后台任务
 
-### `Think`
+- **功能**：强制停止一个正在运行的后台任务
+- **注意**：需要用户审批，只在必须取消时使用（正常完成的任务等它自己通知）
+- **参数**：
+  - `task_id`：任务 ID
+  - `reason`：停止原因（可选）
 
-- **路径**：`kimi_cli.tools.think:Think`
-- **描述**：让 Agent 记录思考过程，适用于复杂推理场景
+## 安全边界
 
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| `thought` | string | 思考内容 |
+### 工作区范围
 
-### `SendDMail`
+- 文件读写默认只能在当前工作目录（以及通过 `--add-dir` 添加的额外目录）内进行
+- 读工作目录外的文件需要用绝对路径
+- 写和编辑操作都需要你手动审批；操作工作目录外文件时必须用绝对路径
 
-- **路径**：`kimi_cli.tools.dmail:SendDMail`
-- **描述**：发送延迟消息（D-Mail），用于检查点回滚场景
-
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| `message` | string | 要发送的消息 |
-| `checkpoint_id` | int | 要发送回的检查点 ID（>= 0） |
-
-### `EnterPlanMode`
-
-- **路径**：`kimi_cli.tools.plan.enter:EnterPlanMode`
-- **描述**：请求进入 Plan 模式。调用后会向用户展示审批请求，用户可以选择同意或拒绝进入 Plan 模式。在 YOLO 模式下，仅在用户明确要求规划或存在重大架构歧义时使用。
-
-此工具不接受参数。
-
-### `ExitPlanMode`
-
-- **路径**：`kimi_cli.tools.plan:ExitPlanMode`
-- **描述**：在 Plan 模式下完成方案后提交审批。调用前需先将方案写入 plan 文件，此工具会读取 plan 文件内容并展示给用户审批。用户可以选择某个实施路径（退出 Plan 模式并开始执行）、拒绝（保持 Plan 模式等待反馈）或提供修改意见。
-
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| `options` | list \| null | 当方案包含多个可选实施路径时，列出 2–3 个选项供用户选择。每个选项有 `label`（1–8 个词的简短标签，可附加 "(Recommended)"）和可选的 `description`（方案摘要）。不可使用 "Approve"、"Reject"、"Revise" 作为标签名。 |
-
-### `TaskList`
-
-- **路径**：`kimi_cli.tools.background:TaskList`
-- **描述**：列出当前会话中的后台任务。适用于上下文压缩后重新获取任务 ID，或检查哪些任务仍在运行。
-
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| `active_only` | bool | 是否仅列出活跃任务，默认 true |
-| `limit` | int | 返回的最大任务数（1–100），默认 20 |
-
-### `TaskOutput`
-
-- **路径**：`kimi_cli.tools.background:TaskOutput`
-- **描述**：获取后台任务的输出和状态。默认为非阻塞查询，返回当前状态和输出快照；如果输出被截断，可使用 `ReadFile` 分页读取完整日志。
-
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| `task_id` | string | 要查询的任务 ID |
-| `block` | bool | 是否等待任务完成，默认 false |
-| `timeout` | int | `block=true` 时的最大等待秒数（0–3600），默认 30 |
-
-### `TaskStop`
-
-- **路径**：`kimi_cli.tools.background:TaskStop`
-- **描述**：停止正在运行的后台任务。需要用户审批。仅在任务必须取消时使用；对于正常完成的任务，应等待自动通知。在 Plan 模式下不可用。
-
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| `task_id` | string | 要停止的任务 ID |
-| `reason` | string | 停止原因（可选），默认 "Stopped by TaskStop" |
-
-## 工具安全边界
-
-**工作区范围**
-
-- 文件读写通常在工作目录（及通过 `--add-dir` 或 `/add-dir` 添加的额外目录）内进行
-- 读取工作区外文件需使用绝对路径
-- 写入和编辑操作都需要用户审批；操作工作区外文件时，必须使用绝对路径
-
-**审批机制**
-
-以下操作需要用户审批：
+### 需要审批的操作
 
 | 操作 | 审批要求 |
 |------|---------|
-| Shell 命令执行 | 每次执行 |
-| 文件写入/编辑 | 每次操作 |
-| MCP 工具调用 | 每次调用 |
-| 停止后台任务 | 每次停止 |
+| 执行 Shell 命令 | 每次都要你点头 |
+| 写文件 / 改文件 | 每次都要你点头 |
+| 调用 MCP 工具 | 每次都要你点头 |
+| 停止后台任务 | 每次都要你点头 |
