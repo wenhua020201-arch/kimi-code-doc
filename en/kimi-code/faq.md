@@ -30,6 +30,12 @@ Possible reasons for an invalid API key:
 
 If you're using the Kimi Code platform, you can check your current quota and membership status with the `/usage` command. If the quota is exhausted or membership expired, you need to renew or upgrade at [Kimi Code](https://kimi.com/coding).
 
+## Subscription
+
+### How do I request an invoice or upgrade my membership?
+
+Please visit the [Kimi Membership page](https://www.kimi.com/membership/pricing?from=kfc_docs_faq) and follow the on-page instructions to request an invoice or upgrade your plan.
+
 ## Interaction Issues
 
 ### `cd` command doesn't work in shell mode

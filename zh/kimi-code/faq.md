@@ -31,6 +31,12 @@ API 密钥无效可能的原因：
 
 如果你使用 Kimi Code 平台，可以通过 `/usage` 命令查看当前的配额和会员状态。如果配额用尽或会员过期，需要在 [Kimi Code](https://kimi.com/coding) 续费或升级。
 
+## 订阅相关
+
+### 如何开发票或升级会员
+
+请前往 [Kimi 会员权益页面](https://www.kimi.com/membership/pricing?from=kfc_docs_faq)，根据页面指引完成开票申请或会员升级操作。
+
 ## 交互问题
 
 ### Shell 模式中 `cd` 命令无效

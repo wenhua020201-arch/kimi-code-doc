@@ -9,6 +9,7 @@ export default defineAdditionalConfig({
         text: 'Kimi Code',
         items: [
           { text: 'Overview', link: '/en/' },
+          { text: 'Community Guidelines', link: '/en/kimi-code/community-guidelines' },
           { text: 'FAQ', link: '/en/kimi-code/faq' },
         ],
       },
