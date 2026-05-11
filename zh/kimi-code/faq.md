@@ -35,7 +35,7 @@ API 密钥无效可能的原因：
 
 ### 如何开发票或升级会员
 
-请前往 [Kimi 会员权益页面](https://www.kimi.com/membership/pricing?from=kfc_docs_faq)，根据页面指引完成开票申请或会员升级操作。
+请前往 [Kimi 会员权益页面](https://www.kimi.com/membership/pricing?from=kfc_docs_faq#pricing-faq)，根据页面指引完成开票申请或会员升级操作。
 
 ## 交互问题
 
