@@ -75,12 +75,17 @@ If you want to integrate Kimi Code into third-party development tools, you need 
 
 #### Service Endpoint
 
-The Kimi Code API is compatible with both OpenAI and Anthropic protocols. Choose the corresponding Base URL as needed:
+The Kimi Code API is compatible with both OpenAI and Anthropic protocols. Different tools have different requirements for address configuration:
 
-  | Protocol | Base URL |
-  |------|----------|
-  | OpenAI Compatible | `https://api.kimi.com/coding/v1` |
-  | Anthropic Compatible | `https://api.kimi.com/coding/` |
+- **Base URL**: Some tools (e.g., Claude Code) only require the Base URL, and the tool will automatically append the subsequent path.
+- **Full Endpoint**: Some tools (e.g., Trae) require the complete API request address.
+
+Choose the corresponding address as needed:
+
+  | Protocol | Base URL | Common Endpoint Example |
+  |------|----------|------------------|
+  | OpenAI Compatible | `https://api.kimi.com/coding/v1` | `https://api.kimi.com/coding/v1/chat/completions` |
+  | Anthropic Compatible | `https://api.kimi.com/coding/` | `https://api.kimi.com/coding/v1/messages` |
 
 #### Obtaining an API Key
 
