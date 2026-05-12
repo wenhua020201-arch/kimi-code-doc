@@ -9,6 +9,8 @@ This document demonstrates the configuration methods for Claude Code and Roo Cod
 - You have subscribed to Kimi membership and activated Kimi Code benefits.
 - You have obtained an API Key (created in the [Kimi Code Console](https://www.kimi.com/code/console)).
 
+![Kimi Code Console](/images/en/third-party-tools/other-coding-agents/kimi-code-console.png)
+
 ## Claude Code
 
 [Claude Code](https://docs.anthropic.com/en/docs/claude-code) is a command-line programming assistant launched by Anthropic. For installation instructions, please refer to the [Claude Code official documentation](https://docs.anthropic.com/en/docs/claude-code/getting-started).
