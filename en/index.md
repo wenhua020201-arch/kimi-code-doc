@@ -69,7 +69,7 @@ Users of Kimi Code CLI or the VS Code extension can connect automatically via OA
 
 #### API Key (Third-Party Tools / Self-Built Apps)
 
-Kimi Code benefits support usage in mainstream Coding Agents — such as Claude Code, Roo Code, OpenCode, and more. It can also work with generic Agent frameworks like OpenClaw and Hermes, allowing you to freely call Kimi's AI capabilities in the tools you're already used to.
+Kimi Code benefits support usage in mainstream Coding Agents — such as Claude Code, Roo Code, OpenCode, and more. It can also work with generic Agent frameworks like OpenClaw and Hermes, allowing you to freely call Kimi Code's AI capabilities in the tools you're already used to.
 
 If you want to integrate Kimi Code into third-party development tools, you need to manually configure an API Key.
 

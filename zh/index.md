@@ -69,7 +69,7 @@ Invoke-RestMethod https://code.kimi.com/install.ps1 | Invoke-Expression
 
 #### API Key（第三方工具 / 自建应用）
 
-Kimi Code 权益支持在主流 Coding Agent 中使用——例如 Claude Code、Roo Code、OpenCode 等；也可以配合 OpenClaw、Hermes 等通用 Agent 框架。让你在自己习惯的工具里自由调用 Kimi 的 AI 能力。
+Kimi Code 权益支持在主流 Coding Agent 中使用——例如 Claude Code、Roo Code、OpenCode 等；也可以配合 OpenClaw、Hermes 等通用 Agent 框架。让你在自己习惯的工具里自由调用 Kimi Code 的 AI 能力。
 
 如果你要将 Kimi Code 接入第三方开发工具，需要手动配置 API Key。
 
