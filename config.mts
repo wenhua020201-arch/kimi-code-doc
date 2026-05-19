@@ -11,6 +11,7 @@ export default defineAdditionalConfig({
           { text: '产品概览', link: '/' },
           { text: '社区倡议', link: '/kimi-code/community-guidelines' },
           { text: '常见问题', link: '/kimi-code/faq' },
+          { text: '错误参考', link: '/kimi-code/error-reference' },
         ],
       },
       {

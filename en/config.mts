@@ -11,6 +11,7 @@ export default defineAdditionalConfig({
           { text: 'Overview', link: '/en/' },
           { text: 'Community Guidelines', link: '/en/kimi-code/community-guidelines' },
           { text: 'FAQ', link: '/en/kimi-code/faq' },
+          { text: 'Error Reference', link: '/en/kimi-code/error-reference' },
         ],
       },
       {
