@@ -2,11 +2,23 @@
 
 ## kimi-datasource (Beta)
 
-kimi-datasource is an official stock data plugin developed by Kimi Code. It supports real-time price queries, technical indicators, and market summaries for A-shares and Hong Kong stocks — all driven by natural language, with no manual API calls needed.
+kimi-datasource is a Kimi Code official plugin that connects Kimi to professional data sources — financial markets, macroeconomic indicators, corporate records, and academic literature. It covers A-shares, Hong Kong stocks, global markets, and 50+ years of World Bank economic data, all queryable through natural language with no API calls required.
+
+::: warning Version update
+Current version: **2.0.2**. If you have a previous installation, re-run the install command to overwrite it.
+:::
 
 ## Quick Start
 
-<span class="step-num">①</span> **Open a terminal and install the plugin**
+<div class="steps">
+  <div class="step">
+    <div class="step-left">
+      <div class="step-circle">1</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-body">
+
+**Install the plugin**
 
 ```bash
 kimi plugin install https://cdn.kimi.com/kimi-code-plugins/kimi-datasource.zip
@@ -14,9 +26,16 @@ kimi plugin install https://cdn.kimi.com/kimi-code-plugins/kimi-datasource.zip
 
 > The plugin will be installed in `~/.kimi/plugins/`.
 
-│
+  </div>
+  </div>
+  <div class="step">
+    <div class="step-left">
+      <div class="step-circle">2</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-body">
 
-<span class="step-num">②</span> **Verify the installation**
+**Verify the installation**
 
 ```bash
 kimi plugin list
@@ -24,72 +43,156 @@ kimi plugin list
 
 Confirm that `kimi-datasource` appears in the output.
 
-│
+  </div>
+  </div>
+  <div class="step">
+    <div class="step-left">
+      <div class="step-circle">3</div>
+    </div>
+    <div class="step-body">
 
-<span class="step-num">③</span> **Start Kimi and use the plugin**
+**Start Kimi and use the plugin**
 
-Trigger it via a slash command:
+Trigger via a slash command:
 
 ```
-/skill:kimi-datasource what's the current price of Moutai?
+/skill:kimi-datasource What's the current price of Moutai?
 ```
 
-Or simply describe your request in natural language, and Kimi will automatically call the plugin:
+Or simply describe your request in natural language:
 
 ```
 Did BYD go up or down today?
 ```
 
-## Feature Coverage
+  </div>
+  </div>
+</div>
+
+## Financial Data
+
+### Stock & Global Market Quotes
 
 | Feature | Description | Markets |
 |---|---|---|
-| Real-time Quotes | Current price, minute K-lines, change % | A-shares, HK |
-| Technical Indicators | MACD, KDJ, RSI, BOLL, MA, etc. | A-shares only |
-| Pre-market Summary | Reference price (previous close) | A-shares, HK |
-| Post-market Summary | Change %, volume, turnover, average price | A-shares, HK |
-| Watchlist Management | Add and view watchlist stocks; supports P&L tracking | A-shares, HK |
+| Price queries | Real-time quotes, historical ranges, change % | A-shares, HK, US, and major global markets |
+| Technical indicators | MACD, KDJ, RSI, BOLL, MA — with bullish/bearish signals | A-shares only |
+| Financial statements | Balance sheets, year-over-year financial data | A-shares, HK, US |
+| Company fundamentals | Business overview, shareholder information | A-shares, HK, US |
+| Stock screening | Filter by sector, market cap, price change, financial metrics, and more | A-shares, HK, US |
+| Market indices | CSI 300, SSE, S&P 500, Nasdaq, Nikkei, and more | A-shares, major global markets |
+| Watchlist management | Track holdings, calculate P&L based on cost basis | A-shares, HK, US |
 
-> US stocks, ETFs, indices, and funds are not supported yet.
+### Macroeconomic Data
 
-## Examples
+Powered by the World Bank Open Data API — **189 member countries, 50+ years** of historical time series covering GDP, trade, population, poverty, education, climate, and dozens of other development indicators. Ideal for cross-country research, policy analysis, or data-driven reporting.
 
-::: details Query real-time price
+| Feature | Description |
+|---|---|
+| Core macro indicators | GDP, CPI, trade volume, unemployment, external debt, etc. |
+| Long-run historical data | Up to 50+ years of data per country |
+| Cross-country comparison | Compare any indicator across multiple countries |
+| Thematic datasets | Poverty rates, education enrollment, CO₂ emissions, energy mix, demographics, and more |
+
+### Financial Data Examples
+
+::: details Historical price query
 
 ```text
-What's Moutai's current price and daily change?
+Pull Moutai's daily closing prices from December 2025 to March 2026, show them in a table, and tell me the highest and lowest points and when they occurred.
 ```
 
 :::
 
-::: details View technical indicators
+::: details Financial statement analysis
 
 ```text
-Show me MACD and KDJ for CATL. What's the signal?
+Pull Moutai's 2024 balance sheet, compare it year-over-year against 2023, and flag any notable changes worth paying attention to.
 ```
 
 :::
 
-::: details Post-market summary
+::: details Company fundamentals
 
 ```text
-How did Tencent close today? What's the turnover and volume?
+Who are Tencent's major shareholders, and how have its revenue and net profit trended over the past three years?
 ```
 
 :::
 
-::: details Multi-stock comparison
+::: details Stock screening
 
 ```text
-Compare the price change and volume of Moutai, Wuliangye, and Luzhou Laojiao today.
+In the Chinese liquor sector, find stocks with market cap above 50B CNY and list their names and current market caps.
 ```
 
 :::
 
-::: details Add to watchlist
+::: details Global market overview
 
 ```text
-Add BYD to my watchlist — cost basis 280, 200 shares.
+How are the S&P 500, Nasdaq, and Nikkei 225 performing today? Any notable sector moves?
+```
+
+:::
+
+::: details Macroeconomic comparison
+
+```text
+Compare GDP growth rates and GDP per capita trends for China, India, and Vietnam over the past 20 years.
+```
+
+:::
+
+::: details Thematic data research
+
+```text
+Show CO₂ emissions trends for major economies over the past decade, alongside their renewable energy share.
+```
+
+:::
+
+## Academic Data
+
+Access millions of papers across physics, mathematics, computer science, quantitative finance, economics, and more — spanning both peer-reviewed journals and preprint repositories. Whether you're writing a literature review, tracking a research frontier, or looking for the most cited work in a field, just describe what you need.
+
+| Feature | Description |
+|---|---|
+| Paper search | Search by keyword, author, topic, or field across a large academic corpus |
+| Citation lookup | Find the most cited and influential papers in any domain |
+| Preprint access | Access the latest research before formal publication |
+| Cross-discipline | Physics, math, CS, economics, quantitative finance, climate science, and more |
+
+### Academic Data Examples
+
+::: details Literature search
+
+```text
+Find key academic papers on financial fraud detection from the past five years, focusing on abnormal accruals and earnings manipulation models.
+```
+
+:::
+
+::: details Research frontier
+
+```text
+What are the most important recent papers on LLM reasoning capabilities? Summarize the main findings.
+```
+
+:::
+
+::: details Preprint lookup
+
+```text
+What are the latest preprints at the intersection of quantitative finance and machine learning?
+```
+
+:::
+
+::: details Citation analysis
+
+```text
+What are the most influential papers on reinforcement learning from human feedback? Who are the key authors?
 ```
 
 :::
@@ -116,12 +219,25 @@ kimi plugin install https://cdn.kimi.com/kimi-code-plugins/kimi-datasource.zip
 
 ## Notes
 
-- This plugin is read-only and does not provide trading or order placement functionality.
-- Data covers A-shares (SSE, SZSE, BSE) and Hong Kong stocks; US stocks are not supported.
-- Technical indicators (MACD, KDJ, etc.) and real-time prices are only available during trading hours.
-- AI-generated content is for reference only and does not constitute investment advice.
+- This plugin is read-only and does not support trading, writing, or any data submission.
+- Technical indicators and real-time prices are only available during active trading hours. After market close, ask about closing data instead (e.g. "How did X close today?").
+- AI-generated output is for reference only and does not constitute investment or business advice.
 
 ## Next Steps
 
 - [Custom Plugins](./plugins.md) — Learn how to install, uninstall, and configure your own plugins
 - [Skills](./skills.md) — Learn about skill usage and directory structure
+
+<style>
+.steps { display: flex; flex-direction: column; margin: 24px 0; }
+.step { display: flex; gap: 16px; }
+.step-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+.step-circle {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--vp-c-brand-1, #3451b2); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 600; flex-shrink: 0;
+}
+.step-line { width: 2px; flex: 1; background: var(--vp-c-divider); margin: 4px 0; min-height: 16px; }
+.step-body { padding-bottom: 28px; flex: 1; min-width: 0; }
+</style>
