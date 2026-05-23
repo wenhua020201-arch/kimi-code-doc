@@ -34,7 +34,7 @@ export default defineAdditionalConfig({
             text: 'Customization',
             collapsed: false,
             items: [
-              { text: 'Official Plugins <span style="background:#3451b2;color:#fff;font-size:11px;padding:1px 6px;border-radius:4px;margin-left:6px">NEW</span>', link: '/en/kimi-code-cli/customization/official plugins' },
+              { text: 'Official Plugins <span style="background:#3451b2;color:#fff;font-size:11px;padding:1px 6px;border-radius:4px;margin-left:6px">UPDATED</span>', link: '/en/kimi-code-cli/customization/official plugins' },
               { text: 'MCP', link: '/en/kimi-code-cli/customization/mcp' },
               { text: 'Hooks (Beta)', link: '/en/kimi-code-cli/customization/hooks' },
               { text: 'Skills', link: '/en/kimi-code-cli/customization/skills' },
