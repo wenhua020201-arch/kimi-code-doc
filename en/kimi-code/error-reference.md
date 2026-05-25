@@ -13,35 +13,35 @@ If you are using a third-party client such as OpenCode or Claude Code, the clien
 
 | Error keyword | HTTP status | Jump to |
 |--------------|------------|---------|
-| `The API Key appears to be invalid or may have expired` | 401 | [Authentication Errors](#authentication-errors) |
-| `Invalid Authentication` | 401 | [Authentication Errors](#authentication-errors) |
-| `unable to verify your membership benefits` | 402 | [Membership Benefit Unavailable](#membership-benefit-unavailable) |
-| `Kimi For Coding is currently only available for Coding Agents` | 403 | [Permission Errors](#permission-errors) |
-| `You've reached your usage limit for this billing cycle` | 403 | [Permission Errors](#permission-errors) |
-| `Access terminated` | 403 | [Permission Errors](#permission-errors) |
-| `The engine is currently overloaded` | 429 | [Rate Limits & Quotas](#rate-limits--quotas) |
-| `We're receiving too many requests` | 429 | [Rate Limits & Quotas](#rate-limits--quotas) |
-| `You've reached your usage limit for this period` | 429 | [Rate Limits & Quotas](#rate-limits--quotas) |
-| `You've reached kimi monthly usage limit` | 429 | [Rate Limits & Quotas](#rate-limits--quotas) |
-| `total message size N exceeds limit 2097152` | 400 | [Request Format Errors](#request-format-errors) |
-| `Your request exceeded model token limit: 262144` | 400 | [Request Format Errors](#request-format-errors) |
-| `thinking is enabled but reasoning_content is missing` | 400 | [Request Format Errors](#request-format-errors) |
-| `unsupported image url` | 400 | [Request Format Errors](#request-format-errors) |
-| `function name ... is duplicated` | 400 | [Request Format Errors](#request-format-errors) |
-| `The request was rejected because it was considered high risk` | 400 | [Request Format Errors](#request-format-errors) |
-| `Not found the model kimi-for-coding or Permission denied` | 404 | [Resource Not Found](#resource-not-found) |
-| `method not found` | 404 | [Resource Not Found](#resource-not-found) |
-| `bot_id ... value does not match id_kinds` | 500 | [Internal Server Errors](#internal-server-errors) |
-| `failed to connect to ... database=membership_` | 500 | [Internal Server Errors](#internal-server-errors) |
-| `FATAL: terminating connection due to administrator command` | 500 | [Internal Server Errors](#internal-server-errors) |
-| `failed to evaluate rate limit script` | 500 | [Internal Server Errors](#internal-server-errors) |
-| `i/o timeout` / `conn closed` / `bad connection` | 500 | [Internal Server Errors](#internal-server-errors) |
-| `503 Service Unavailable` / `504 Gateway Timeout` / `502 Bad Gateway` | 500 | [Internal Server Errors](#internal-server-errors) |
-| `context canceled` | 499 | [Tool Call Errors](#tool-call-errors) |
-| `url2text` / `spider checkUrl failed` / `invalid html` | 500 | [Tool Call Errors](#tool-call-errors) |
-| `image_url:moderation request error` | 500 | [Tool Call Errors](#tool-call-errors) |
-| `We consider the current URL poses a security risk` | 403 | [Tool Call Errors](#tool-call-errors) |
-| `invalid_url: The provided URL is invalid` | 400 | [Tool Call Errors](#tool-call-errors) |
+| `The API Key appears to be invalid or may have expired` | 401 | [Invalid API Key](#invalid-api-key) |
+| `Invalid Authentication` | 401 | [Invalid Authentication](#invalid-authentication) |
+| `unable to verify your membership benefits` | 402 | [Unable to Verify Membership](#unable-to-verify-membership) |
+| `Kimi For Coding is currently only available for Coding Agents` | 403 | [Client Not on Whitelist](#client-not-on-whitelist) |
+| `You've reached your usage limit for this billing cycle` | 403 | [Billing Cycle Quota Exhausted](#billing-cycle-quota-exhausted) |
+| `Access terminated` | 403 | [Account Access Terminated](#account-access-terminated) |
+| `The engine is currently overloaded` | 429 | [Inference Engine Overloaded](#inference-engine-overloaded) |
+| `We're receiving too many requests` | 429 | [Too Many Concurrent Requests](#too-many-concurrent-requests) |
+| `You've reached your usage limit for this period` | 429 | [5-Hour Rolling Quota Reached](#5-hour-rolling-quota-reached) |
+| `You've reached kimi monthly usage limit` | 429 | [Monthly Kimi Quota Exhausted](#monthly-kimi-quota-exhausted) |
+| `total message size N exceeds limit 2097152` | 400 | [Message Body Exceeds Context Limit](#message-body-exceeds-context-limit) |
+| `Your request exceeded model token limit: 262144` | 400 | [Token Limit Exceeded](#token-limit-exceeded) |
+| `thinking is enabled but reasoning_content is missing` | 400 | [Missing Reasoning Content Field](#missing-reasoning-content-field) |
+| `unsupported image url` | 400 | [Unsupported Image URL](#unsupported-image-url) |
+| `function name ... is duplicated` | 400 | [Duplicate Tool Name](#duplicate-tool-name) |
+| `The request was rejected because it was considered high risk` | 400 | [Content Safety Rejection](#content-safety-rejection) |
+| `Not found the model kimi-for-coding or Permission denied` | 404 | [Model Not Found](#model-not-found) |
+| `method not found` | 404 | [Endpoint Not Found](#endpoint-not-found) |
+| `bot_id ... value does not match id_kinds` | 500 | [Invalid bot_id Format](#invalid-bot_id-format) |
+| `failed to connect to ... database=membership_` | 500 | [Database Connection Failed](#database-connection-failed) |
+| `FATAL: terminating connection due to administrator command` | 500 | [Database Connection Failed](#database-connection-failed) |
+| `failed to evaluate rate limit script` | 500 | [Internal Connection Error](#internal-connection-error) |
+| `i/o timeout` / `conn closed` / `bad connection` | 500 | [Internal Connection Error](#internal-connection-error) |
+| `503 Service Unavailable` / `504 Gateway Timeout` / `502 Bad Gateway` | 500 | [Downstream Service Unavailable](#downstream-service-unavailable) |
+| `context canceled` | 499 | [Request Canceled](#request-canceled) |
+| `url2text` / `spider checkUrl failed` / `invalid html` | 500 | [Web Page Read Failed](#web-page-read-failed) |
+| `image_url:moderation request error` | 500 | [Image Moderation Failed](#image-moderation-failed) |
+| `We consider the current URL poses a security risk` | 403 | [URL Security Risk Blocked](#url-security-risk-blocked) |
+| `invalid_url: The provided URL is invalid` | 400 | [Invalid URL Format](#invalid-url-format) |
 
 
 ## Authentication Errors
