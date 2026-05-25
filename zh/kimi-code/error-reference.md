@@ -13,36 +13,36 @@
 
 | 看到的报错关键词 | HTTP 状态码 | 跳转章节 |
 |--------------|-----------|---------|
-| `The API Key appears to be invalid or may have expired` | 401 | [API Key 无效](#api-key-无效) |
-| `Invalid Authentication` | 401 | [Invalid Authentication](#invalid-authentication) |
-| `unable to verify your membership benefits` | 402 | [会员权益无法验证](#会员权益无法验证) |
-| `Kimi For Coding is currently only available for Coding Agents` | 403 | [非白名单客户端](#非白名单客户端) |
-| `You've reached your usage limit for this billing cycle` | 403 | [计费周期配额耗尽](#计费周期配额耗尽) |
-| `Access terminated` | 403 | [账号访问终止](#账号访问终止) |
-| `The engine is currently overloaded` | 429 | [推理引擎过载](#推理引擎过载) |
-| `We're receiving too many requests` | 429 | [并发请求过多](#并发请求过多) |
-| `You've reached your usage limit for this period` | 429 | [5 小时限额触顶](#5-小时限额触顶) |
-| `You've reached kimi monthly usage limit` | 429 | [会员月度额度耗尽](#会员月度额度耗尽) |
-| `total message size N exceeds limit 2097152` | 400 | [消息体超出上下文限制](#消息体超出上下文限制) |
-| `Your request exceeded model token limit: 262144` | 400 | [Token 超限](#token-超限) |
-| `thinking is enabled but reasoning_content is missing` | 400 | [思维链字段缺失](#思维链字段缺失) |
-| `unsupported image url` | 400 | [不支持的图片 URL](#不支持的图片-url) |
-| `function name ... is duplicated` | 400 | [工具名重复](#工具名重复) |
-| `The request was rejected because it was considered high risk` | 400 | [内容安全拦截](#内容安全拦截) |
-| `Not found the model kimi-for-coding or Permission denied` | 404 | [模型未找到](#模型未找到) |
-| `method not found` | 404 | [接口路径不存在](#接口路径不存在) |
-| `bot_id ... value does not match id_kinds` | 500 | [bot_id 格式不合规](#bot_id-格式不合规) |
-| `failed to connect to ... database=membership_` | 500 | [数据库连接失败](#数据库连接失败) |
-| `FATAL: terminating connection due to administrator command` | 500 | [数据库连接失败](#数据库连接失败) |
-| `failed to evaluate rate limit script` | 500 | [内部连接异常](#内部连接异常) |
-| `i/o timeout` / `conn closed` / `bad connection` | 500 | [内部连接异常](#内部连接异常) |
-| `503 Service Unavailable` / `504 Gateway Timeout` / `502 Bad Gateway` | 500 | [下游服务不可用](#下游服务不可用) |
-| `未找到该账号` / `该账号已被禁用` / `已被禁言` | 500 | [账号状态异常](#账号状态异常) |
-| `context canceled` | 499 | [请求被取消](#请求被取消) |
-| `url2text` / `spider checkUrl failed` / `invalid html` | 500 | [网页读取失败](#网页读取失败) |
-| `image_url:moderation request error` | 500 | [图片审核失败](#图片审核失败) |
-| `We consider the current URL poses a security risk` | 403 | [URL 安全风险拦截](#url-安全风险拦截) |
-| `invalid_url: The provided URL is invalid` | 400 | [URL 格式无效](#url-格式无效) |
+| `The API Key appears to be invalid or may have expired` | 401 | [认证错误](#api-key-无效) |
+| `Invalid Authentication` | 401 | [认证错误](#invalid-authentication) |
+| `unable to verify your membership benefits` | 402 | [会员权益异常](#会员权益无法验证) |
+| `Kimi For Coding is currently only available for Coding Agents` | 403 | [权限错误](#非白名单客户端) |
+| `You've reached your usage limit for this billing cycle` | 403 | [权限错误](#计费周期配额耗尽) |
+| `Access terminated` | 403 | [权限错误](#账号访问终止) |
+| `The engine is currently overloaded` | 429 | [限流与配额](#推理引擎过载) |
+| `We're receiving too many requests` | 429 | [限流与配额](#并发请求过多) |
+| `You've reached your usage limit for this period` | 429 | [限流与配额](#5-小时限额触顶) |
+| `You've reached kimi monthly usage limit` | 429 | [限流与配额](#会员月度额度耗尽) |
+| `total message size N exceeds limit 2097152` | 400 | [请求格式错误](#消息体超出上下文限制) |
+| `Your request exceeded model token limit: 262144` | 400 | [请求格式错误](#token-超限) |
+| `thinking is enabled but reasoning_content is missing` | 400 | [请求格式错误](#思维链字段缺失) |
+| `unsupported image url` | 400 | [请求格式错误](#不支持的图片-url) |
+| `function name ... is duplicated` | 400 | [请求格式错误](#工具名重复) |
+| `The request was rejected because it was considered high risk` | 400 | [请求格式错误](#内容安全拦截) |
+| `Not found the model kimi-for-coding or Permission denied` | 404 | [资源未找到](#模型未找到) |
+| `method not found` | 404 | [资源未找到](#接口路径不存在) |
+| `bot_id ... value does not match id_kinds` | 500 | [服务端内部错误](#bot_id-格式不合规) |
+| `failed to connect to ... database=membership_` | 500 | [服务端内部错误](#数据库连接失败) |
+| `FATAL: terminating connection due to administrator command` | 500 | [服务端内部错误](#数据库连接失败) |
+| `failed to evaluate rate limit script` | 500 | [服务端内部错误](#内部连接异常) |
+| `i/o timeout` / `conn closed` / `bad connection` | 500 | [服务端内部错误](#内部连接异常) |
+| `503 Service Unavailable` / `504 Gateway Timeout` / `502 Bad Gateway` | 500 | [服务端内部错误](#下游服务不可用) |
+| `未找到该账号` / `该账号已被禁用` / `已被禁言` | 500 | [服务端内部错误](#账号状态异常) |
+| `context canceled` | 499 | [工具调用错误](#请求被取消) |
+| `url2text` / `spider checkUrl failed` / `invalid html` | 500 | [工具调用错误](#网页读取失败) |
+| `image_url:moderation request error` | 500 | [工具调用错误](#图片审核失败) |
+| `We consider the current URL poses a security risk` | 403 | [工具调用错误](#url-安全风险拦截) |
+| `invalid_url: The provided URL is invalid` | 400 | [工具调用错误](#url-格式无效) |
 
 
 ## 认证错误
