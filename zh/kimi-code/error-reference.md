@@ -142,7 +142,7 @@ error, status code: 403, message: Access terminated.
 
 **处理方式：**
 - 前往 [Kimi Code 社区倡议](https://www.kimi.com/code/docs/kimi-code/community-guidelines.html) 了解违规原因及判定范围
-- 如需申诉，请发送邮件至 support@kimi-code.com，并在邮件中说明风控的大致情况
+- 如需申诉，请发送邮件至 [support@moonshot.cn](mailto:support@moonshot.cn)，并在邮件中说明风控的大致情况
 
 
 ## 限流与配额

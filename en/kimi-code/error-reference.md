@@ -140,7 +140,7 @@ The account has been terminated for violating the community guidelines.
 
 **How to fix:**
 - Read the [Kimi Code Community Guidelines](https://www.kimi.com/code/docs/kimi-code/community-guidelines.html) to understand the violation and what is covered
-- To appeal, email support@kimi-code.com with a description of the circumstances
+- To appeal, email [support@moonshot.ai](mailto:support@moonshot.ai) with a description of the circumstances
 
 
 ## Rate Limits & Quotas

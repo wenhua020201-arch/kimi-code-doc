@@ -75,17 +75,18 @@ Did BYD go up or down today?
 
 | Feature | Description | Markets |
 |---|---|---|
-| Price queries | Real-time quotes, historical ranges, change % | A-shares, HK, US, and major global markets |
+| Real-time quotes | Current price, change %, intraday data | A-shares, HK, US |
+| Historical prices | Historical closing prices and price-change ranges | A-shares, HK, US, and major global markets |
 | Technical indicators | MACD, KDJ, RSI, BOLL, MA — with bullish/bearish signals | A-shares only |
-| Financial statements | Balance sheets, year-over-year financial data | A-shares, HK, US |
-| Company fundamentals | Business overview, shareholder information | A-shares, HK, US |
+| Financial statements | Balance sheets, year-over-year financial data | A-shares, HK, US, and major global markets |
+| Company fundamentals | Business overview, shareholder information | A-shares, HK, US, and major global markets |
 | Stock screening | Filter by sector, market cap, price change, financial metrics, and more | A-shares, HK, US |
 | Market indices | CSI 300, SSE, S&P 500, Nasdaq, Nikkei, and more | A-shares, major global markets |
 | Watchlist management | Track holdings, calculate P&L based on cost basis | A-shares, HK, US |
 
 ### Macroeconomic Data
 
-Powered by the World Bank Open Data API — **189 member countries, 50+ years** of historical time series covering GDP, trade, population, poverty, education, climate, and dozens of other development indicators. Ideal for cross-country research, policy analysis, or data-driven reporting.
+Powered by the **World Bank** Open Data API — **189 member countries, 50+ years** of historical time series covering GDP, trade, population, poverty, education, climate, and dozens of other indicators. Great for cross-country comparisons, policy research, and data-driven analysis.
 
 | Feature | Description |
 |---|---|
@@ -219,7 +220,7 @@ kimi plugin install https://cdn.kimi.com/kimi-code-plugins/kimi-datasource.zip
 
 ## Notes
 
-- Each plugin query is billed per use and counts against your account credits.
+- Plugin queries are credit-based and billed per call.
 - This plugin is read-only and does not support trading, writing, or any data submission.
 - Technical indicators and real-time prices are only available during active trading hours. After market close, ask about closing data instead (e.g. "How did X close today?").
 - AI-generated output is for reference only and does not constitute investment or business advice.
