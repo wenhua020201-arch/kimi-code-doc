@@ -100,7 +100,7 @@ Powered by the **World Bank** Open Data API — **189 member countries, 50+ year
 ::: details Historical price query
 
 ```text
-Pull Moutai's daily closing prices from December 2025 to March 2026, show them in a table, and tell me the highest and lowest points and when they occurred.
+What was Apple's (AAPL) highest and lowest closing price in Q4 2025?
 ```
 
 :::
@@ -108,7 +108,7 @@ Pull Moutai's daily closing prices from December 2025 to March 2026, show them i
 ::: details Financial statement analysis
 
 ```text
-Pull Moutai's 2024 balance sheet, compare it year-over-year against 2023, and flag any notable changes worth paying attention to.
+What are the key figures in Microsoft's 2024 annual balance sheet — total assets, liabilities, and equity?
 ```
 
 :::
@@ -116,7 +116,7 @@ Pull Moutai's 2024 balance sheet, compare it year-over-year against 2023, and fl
 ::: details Company fundamentals
 
 ```text
-Who are Tencent's major shareholders, and how have its revenue and net profit trended over the past three years?
+What are NVIDIA's main business segments and who are its largest institutional shareholders?
 ```
 
 :::
@@ -124,7 +124,7 @@ Who are Tencent's major shareholders, and how have its revenue and net profit tr
 ::: details Stock screening
 
 ```text
-In the Chinese liquor sector, find stocks with market cap above 50B CNY and list their names and current market caps.
+In the US semiconductor sector, find stocks with market cap above $500B and list their names and current market caps.
 ```
 
 :::
