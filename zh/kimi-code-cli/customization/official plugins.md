@@ -257,6 +257,7 @@ kimi plugin install https://cdn.kimi.com/kimi-code-plugins/kimi-datasource.zip
 
 ## 注意事项
 
+- 插件查询按次计费，每次调用会消耗账户额度。
 - 本插件为只读查询，不提供任何交易或写入功能。
 - 技术指标（MACD、KDJ 等）及实时行情仅在交易时段内可用，收盘后请改问"今天收盘怎么样"获取收盘摘要。
 - AI 输出内容仅供参考，不构成任何投资或商业决策建议。
