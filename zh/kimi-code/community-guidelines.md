@@ -30,8 +30,8 @@ Kimi Code 订阅仅限编程工具交互式使用（Kimi CLI、VS Code 、Claude
 </div>
 
 <div class="guideline-card">
-<h4>不进行模型蒸馏训练</h4>
-<p>使用 Kimi Code 的输出来训练其他模型超出了正常使用范畴，也影响我们持续提供优质服务的能力。</p>
+<h4>不进行非个人交互式使用</h4>
+<p>Kimi Code 订阅仅限个人交互式使用场景。通过脚本批量执行、数据标注等非交互式方式使用，超出了正常使用范畴。</p>
 </div>
 
 </div>

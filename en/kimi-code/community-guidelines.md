@@ -30,8 +30,8 @@ To ensure everyone can continue to access stable model services, there are some 
 </div>
 
 <div class="guideline-card">
-<h4>Don't use Kimi Code outputs to train other models</h4>
-<p>Using our outputs for model distillation goes beyond normal use and affects our ability to keep delivering a high-quality service for everyone.</p>
+<h4>Don't use Kimi Code for non-interactive automation</h4>
+<p>Kimi Code subscriptions are for personal interactive use only. Using it for non-interactive purposes — such as scripted batch execution or data annotation pipelines — goes beyond normal use.</p>
 </div>
 
 </div>
