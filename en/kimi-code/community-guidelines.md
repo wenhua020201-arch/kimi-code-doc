@@ -38,7 +38,7 @@ To ensure everyone can continue to access stable model services, there are some 
 
 </div>
 
-If your usage doesn't align with the guidelines above, we'll review the situation first and take appropriate action—such as **suspending access**—based on the severity. Accordingly, if you purchase through unauthorized channels (such as resold accounts or third-party sellers), your account may be suspended upon verification, and we **will not be liable for any losses**.
+If your usage doesn't align with the guidelines above, we'll review the situation first and take appropriate action—such as **suspending access**—based on the severity. If your account is suspended, you'll see an `Access terminated` error — see the [error reference](/en/kimi-code/error-reference#account-access-terminated) for details. Accordingly, if you purchase through unauthorized channels (such as resold accounts or third-party sellers), your account may be suspended upon verification, and we **will not be liable for any losses**.
 
 ::: warning Think we got it wrong?
 If your account has been mistakenly suspended, please contact our support email at [support@moonshot.ai](mailto:support@moonshot.ai). To help us resolve your issue efficiently, please include your account ID, the time of suspension, a description of your use case, and any relevant screenshots.

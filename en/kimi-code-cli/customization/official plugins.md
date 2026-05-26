@@ -220,7 +220,7 @@ kimi plugin install https://cdn.kimi.com/kimi-code-plugins/kimi-datasource.zip
 
 ## Notes
 
-- Plugin queries are credit-based and billed per call.
+- Plugin queries are credit-based and billed per call. After a successful query, you can verify it in the console under **Usage History › Request Log** — look for entries with CallType **Data Source**.
 - This plugin is read-only and does not support trading, writing, or any data submission.
 - Technical indicators and real-time prices are only available during active trading hours. After market close, ask about closing data instead (e.g. "How did X close today?").
 - AI-generated output is for reference only and does not constitute investment or business advice.
