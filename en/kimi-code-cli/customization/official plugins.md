@@ -8,6 +8,16 @@ kimi-datasource is a Kimi Code official plugin that connects Kimi to professiona
 Current version: **2.1.0**. If you have a previous installation, re-run the install command to update.
 :::
 
+::: details Changelog
+
+**2.1.0** — Fixed a known issue with enterprise data queries, improving call reliability.
+
+**2.0.2** — Added historical prices, company fundamentals and financial statements, enterprise data, and academic data.
+
+**2.0.0** · May 1, 2025 — Initial release with real-time quote support for A-shares, HK stocks, and US stocks.
+
+:::
+
 ## Quick Start
 
 <div class="steps">
@@ -231,6 +241,7 @@ kimi plugin install https://cdn.kimi.com/kimi-code-plugins/kimi-datasource.zip
 
 - [Custom Plugins](./plugins.md) — Learn how to install, uninstall, and configure your own plugins
 - [Skills](./skills.md) — Learn about skill usage and directory structure
+
 
 <style>
 .steps { display: flex; flex-direction: column; margin: 24px 0; }
