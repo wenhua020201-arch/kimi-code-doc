@@ -67,7 +67,7 @@ Invoke-RestMethod https://code.kimi.com/install.ps1 | Invoke-Expression
 
 **Kimi Code for VS Code 插件**：安装后通过侧边栏登录按钮完成接入
 
-#### API Key（第三方工具 / 自建应用）
+#### API Key
 
 Kimi Code 权益支持在主流 Coding Agent 中使用——例如 Claude Code、Roo Code、OpenCode 等；也可以配合 OpenClaw、Hermes 等通用 Agent 框架。让你在自己习惯的工具里自由调用 Kimi Code 的 AI 能力。
 

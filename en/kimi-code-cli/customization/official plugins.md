@@ -5,7 +5,7 @@
 kimi-datasource is a Kimi Code official plugin that connects Kimi to professional data sources — financial markets, macroeconomic indicators, corporate records, and academic literature. It covers A-shares, Hong Kong stocks, global markets, and 50+ years of World Bank economic data, all queryable through natural language with no API calls required.
 
 ::: warning Version update
-Current version: **2.0.2**. If you have a previous installation, re-run the install command to update.
+Current version: **2.1.0**. If you have a previous installation, re-run the install command to update.
 :::
 
 ## Quick Start
