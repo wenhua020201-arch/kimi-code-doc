@@ -4,6 +4,11 @@
 
 插件系统让你可以为 Kimi Code CLI 添加自定义工具，扩展 AI 的能力。与 MCP 服务器不同，插件是轻量级的本地工具包，适合封装项目特定的脚本和实用程序。
 
+::: warning 📢 版本说明
+Kimi Code CLI 已完成重大版本升级，底层从 Python/uv 迁移至 Node.js，带来更简单的安装方式、更快的启动速度和全新的终端界面。本页内容仅适用于旧版 Kimi Code CLI。旧版将逐渐停止维护，建议尽快完成升级。查看[版本升级](/kimi-code-cli/cli-migration)了解详情。
+本文档正在重建中，新版功能细节暂请移步 [Kimi Code CLI 文档站](https://moonshotai.github.io/kimi-code/zh/)。
+:::
+
 ## 插件是什么
 
 一个插件就是一个包含 `plugin.json` 文件的目录。插件可以声明多个「工具」，每个工具是一个可执行命令（Python、TypeScript、Shell 脚本等），AI 可以调用这些工具来完成特定任务。

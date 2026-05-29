@@ -2,6 +2,11 @@
 
 Kimi Code CLI Shell 模式支持以下键盘快捷键。输入框为空时按 `Ctrl-D` 退出；按 `Ctrl-C` 中断当前操作或清空输入。
 
+::: warning 📢 版本说明
+Kimi Code CLI 已完成重大版本升级，底层从 Python/uv 迁移至 Node.js，带来更简单的安装方式、更快的启动速度和全新的终端界面。本页内容仅适用于旧版 Kimi Code CLI。旧版将逐渐停止维护，建议尽快完成升级。查看[版本升级](/kimi-code-cli/cli-migration)了解详情。
+本文档正在重建中，新版功能细节暂请移步 [Kimi Code CLI 文档站](https://moonshotai.github.io/kimi-code/zh/)。
+:::
+
 | 快捷键 | 功能 |
 |--------|------|
 | `Ctrl-X` | 切换 Agent / Shell 模式。提示符随模式变化：Agent `✨`、Thinking `💫`、Plan `📋`、Shell `$` |

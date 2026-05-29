@@ -6,6 +6,12 @@
 kimi term [OPTIONS]
 ```
 
+::: warning 📢 版本说明
+Kimi Code CLI 已完成重大版本升级，底层从 Python/uv 迁移至 Node.js，带来更简单的安装方式、更快的启动速度和全新的终端界面。本页内容仅适用于旧版 Kimi Code CLI。旧版将逐渐停止维护，建议尽快完成升级。查看[版本升级](/kimi-code-cli/cli-migration)了解详情。
+本文档正在重建中，新版功能细节暂请移步 [Kimi Code CLI 文档站](https://moonshotai.github.io/kimi-code/zh/)。
+:::
+
+
 ## 说明
 
 [Toad](https://github.com/batrachianai/toad) 是 Kimi Code CLI 的图形化终端界面，通过 ACP 协议与 Kimi Code CLI 后端通信。它提供了更丰富的交互体验，包括更好的输出渲染和界面布局。

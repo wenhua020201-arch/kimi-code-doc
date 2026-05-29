@@ -1,169 +1,138 @@
 # 快速开始
 
-Kimi Code CLI 是一个运行在终端中的 AI Agent，帮助你完成软件开发任务和终端操作。它可以阅读和编辑代码、执行 Shell 命令、搜索和抓取网页，并在执行过程中自主规划和调整行动。
+## Kimi Code CLI 是什么
 
-Kimi Code CLI 适合以下场景：
+Kimi Code CLI 是一个运行在终端中的 AI Agent，帮助你完成软件开发任务和日常的终端操作。它能阅读和编辑代码、执行 Shell 命令、搜索文件与抓取网页，并在执行过程中根据反馈自主规划和调整下一步行动。
 
-- **编写和修改代码**：实现新功能、修复 bug、重构代码
-- **理解项目**：探索陌生的代码库，解答架构和实现问题
-- **自动化任务**：批量处理文件、执行构建和测试、运行脚本
+它适用于以下场景：
 
-Kimi Code CLI 支持以下几种使用方式：
-
-- **交互式命令行**（`kimi`）：在终端中以 Shell 方式与 AI 对话，支持自然语言描述任务或直接执行 Shell 命令
-- **浏览器界面**（`kimi web`）：在本地浏览器中打开图形界面，支持会话管理、文件引用、代码高亮等
-- **Agent 集成**（`kimi acp`）：以服务方式运行，通过 Agent Client Protocol 集成到 IDE 和其他本地 Agent 客户端中
-
-> 如果你遇到问题或有建议，欢迎在 [GitHub Issues](https://github.com/MoonshotAI/kimi-cli/issues) 反馈。
-
-
-
-## 开始之前
-
-- **操作系统**：macOS、Linux 或 Windows（通过 PowerShell）
-- **Kimi 账号**：需拥有 Kimi 会员订阅，或可调用的 API key
-
+- **编写和修改代码**：实现新功能、修复 bug、完成重构
+- **理解项目**：探索陌生的代码库，解答架构和实现层面的问题
+- **自动化任务**：批量处理文件、运行构建与测试、串联多个脚本
 
 ## 安装
 
-运行安装脚本即可完成安装。脚本会先安装 [uv](https://docs.astral.sh/uv/)（Python 包管理工具），再通过 uv 安装 Kimi Code CLI：
+### 脚本安装（推荐）
+
+最快的安装方式是使用官方安装脚本，无需预装 Node.js：
+
+- **macOS / Linux**：
 
 ```sh
-# Linux / macOS
-curl -LsSf https://code.kimi.com/install.sh | bash
+curl -fsSL https://code.kimi.com/kimi-code/install.sh | bash
 ```
+
+- **Windows（PowerShell）**：
 
 ```powershell
-# Windows (PowerShell)
-Invoke-RestMethod https://code.kimi.com/install.ps1 | Invoke-Expression
+irm https://code.kimi.com/kimi-code/install.ps1 | iex
 ```
 
-验证安装是否成功：
+脚本会自动下载最新版本、校验 checksum，并把 `kimi` 可执行文件放到你的 `PATH` 中。
+
+### npm 安装
+
+如果你更习惯通过 npm 安装，需要 Node.js 24.15.0 或更高版本：
+
+```sh
+node --version
+```
+
+包名是 `@moonshot-ai/kimi-code`：
+
+```sh
+npm install -g @moonshot-ai/kimi-code
+```
+
+或用 pnpm：
+
+```sh
+pnpm add -g @moonshot-ai/kimi-code
+```
+
+## 升级与卸载
+
+安装完成后，验证可执行文件是否就绪：
 
 ```sh
 kimi --version
 ```
 
-
-> 由于 macOS 的安全检查机制（Gatekeeper），首次运行 `kimi` 命令可能需要较长时间。可以在「系统设置 → 隐私与安全性 → 开发者工具」中添加你的终端应用来加速后续启动。
-
-如果你已经安装了 uv，也可以直接运行：
+**升级**：脚本安装的用户重新运行脚本即可；npm 安装的用户执行：
 
 ```sh
-uv tool install --python 3.13 kimi-cli
+npm install -g @moonshot-ai/kimi-code@latest
 ```
 
-> Kimi Code CLI 支持 Python 3.12-3.14，但建议使用 3.13 以获得最佳兼容性。
+**卸载**：脚本安装的用户删除 `kimi` 可执行文件即可；npm 安装的用户执行：
 
+```sh
+npm uninstall -g @moonshot-ai/kimi-code
+```
 
-## 第一次运行
+## 第一次启动
 
-### 启动与登录
-
-在你想要工作的项目目录中命令启动 Kimi Code CLI：
+进入你想要工作的项目目录，直接运行 `kimi` 启动交互界面：
 
 ```sh
 cd your-project
 kimi
 ```
 
-首次启动时，输入 `/login` 配置 API 来源：
+如果只想执行一条指令而不进入交互界面，可以使用 `-p` 选项：
+
+```sh
+kimi -p "帮我看一下这个项目的目录结构"
+```
+
+如需继续上一次会话，添加 `-C` 选项即可：
+
+```sh
+kimi -C
+```
+
+首次启动时，Kimi Code CLI 尚未配置任何凭证，需要配置 API 来源才能开始对话。在交互界面中输入斜杠命令 `/login` 进入登录流程：
 
 ```
 /login
 ```
 
-推荐选择 **Kimi Code** 平台，会自动打开浏览器完成 OAuth 授权；选择其他平台则需要输入 API 密钥。配置完成后自动保存并重新加载。详见[平台与模型](/kimi-code-cli/configuration/providers-and-models)配置文档。
+`/login` 会弹出平台选择器，支持：
 
+- **Kimi Code** — OAuth 验证码流程，在任意设备打开链接、登录并输入验证码即可授权
+- **Moonshot AI Open Platform** — 直接输入 API key 登录
 
-### 第一步：问一个问题
+需要退出登录时，输入 `/logout` 即可清除当前凭证。
 
-用自然语言提问，快速了解项目：
+::: tip 提示
+如果你想使用 Anthropic、OpenAI、Google 等其他供应商，需要直接编辑 `config.toml` 配置 API 密钥，详见 [平台与模型](/kimi-code-cli/configuration/providers-and-models)。模型、供应商等运行时配置也写入 `config.toml`。配置项说明见 [配置文件](/kimi-code-cli/configuration/configuration-files)、[环境变量](/kimi-code-cli/configuration/environment-variables) 和 [配置覆盖](/kimi-code-cli/configuration/overrides-and-precedence)。
+:::
 
-```
-这个项目的整体架构是怎样的？入口文件在哪里？
-```
+## 第一个对话
 
-Kimi Code CLI 会自动搜索和阅读相关文件，然后给出回答。
-
-### 第二步：做一次代码修改
-
-试试让 Kimi Code CLI 修改代码：
+登录完成后，你就可以直接用自然语言向 Kimi Code CLI 描述任务。例如，让它先帮你熟悉一下当前项目：
 
 ```
-给 README 添加一个"快速开始"部分，包含安装和运行步骤
+帮我看一下这个项目的目录结构，简单介绍一下每个目录是做什么的
 ```
 
-Kimi Code CLI 在修改文件前会展示 diff 并请求确认——你可以批准、拒绝，或直接输入反馈让它调整方向。它不会在未经允许的情况下改动你的代码。
+Kimi Code CLI 会自动调用文件读取、搜索和网页抓取工具，浏览相关内容之后再给出回答（读取文件、搜索网页等只读操作默认自动执行，无需确认）。对于会修改文件或执行 Shell 命令的操作，它默认会在执行前征求你的确认，你可以根据需要批准或拒绝。
 
-### 第三步：执行一条命令
-
-Kimi Code CLI 也可以运行 Shell 命令并分析结果：
+也可以让它做一些更具体的事，比如：
 
 ```
-运行测试，如果有失败的用例就修复它们
+在 src/utils 里新增一个函数，用来把任意字符串转成 kebab-case，并补一个单元测试
 ```
 
-到这里，你已经体验了三个核心能力：**提问理解**、**修改代码**、**执行命令**。
+Kimi Code CLI 会规划步骤、修改代码、运行测试，并在每一步告诉你它做了什么。
 
->如果项目中没有 AGENTS.md 文件，可以运行 /init 命令让 Kimi Code CLI 分析项目并生成该文件，帮助 AI 更好地理解项目结构和规范。
+在交互界面中，输入 `/help` 可以查看所有可用的 [斜杠命令](/kimi-code-cli/reference/slash-commands)，以及常用的快捷键提示。如果想退出 Kimi Code CLI，可以输入 `/exit`；也可以按 `Ctrl-C`，界面会先清空输入框并提示再按一次，再次按下即退出；还可以在输入框为空时连按两次 `Ctrl-D` 退出。
 
+## 数据存放在哪里
 
-## 常用命令速查
+Kimi Code CLI 的本地数据默认保存在 `~/.kimi-code/` 目录下，包含配置文件、会话记录、日志和更新缓存等。如果你想改到别的位置，可以通过环境变量 `KIMI_CODE_HOME` 指定一个新的根目录。完整的目录结构和环境变量说明见 [数据路径](/kimi-code-cli/configuration/data-locations) 和 [环境变量](/kimi-code-cli/configuration/environment-variables)。
 
-| 命令 | 说明 |
-|------|------|
-| `kimi` | 启动交互式对话 |
-| `kimi web` | 打开浏览器图形界面 |
-| `/login` | 配置或切换 API 来源 |
-| `/usage` | 查看剩余额度和配额 |
-| `/help` | 查看所有命令和快捷键 |
-| `Ctrl-J` | 换行（不提交） |
-| `Ctrl-C` / `Ctrl-D` | 中断当前操作 / 退出 |
+## 更多文档
 
-完整命令列表请参考[斜杠命令](/kimi-code-cli/reference/slash-commands)和[键盘快捷键](/kimi-code-cli/reference/keyboard-shortcuts)。
+由于版本升级，本文档站正在重建中。更多功能细节（配置、MCP、Hooks、插件等）暂请移步 [Kimi Code CLI 文档站](https://moonshotai.github.io/kimi-code/zh/)。
 
-
-## 常见问题
-
-**我填了 API Key 怎么提示鉴权失败**
-
-先确认你用的 Key 和 Base URL 是不是同一个平台的。`api.kimi.com` 和 `api.moonshot.cn` 是两个完全独立的账号体系，API Key 互不通用：
-
-| 平台 | Base URL | 计费方式 | Key 创建入口 |
-|------|---------|---------|-------------|
-| **Kimi Code** | Open AI 兼容： `https://api.kimi.com/coding/v1`<br> Anthropic 兼容：`https://api.kimi.com/coding/` | Kimi 会员订阅（含额度） | [Kimi Code 控制台](https://www.kimi.com/code/console) |
-| **Kimi 开放平台** | `https://api.moonshot.cn/v1` | 按量付费 | [Kimi 开放平台官网 ](https://platform.kimi.com) |
-
-
-**安装后 `kimi` 命令找不到**
-
-安装脚本会将 `kimi` 添加到 PATH，但需要重启终端或执行 `source ~/.bashrc`（或 `source ~/.zshrc`）才能生效。如果仍然找不到，检查 `~/.local/bin` 是否在你的 PATH 中。
-
-**`/login` 后浏览器没有弹出**
-
-如果在远程服务器或无图形界面的环境中，`/login` 会显示一个 URL，手动复制到浏览器打开即可完成授权。
-
-更多问题请参考[常见问题](/kimi-code/faq)。
-
-
-## 升级与卸载
-
-升级到最新版本：
-
-```sh
-uv tool upgrade kimi-cli --no-cache
-```
-
-卸载 Kimi Code CLI：
-
-```sh
-uv tool uninstall kimi-cli
-```
-
-
-## 下一步
-
-- [核心操作](/kimi-code-cli/core-operations) – 学习交互输入、上下文管理、工作模式等交互技巧
-- [配置文件](/kimi-code-cli/configuration/configuration-files) — 自定义模型、行为和工具权限
-- [MCP 集成](/kimi-code-cli/customization/mcp) — 连接外部工具和数据源扩展能力

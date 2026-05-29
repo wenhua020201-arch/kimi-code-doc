@@ -2,6 +2,11 @@
 
 Kimi Code CLI 支持通过环境变量覆盖配置或控制运行行为。本页列出所有支持的环境变量。
 
+::: warning 📢 版本说明
+Kimi Code CLI 已完成重大版本升级，底层从 Python/uv 迁移至 Node.js，带来更简单的安装方式、更快的启动速度和全新的终端界面。本页内容仅适用于旧版 Kimi Code CLI。旧版将逐渐停止维护，建议尽快完成升级。查看[版本升级](/kimi-code-cli/cli-migration)了解详情。
+本文档正在重建中，新版功能细节暂请移步 [Kimi Code CLI 文档站](https://moonshotai.github.io/kimi-code/zh/)。
+:::
+
 ## Kimi 环境变量
 
 以下环境变量在使用 `kimi` 类型的供应商时生效，用于覆盖供应商和模型配置。

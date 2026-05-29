@@ -27,18 +27,23 @@ Kimi Code allows members to use their benefits in both the official client and t
 
 Choose the client that fits you and install with one click:
 
-#### CLI
+#### Kimi Code CLI
+
+::: warning 📢 CLI Upgraded
+Kimi Code CLI has gone through a major version upgrade — moving from Python/uv to Node.js, bringing a simpler install experience, faster startup, and a redesigned terminal UI. The legacy version will no longer be maintained. See [Version Upgrade](/en/kimi-code-cli/cli-migration) for details and migration instructions.
+This documentation is being rebuilt — for new-version feature details, please visit the [Kimi Code CLI docs](https://moonshotai.github.io/kimi-code/en/) in the meantime.
+:::
 
 For developers who prefer terminal operations. Chat with AI in the terminal, letting it read code, edit files, execute commands, search the web, and autonomously complete development tasks.
 
 ```bash
 # macOS / Linux
-curl -LsSf https://code.kimi.com/install.sh | bash
+curl -fsSL https://code.kimi.com/kimi-code/install.sh | bash
 ```
 
 ```powershell
 # Windows (PowerShell)
-Invoke-RestMethod https://code.kimi.com/install.ps1 | Invoke-Expression
+irm https://code.kimi.com/kimi-code/install.ps1 | iex
 ```
 
 After installation, run `kimi` in the terminal to start.

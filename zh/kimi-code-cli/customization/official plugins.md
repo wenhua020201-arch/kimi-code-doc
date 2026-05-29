@@ -1,10 +1,17 @@
 # 官方插件
 
+::: warning 📢 版本说明
+Kimi Code CLI 已完成重大版本升级，底层从 Python/uv 迁移至 Node.js，带来更简单的安装方式、更快的启动速度和全新的终端界面。本页内容仅适用于旧版 Kimi Code CLI。旧版将逐渐停止维护，建议尽快完成升级。查看[版本升级](/kimi-code-cli/cli-migration)了解详情。
+本文档正在重建中，新版功能细节暂请移步 [Kimi Code CLI 文档站](https://moonshotai.github.io/kimi-code/zh/)。
+:::
+
+
+
 ## kimi-datasource (Beta)
 
 kimi-datasource 是 Kimi Code 官方插件，为 Kimi 接入金融行情、宏观经济、企业工商、学术文献等专业数据源，覆盖 A 股港股全市场、全球主要金融市场及宏观经济数据，通过自然语言即可完成查询与分析，无需手动调用接口。
 
-::: warning 版本更新提示
+::: tip 版本更新提示
 当前版本为 **2.1.0**。如之前已安装，请重新执行安装命令覆盖更新。
 :::
 

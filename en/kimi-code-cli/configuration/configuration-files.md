@@ -2,6 +2,11 @@
 
 Kimi Code CLI uses configuration files to manage API providers, models, services, and runtime parameters, supporting both TOML and JSON formats.
 
+::: warning 📢 Version Notice
+Kimi Code CLI has gone through a major version upgrade — moving from Python/uv to Node.js, bringing a simpler install experience, faster startup, and a redesigned terminal UI. This page applies to the legacy Kimi Code CLI only. The legacy version will gradually be phased out — we recommend upgrading as soon as possible. See [Version Upgrade](/en/kimi-code-cli/cli-migration) for details.
+This documentation is being rebuilt — for new-version feature details, please visit the [Kimi Code CLI docs](https://moonshotai.github.io/kimi-code/en/) in the meantime.
+:::
+
 ## Config File Location
 
 The default configuration file is located at `~/.kimi/config.toml`. On first run, if the configuration file does not exist, Kimi Code CLI automatically creates a default configuration file.

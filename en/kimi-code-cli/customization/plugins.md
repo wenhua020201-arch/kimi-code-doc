@@ -4,6 +4,11 @@
 
 The plugin system allows you to add custom tools to Kimi Code CLI, extending the AI's capabilities. Unlike MCP servers, plugins are lightweight local toolkits ideal for packaging project-specific scripts and utilities.
 
+::: warning 📢 Version Notice
+Kimi Code CLI has gone through a major version upgrade — moving from Python/uv to Node.js, bringing a simpler install experience, faster startup, and a redesigned terminal UI. This page applies to the legacy Kimi Code CLI only. The legacy version will gradually be phased out — we recommend upgrading as soon as possible. See [Version Upgrade](/en/kimi-code-cli/cli-migration) for details.
+This documentation is being rebuilt — for new-version feature details, please visit the [Kimi Code CLI docs](https://moonshotai.github.io/kimi-code/en/) in the meantime.
+:::
+
 ## What are Plugins
 
 A plugin is a directory containing a `plugin.json` file. Plugins can declare multiple "tools," where each tool is an executable command (Python, TypeScript, shell script, etc.) that the AI can invoke to perform specific tasks.

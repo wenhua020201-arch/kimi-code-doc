@@ -1,10 +1,17 @@
 # Official Plugins
 
+::: warning 📢 Version Notice
+Kimi Code CLI has gone through a major version upgrade — moving from Python/uv to Node.js, bringing a simpler install experience, faster startup, and a redesigned terminal UI. This page applies to the legacy Kimi Code CLI only. The legacy version will gradually be phased out — we recommend upgrading as soon as possible. See [Version Upgrade](/en/kimi-code-cli/cli-migration) for details.
+This documentation is being rebuilt — for new-version feature details, please visit the [Kimi Code CLI docs](https://moonshotai.github.io/kimi-code/en/) in the meantime.
+:::
+
+
+
 ## kimi-datasource (Beta)
 
 kimi-datasource is a Kimi Code official plugin that connects Kimi to professional data sources — financial markets, macroeconomic indicators, corporate records, and academic literature. It covers A-shares, Hong Kong stocks, global markets, and 50+ years of World Bank economic data, all queryable through natural language with no API calls required.
 
-::: warning Version update
+::: tip Version update
 Current version: **2.1.0**. If you have a previous installation, re-run the install command to update.
 :::
 

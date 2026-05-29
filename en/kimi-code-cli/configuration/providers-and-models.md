@@ -2,6 +2,11 @@
 
 Kimi Code CLI supports multiple LLM platforms, which can be configured via configuration files or the `/login` command.
 
+::: warning 📢 Version Notice
+Kimi Code CLI has gone through a major version upgrade — moving from Python/uv to Node.js, bringing a simpler install experience, faster startup, and a redesigned terminal UI. This page applies to the legacy Kimi Code CLI only. The legacy version will gradually be phased out — we recommend upgrading as soon as possible. See [Version Upgrade](/en/kimi-code-cli/cli-migration) for details.
+This documentation is being rebuilt — for new-version feature details, please visit the [Kimi Code CLI docs](https://moonshotai.github.io/kimi-code/en/) in the meantime.
+:::
+
 ## Platform Selection
 
 The easiest way to configure is to run the `/login` command (alias `/setup`) in Shell mode and follow the wizard to complete platform and model selection:

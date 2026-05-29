@@ -26,7 +26,7 @@ Kimi Code 订阅仅限编程工具交互式使用（Kimi CLI、VS Code 、Claude
 
 <div class="guideline-card">
 <h4>不伪造或篡改客户端身份信息</h4>
-<p>平台依赖这些信息来维护服务质量和安全。模拟或伪装成其他客户端可能导致你的请求行为对系统来说变得不可预期。</p>
+<p>伪造 User-Agent 或使用高风险的 Agent 不利于平台维护整体服务稳定性。可以将您贡献的、或您经常使用的 Agent 相关介绍发送至 <a href="mailto:code@moonshot.ai">code@moonshot.ai</a> 申请官方注册，协助我们构建良好稳定的 Agent 生态。</p>
 </div>
 
 <div class="guideline-card">

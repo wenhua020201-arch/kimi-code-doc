@@ -4,6 +4,11 @@
 
 The Hooks system allows you to execute custom commands at key points in the Agent lifecycle, enabling automated workflows, security checks, notifications, and more.
 
+::: warning 📢 Version Notice
+Kimi Code CLI has gone through a major version upgrade — moving from Python/uv to Node.js, bringing a simpler install experience, faster startup, and a redesigned terminal UI. This page applies to the legacy Kimi Code CLI only. The legacy version will gradually be phased out — we recommend upgrading as soon as possible. See [Version Upgrade](/en/kimi-code-cli/cli-migration) for details.
+This documentation is being rebuilt — for new-version feature details, please visit the [Kimi Code CLI docs](https://moonshotai.github.io/kimi-code/en/) in the meantime.
+:::
+
 ## What is a Hook
 
 A hook is a mechanism that triggers when specific events occur. You can configure a shell command that receives context information via standard input when the event fires, and the command's exit code determines subsequent behavior.

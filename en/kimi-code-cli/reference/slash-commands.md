@@ -4,6 +4,11 @@ Type a `/` command in the input box to trigger it. After typing `/`, a completio
 
 Some slash commands are also available in shell mode: `/help`, `/version`, `/editor`, `/theme`, `/changelog`, `/feedback`, `/export`, `/import`, and `/task`.
 
+::: warning 📢 Version Notice
+Kimi Code CLI has gone through a major version upgrade — moving from Python/uv to Node.js, bringing a simpler install experience, faster startup, and a redesigned terminal UI. This page applies to the legacy Kimi Code CLI only. The legacy version will gradually be phased out — we recommend upgrading as soon as possible. See [Version Upgrade](/en/kimi-code-cli/cli-migration) for details.
+This documentation is being rebuilt — for new-version feature details, please visit the [Kimi Code CLI docs](https://moonshotai.github.io/kimi-code/en/) in the meantime.
+:::
+
 | Command | Purpose |
 |---------|---------|
 | `/help` | Display help information (keyboard shortcuts, slash commands, loaded Skills). Aliases: `/h`, `/?`. Press `q` to exit the pager |

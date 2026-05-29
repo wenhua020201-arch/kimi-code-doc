@@ -17,6 +17,7 @@ export default defineAdditionalConfig({
       {
         text: 'Kimi Code CLI',
         items: [
+          { text: '📢 版本升级', link: '/kimi-code-cli/cli-migration' },
           { text: '快速开始', link: '/kimi-code-cli/getting-started' },
           { text: '核心操作', link: '/kimi-code-cli/core-operations' },
           {
@@ -34,7 +35,7 @@ export default defineAdditionalConfig({
             text: '定制化',
             collapsed: false,
             items: [
-              { text: '官方插件 <span style="background:#3451b2;color:#fff;font-size:11px;font-weight:600;padding:1px 6px;border-radius:4px;margin-left:6px">UPDATED</span>', link: '/kimi-code-cli/customization/official plugins' },
+              { text: '官方插件', link: '/kimi-code-cli/customization/official plugins' },
               { text: 'MCP', link: '/kimi-code-cli/customization/mcp' },
               { text: 'Hooks (Beta)', link: '/kimi-code-cli/customization/hooks' },
               { text: 'Skills', link: '/kimi-code-cli/customization/skills' },

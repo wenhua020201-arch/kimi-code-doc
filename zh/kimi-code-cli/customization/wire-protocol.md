@@ -2,6 +2,11 @@
 
 Wire 模式是 Kimi Code CLI 的底层通信协议，用于与外部程序进行结构化的双向通信。
 
+::: warning 📢 版本说明
+Kimi Code CLI 已完成重大版本升级，底层从 Python/uv 迁移至 Node.js，带来更简单的安装方式、更快的启动速度和全新的终端界面。本页内容仅适用于旧版 Kimi Code CLI。旧版将逐渐停止维护，建议尽快完成升级。查看[版本升级](/kimi-code-cli/cli-migration)了解详情。
+本文档正在重建中，新版功能细节暂请移步 [Kimi Code CLI 文档站](https://moonshotai.github.io/kimi-code/zh/)。
+:::
+
 ## Wire 是什么
 
 Wire 是 Kimi Code CLI 内部使用的消息传递层。当你使用终端交互时，Shell UI 通过 Wire 接收 AI 的输出并显示；当你使用 ACP 集成到 IDE 时，ACP 服务器也通过 Wire 与 Agent 核心通信。

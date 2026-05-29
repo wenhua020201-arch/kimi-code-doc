@@ -1,10 +1,15 @@
 # FAQ
 
+::: warning 📢 Version Notice
+Kimi Code CLI has gone through a major version upgrade — moving from Python/uv to Node.js. The legacy version will no longer be maintained. CLI-related sections in this page (installation, authentication, ACP, update/upgrade, etc.) may reflect legacy behavior and are for reference only. VS Code content is not affected. See [Version Upgrade](/en/kimi-code-cli/cli-migration) for details.
+This documentation is being rebuilt — for new-version feature details, please visit the [Kimi Code CLI docs](https://moonshotai.github.io/kimi-code/en/) in the meantime.
+:::
+
 ## Installation and Authentication
 
 ### Empty model list during `/login`
 
-If you see the error "No models available for the selected platform" when running the `/login` (or `/setup`) command, it may be due to:
+If you see the error "No models available for the selected platform" when running the `/login` command, it may be due to:
 
 - **Invalid or expired API key**: Check whether the API key you entered is correct and still valid.
 - **Network connection issues**: Confirm you can access the API service addresses (such as `api.kimi.com` or `api.moonshot.cn`).
@@ -146,10 +151,10 @@ macOS's Gatekeeper security mechanism checks new programs on first run, causing 
 
 ### How to upgrade Kimi Code CLI
 
-Use uv to upgrade to the latest version:
+If you installed via the script, re-run it. If you installed via npm:
 
 ```sh
-uv tool upgrade kimi-cli --no-cache
+npm install -g @moonshot-ai/kimi-code@latest
 ```
 
 Adding the `--no-cache` flag ensures you get the latest version.

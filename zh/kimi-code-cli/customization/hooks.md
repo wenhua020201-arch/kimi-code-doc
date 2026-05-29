@@ -4,6 +4,11 @@
 
 Hooks 系统让你可以在 Agent 生命周期的关键节点执行自定义命令，实现自动化工作流、安全检查、通知提醒等功能。
 
+::: warning 📢 版本说明
+Kimi Code CLI 已完成重大版本升级，底层从 Python/uv 迁移至 Node.js，带来更简单的安装方式、更快的启动速度和全新的终端界面。本页内容仅适用于旧版 Kimi Code CLI。旧版将逐渐停止维护，建议尽快完成升级。查看[版本升级](/kimi-code-cli/cli-migration)了解详情。
+本文档正在重建中，新版功能细节暂请移步 [Kimi Code CLI 文档站](https://moonshotai.github.io/kimi-code/zh/)。
+:::
+
 ## Hook 是什么
 
 Hook 是一种在特定事件发生时触发的机制。你可以配置一个 shell 命令，当事件发生时，Kimi Code CLI 会将事件相关的上下文信息通过标准输入传递给该命令，并根据命令的退出码决定后续行为。

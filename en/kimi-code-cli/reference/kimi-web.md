@@ -2,6 +2,11 @@
 
 Web UI provides a browser-based interactive interface, allowing you to use all features of Kimi Code CLI in a web page. Compared to the terminal interface, Web UI offers a richer visual experience, more flexible session management, and more convenient file operations.
 
+::: warning 📢 Version Notice
+Kimi Code CLI has gone through a major version upgrade — moving from Python/uv to Node.js, bringing a simpler install experience, faster startup, and a redesigned terminal UI. This page applies to the legacy Kimi Code CLI only. The legacy version will gradually be phased out — we recommend upgrading as soon as possible. See [Version Upgrade](/en/kimi-code-cli/cli-migration) for details.
+This documentation is being rebuilt — for new-version feature details, please visit the [Kimi Code CLI docs](https://moonshotai.github.io/kimi-code/en/) in the meantime.
+:::
+
 ## Starting Web UI
 
 Run the `kimi web` command in your terminal to start the Web UI server:

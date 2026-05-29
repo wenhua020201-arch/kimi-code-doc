@@ -1,10 +1,13 @@
 # Agent Tracing Visualizer
 
-::: warning 注意
-Agent Tracing Visualizer 目前为技术预览版（Technical Preview），功能和界面可能在后续版本中发生变化。
-:::
+> 技术预览版（Technical Preview）：功能和界面可能在后续版本中发生变化。
 
 Agent Tracing Visualizer 是一个基于浏览器的可视化仪表板，用于检查和分析 Kimi Code CLI 的会话追踪数据。它可以帮助你理解 Agent 的行为、查看 Wire 事件时间线、分析上下文使用情况，以及浏览历史会话。
+
+::: warning 📢 版本说明
+Kimi Code CLI 已完成重大版本升级，底层从 Python/uv 迁移至 Node.js，带来更简单的安装方式、更快的启动速度和全新的终端界面。本页内容仅适用于旧版 Kimi Code CLI。旧版将逐渐停止维护，建议尽快完成升级。查看[版本升级](/kimi-code-cli/cli-migration)了解详情。
+本文档正在重建中，新版功能细节暂请移步 [Kimi Code CLI 文档站](https://moonshotai.github.io/kimi-code/zh/)。
+:::
 
 ## 启动
 

@@ -6,6 +6,12 @@ The `kimi term` command launches the [Toad](https://github.com/batrachianai/toad
 kimi term [OPTIONS]
 ```
 
+::: warning 📢 Version Notice
+Kimi Code CLI has gone through a major version upgrade — moving from Python/uv to Node.js, bringing a simpler install experience, faster startup, and a redesigned terminal UI. This page applies to the legacy Kimi Code CLI only. The legacy version will gradually be phased out — we recommend upgrading as soon as possible. See [Version Upgrade](/en/kimi-code-cli/cli-migration) for details.
+This documentation is being rebuilt — for new-version feature details, please visit the [Kimi Code CLI docs](https://moonshotai.github.io/kimi-code/en/) in the meantime.
+:::
+
+
 ## Description
 
 [Toad](https://github.com/batrachianai/toad) is a graphical terminal interface for Kimi Code CLI that communicates with the Kimi Code CLI backend via the ACP protocol. It provides a richer interactive experience, including better output rendering and interface layout.

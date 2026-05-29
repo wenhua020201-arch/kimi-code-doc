@@ -4,6 +4,11 @@
 
 部分斜杠命令在 Shell 模式下也可用：`/help`、`/version`、`/editor`、`/theme`、`/changelog`、`/feedback`、`/export`、`/import` 和 `/task`。
 
+::: warning 📢 版本说明
+Kimi Code CLI 已完成重大版本升级，底层从 Python/uv 迁移至 Node.js，带来更简单的安装方式、更快的启动速度和全新的终端界面。本页内容仅适用于旧版 Kimi Code CLI。旧版将逐渐停止维护，建议尽快完成升级。查看[版本升级](/kimi-code-cli/cli-migration)了解详情。
+本文档正在重建中，新版功能细节暂请移步 [Kimi Code CLI 文档站](https://moonshotai.github.io/kimi-code/zh/)。
+:::
+
 | 命令 | 用途 |
 |------|------|
 | `/help` | 显示帮助信息（键盘快捷键、斜杠命令、已加载 Skills）。别名：`/h`、`/?`。按 `q` 退出分页器 |

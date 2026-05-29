@@ -1,10 +1,13 @@
 # Agent Tracing Visualizer
 
-::: warning Note
-Agent Tracing Visualizer is currently in Technical Preview and may be unstable. Features and interface may change in future releases.
-:::
+> Technical Preview: features and interface may change in future releases.
 
 Agent Tracing Visualizer is a browser-based visualization dashboard for inspecting and analyzing Kimi Code CLI session traces. It helps you understand agent behavior, view Wire event timelines, analyze context usage, and browse historical sessions.
+
+::: warning 📢 Version Notice
+Kimi Code CLI has gone through a major version upgrade — moving from Python/uv to Node.js, bringing a simpler install experience, faster startup, and a redesigned terminal UI. This page applies to the legacy Kimi Code CLI only. The legacy version will gradually be phased out — we recommend upgrading as soon as possible. See [Version Upgrade](/en/kimi-code-cli/cli-migration) for details.
+This documentation is being rebuilt — for new-version feature details, please visit the [Kimi Code CLI docs](https://moonshotai.github.io/kimi-code/en/) in the meantime.
+:::
 
 ## Launch
 

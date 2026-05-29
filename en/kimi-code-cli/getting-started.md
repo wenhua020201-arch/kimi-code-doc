@@ -1,172 +1,138 @@
 # Quick Start
 
-Kimi Code CLI is an AI agent that runs in the terminal, helping you complete software development tasks and terminal operations. It can read and edit code, execute shell commands, search and fetch web pages, and autonomously plan and adjust actions during execution.
+## What is Kimi Code CLI
 
-Kimi Code CLI is suited for:
+Kimi Code CLI is an AI agent that runs in the terminal, helping you carry out software development tasks and day-to-day terminal operations. It can read and edit code, run shell commands, search files, and fetch web pages, autonomously planning and adjusting the next step based on feedback as it works.
 
-- **Writing and modifying code**: Implementing new features, fixing bugs, refactoring code
-- **Understanding projects**: Exploring unfamiliar codebases, answering architecture and implementation questions
-- **Automating tasks**: Batch processing files, running builds and tests, executing scripts
+It fits scenarios such as:
 
-Kimi Code CLI supports the following usage modes:
-
-- **Interactive CLI** (`kimi`): Chat with AI in the terminal using natural language to describe tasks or execute shell commands directly
-- **Browser UI** (`kimi web`): Open a graphical interface in your local browser, supporting session management, file references, code highlighting, and more
-- **Agent integration** (`kimi acp`): Run as a service and integrate into IDEs and other local agent clients via the Agent Client Protocol
-
->If you encounter issues or have suggestions, feel free to provide feedback via [GitHub Issues](https://github.com/MoonshotAI/kimi-cli/issues).
-
-
-
-## Before You Start
-
-- **Operating system**: macOS, Linux, or Windows (via PowerShell)
-- **Kimi account**: Requires a Kimi membership subscription, or a callable API key
-
+- **Writing and modifying code**: implementing new features, fixing bugs, completing refactors
+- **Understanding a project**: exploring an unfamiliar codebase and answering questions about architecture and implementation
+- **Automating tasks**: batch-processing files, running builds and tests, chaining multiple scripts together
 
 ## Installation
 
-Run the installation script to complete the installation. The script will first install [uv](https://docs.astral.sh/uv/) (a Python package manager), then install Kimi Code CLI via uv:
+### Install script (recommended)
+
+The quickest way to install Kimi Code CLI is with the install script; no pre-installed Node.js is required:
+
+- **macOS / Linux**:
 
 ```sh
-# Linux / macOS
-curl -LsSf https://code.kimi.com/install.sh | bash
+curl -fsSL https://code.kimi.com/kimi-code/install.sh | bash
 ```
+
+- **Windows (PowerShell)**:
 
 ```powershell
-# Windows (PowerShell)
-Invoke-RestMethod https://code.kimi.com/install.ps1 | Invoke-Expression
+irm https://code.kimi.com/kimi-code/install.ps1 | iex
 ```
 
-Verify the installation:
+This downloads the latest release, verifies the checksum, and places the `kimi` executable on your `PATH`.
+
+### npm installation
+
+If you prefer to install via npm, you need Node.js 24.15.0 or later:
+
+```sh
+node --version
+```
+
+The package name is `@moonshot-ai/kimi-code`:
+
+```sh
+npm install -g @moonshot-ai/kimi-code
+```
+
+Or with pnpm:
+
+```sh
+pnpm add -g @moonshot-ai/kimi-code
+```
+
+## Upgrade and uninstall
+
+After installation, verify that the executable is ready:
 
 ```sh
 kimi --version
 ```
 
-
-> Due to macOS security checks (Gatekeeper), the first run of the `kimi` command may take longer. You can add your terminal application in "System Settings → Privacy & Security → Developer Tools" to speed up subsequent launches.
-
-If you already have uv installed, you can also run:
+**Upgrade**: if you installed via the script, re-run it. If you installed via npm:
 
 ```sh
-uv tool install --python 3.13 kimi-cli
+npm install -g @moonshot-ai/kimi-code@latest
 ```
 
-> Kimi Code CLI supports Python 3.12–3.14, but Python 3.13 is recommended for best compatibility.
+**Uninstall**: if you installed via the script, remove the `kimi` executable. If you installed via npm:
 
+```sh
+npm uninstall -g @moonshot-ai/kimi-code
+```
 
-## First Run
+## First launch
 
-### Start and Log In
-
-Start Kimi Code CLI in the project directory where you want to work:
+Move into the project directory you want to work in and simply run `kimi` to start the interactive UI:
 
 ```sh
 cd your-project
 kimi
 ```
 
-On first launch, enter `/login` to configure the API source:
+If you only want to run a single instruction without entering the interactive UI, use the `-p` flag:
+
+```sh
+kimi -p "Take a look at this project's directory structure"
+```
+
+To resume the previous session, add the `-C` flag:
+
+```sh
+kimi -C
+```
+
+On the first launch, Kimi Code CLI has no credentials yet, and you need to configure an API source before you can start a conversation. In the interactive UI, enter the slash command `/login` to begin the login flow:
 
 ```
 /login
 ```
 
-We recommend selecting the **Kimi Code** platform, which automatically opens the browser for OAuth authorization; selecting other platforms requires entering an API key. After configuration, it automatically saves and reloads. See the [Providers and Models](/en/kimi-code-cli/configuration/providers-and-models) configuration documentation for details.
+`/login` opens a platform selector supporting:
 
+- **Kimi Code** — OAuth device code flow; open the URL on any device, sign in, and enter the code to authorize
+- **Moonshot AI Open Platform** — log in directly with an API key
 
-### Step 1: Ask a Question
+To sign out, enter `/logout` to clear the current credentials.
 
-Ask a question in natural language to quickly understand the project:
+::: tip
+If you want to use Anthropic, OpenAI, Google, or other providers, edit `config.toml` directly to configure the API key. See [Providers and models](/en/kimi-code-cli/configuration/providers-and-models) for details. Runtime configuration such as the model and provider is also written to `config.toml`. See [Config files](/en/kimi-code-cli/configuration/configuration-files), [Environment variables](/en/kimi-code-cli/configuration/environment-variables), and [Configuration overrides](/en/kimi-code-cli/configuration/overrides-and-precedence) for details.
+:::
 
-```
-What is the overall architecture of this project? Where is the entry file?
-```
+## Your first conversation
 
-Kimi Code CLI will automatically search and read relevant files, then provide an answer.
-
-### Step 2: Make a Code Change
-
-Try letting Kimi Code CLI modify code:
+Once login is complete, you can describe a task to Kimi Code CLI directly in natural language. For example, you can have it familiarize itself with the current project first:
 
 ```
-Add a "Quick Start" section to the README, including installation and running steps
+Take a look at this project's directory structure and briefly describe what each directory is for.
 ```
 
-Kimi Code CLI will show a diff and ask for confirmation before modifying files—you can approve, reject, or enter feedback to adjust direction. It won't change your code without permission.
+Kimi Code CLI will automatically call file-reading, search, and web-fetching tools, browse the relevant content, and then give you an answer. Read-only operations such as reading files and searching the web are executed automatically by default without requiring confirmation. For operations that modify files or run shell commands, it asks for your confirmation before executing by default, and you can approve or reject as you see fit.
 
-### Step 3: Execute a Command
-
-Kimi Code CLI can also run shell commands and analyze the results:
+You can also have it do something more concrete, such as:
 
 ```
-Run the tests and fix any failing cases
+Add a function in src/utils that converts any string to kebab-case, and add a unit test for it.
 ```
 
-At this point, you've experienced three core capabilities: **asking questions**, **modifying code**, and **executing commands**.
+Kimi Code CLI plans the steps, modifies the code, runs the tests, and tells you what it did at each step.
 
->If the project doesn't have an AGENTS.md file, you can run the `/init` command to have Kimi Code CLI analyze the project and generate this file, helping the AI better understand the project structure and conventions.
+In the interactive UI, entering `/help` shows all available [slash commands](/en/kimi-code-cli/reference/slash-commands) along with common keyboard shortcut hints. To exit Kimi Code CLI, enter `/exit`. You can also press `Ctrl-C` — the UI will first clear the current input and prompt you to press it again, and the second press exits. Or press `Ctrl-D` twice with the input box empty to exit.
 
+## Where data is stored
 
-## Common Commands Cheat Sheet
+Kimi Code CLI stores its local data under `~/.kimi-code/` by default, including config files, session records, logs, and the update cache. If you want to move it elsewhere, you can point to a new root directory via the `KIMI_CODE_HOME` environment variable. For the full directory layout and environment variable reference, see [Data locations](/en/kimi-code-cli/configuration/data-locations) and [Environment variables](/en/kimi-code-cli/configuration/environment-variables).
 
-| Command | Description |
-|------|------|
-| `kimi` | Start an interactive conversation |
-| `kimi web` | Open the browser graphical interface |
-| `/login` | Configure or switch API source |
-| `/usage` | View remaining quota and limits |
-| `/help` | View all commands and shortcuts |
-| `Ctrl-J` | Newline (without submitting) |
-| `Ctrl-C` / `Ctrl-D` | Interrupt current operation / Exit |
+## Further Reading
 
-For the full command list, please refer to [Slash Commands](/en/kimi-code-cli/reference/slash-commands) and [Keyboard Shortcuts](/en/kimi-code-cli/reference/keyboard-shortcuts).
+This documentation site is being rebuilt following the version upgrade. For more feature details — configuration, MCP, Hooks, plugins, and more — please visit the [Kimi Code CLI docs](https://moonshotai.github.io/kimi-code/en/) in the meantime.
 
-
-## FAQ
-
-**Why do I get an authentication failure after entering my API Key?**
-
-First, confirm that your Key and Base URL belong to the same platform. `api.kimi.com` and `api.moonshot.cn` are two completely independent account systems; API Keys are not interchangeable:
-
-| Platform | Base URL | Billing | Key Creation Portal |
-|------|---------|---------|-------------|
-| **Kimi Code** | OpenAI Compatible: `https://api.kimi.com/coding/v1`<br> Anthropic Compatible: `https://api.kimi.com/coding/` | Kimi membership subscription (with quota) | [www.kimi.com/code/console](https://www.kimi.com/code/console) |
-| **Kimi Platform** | `https://api.moonshot.cn/v1` | Pay-as-you-go | [platform.kimi.ai](https://platform.kimi.ai) |
-
-
-**What to do**: Go back to the corresponding platform's console to recreate a Key, and ensure the `base_url` (also called Entrypoint or Endpoint) configured in your tool matches the Key's platform.
-
-
-**`kimi` command not found after installation**
-
-The installation script adds `kimi` to PATH, but you need to restart the terminal or run `source ~/.bashrc` (or `source ~/.zshrc`) for it to take effect. If it's still not found, check whether `~/.local/bin` is in your PATH.
-
-**Browser doesn't pop up after `/login`**
-
-If you're on a remote server or in a headless environment, `/login` will display a URL; manually copy it to your browser to complete authorization.
-
-For more issues, please refer to [FAQ](/en/kimi-code/faq).
-
-
-## Upgrade and Uninstall
-
-Upgrade to the latest version:
-
-```sh
-uv tool upgrade kimi-cli --no-cache
-```
-
-Uninstall Kimi Code CLI:
-
-```sh
-uv tool uninstall kimi-cli
-```
-
-
-## Next Steps
-
-- [Core Operations](/en/kimi-code-cli/core-operations) – Learn interaction input, context management, working modes, and other interaction tips
-- [Configuration Files](/en/kimi-code-cli/configuration/configuration-files) — Customize models, behavior, and tool permissions
-- [MCP Integration](/en/kimi-code-cli/customization/mcp) — Connect external tools and data sources to extend capabilities

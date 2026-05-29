@@ -2,6 +2,11 @@
 
 Wire mode is Kimi Code CLI's low-level communication protocol for structured bidirectional communication with external programs.
 
+::: warning 📢 Version Notice
+Kimi Code CLI has gone through a major version upgrade — moving from Python/uv to Node.js, bringing a simpler install experience, faster startup, and a redesigned terminal UI. This page applies to the legacy Kimi Code CLI only. The legacy version will gradually be phased out — we recommend upgrading as soon as possible. See [Version Upgrade](/en/kimi-code-cli/cli-migration) for details.
+This documentation is being rebuilt — for new-version feature details, please visit the [Kimi Code CLI docs](https://moonshotai.github.io/kimi-code/en/) in the meantime.
+:::
+
 ## What is Wire
 
 Wire is the message-passing layer used internally by Kimi Code CLI. When you interact via terminal, the Shell UI receives AI output through Wire and displays it; when you integrate with IDEs via ACP, the ACP server also communicates with the agent core through Wire.

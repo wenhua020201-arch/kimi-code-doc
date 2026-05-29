@@ -2,6 +2,11 @@
 
 [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) 是一个开放协议，让 AI 模型可以安全地与外部工具和数据源交互。Kimi Code CLI 支持连接 MCP 服务器，扩展 AI 的能力。
 
+::: warning 📢 版本说明
+Kimi Code CLI 已完成重大版本升级，底层从 Python/uv 迁移至 Node.js，带来更简单的安装方式、更快的启动速度和全新的终端界面。本页内容仅适用于旧版 Kimi Code CLI。旧版将逐渐停止维护，建议尽快完成升级。查看[版本升级](/kimi-code-cli/cli-migration)了解详情。
+本文档正在重建中，新版功能细节暂请移步 [Kimi Code CLI 文档站](https://moonshotai.github.io/kimi-code/zh/)。
+:::
+
 ## MCP 是什么
 
 MCP 服务器提供「工具」给 AI 使用。例如，一个数据库 MCP 服务器可以提供查询工具，让 AI 能够执行 SQL 查询；一个浏览器 MCP 服务器可以让 AI 控制浏览器进行自动化操作。

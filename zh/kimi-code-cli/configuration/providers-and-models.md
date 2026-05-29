@@ -2,6 +2,11 @@
 
 Kimi Code CLI 支持多种 LLM 平台，可以通过配置文件或 `/login` 命令进行配置。
 
+::: warning 📢 版本说明
+Kimi Code CLI 已完成重大版本升级，底层从 Python/uv 迁移至 Node.js，带来更简单的安装方式、更快的启动速度和全新的终端界面。本页内容仅适用于旧版 Kimi Code CLI。旧版将逐渐停止维护，建议尽快完成升级。查看[版本升级](/kimi-code-cli/cli-migration)了解详情。
+本文档正在重建中，新版功能细节暂请移步 [Kimi Code CLI 文档站](https://moonshotai.github.io/kimi-code/zh/)。
+:::
+
 ## 平台选择
 
 最简单的配置方式是在 Shell 模式下运行 `/login` 命令（别名 `/setup`），按照向导完成平台和模型的选择：
