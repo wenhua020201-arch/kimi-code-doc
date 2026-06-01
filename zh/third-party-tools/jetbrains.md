@@ -2,6 +2,10 @@
 
 Kimi Code CLI 支持通过 [Agent Client Protocol (ACP)](https://agentclientprotocol.com/) 集成到 IDE 中，让你在编辑器内直接使用 AI 辅助编程。
 
+::: warning 仅适用于旧版 CLI
+新版 Kimi Code CLI（Node.js）暂不支持 ACP 集成，如果你习惯在 JetBrains IDE 中使用 ACP，目前仅旧版 CLI（Python/uv）支持。
+:::
+
 ## 前提条件
 
 - 已安装 [Kimi Code CLI](/kimi-code-cli/getting-started) 并完成 `kimi /login` 配置。

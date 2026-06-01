@@ -2,6 +2,10 @@
 
 [zsh-kimi-cli](https://github.com/MoonshotAI/zsh-kimi-cli) 是一个 Zsh 插件，让你可以在 Zsh 中快速切换到 Kimi Code CLI。
 
+::: warning 仅适用于旧版 CLI
+新版 Kimi Code CLI（Node.js）暂不支持 zsh-kimi-cli 插件，如果你习惯使用该插件，目前仅旧版 CLI（Python/uv）支持。
+:::
+
 ## 安装
 
 如果你使用 Oh My Zsh，可以这样安装：

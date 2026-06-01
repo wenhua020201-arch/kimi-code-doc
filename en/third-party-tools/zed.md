@@ -2,6 +2,10 @@
 
 Kimi Code CLI supports integration with IDEs through the [Agent Client Protocol (ACP)](https://agentclientprotocol.com/), allowing you to use AI-assisted programming directly within your editor.
 
+::: warning Legacy CLI only
+The new Kimi Code CLI (Node.js) does not currently support ACP integration. If you prefer using ACP in Zed, it is only available on the legacy CLI (Python/uv) for now.
+:::
+
 ## Prerequisites
 
 - [Kimi Code CLI](/en/kimi-code-cli/getting-started) is installed and `kimi /login` configuration is completed.

@@ -2,6 +2,10 @@
 
 [zsh-kimi-cli](https://github.com/MoonshotAI/zsh-kimi-cli) is a Zsh plugin that lets you quickly switch to Kimi Code CLI in Zsh.
 
+::: warning Legacy CLI only
+The new Kimi Code CLI (Node.js) does not currently support zsh-kimi-cli. If you prefer this plugin, it is only available on the legacy CLI (Python/uv) for now.
+:::
+
 ## Installation
 
 If you use Oh My Zsh, you can install it like this:
