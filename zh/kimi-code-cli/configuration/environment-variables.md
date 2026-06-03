@@ -1,6 +1,6 @@
 # 环境变量
 
-Kimi Code CLI 通过环境变量来控制数据目录位置、OAuth 端点，以及少数运行时开关。最常用的三个场景：用 `KIMI_CODE_HOME` 把数据目录迁到别处、用 `KIMI_DISABLE_TELEMETRY` 关闭遥测、用 `KIMI_MODEL_*` 系列不改配置文件就切换模型。
+Kimi Code CLI 通过环境变量控制少数运行时行为——迁移数据目录、关闭遥测、不改配置文件临时切换模型。
 
 ::: warning 重要：API 密钥不在这里配置
 `KIMI_API_KEY`、`ANTHROPIC_API_KEY`、`OPENAI_API_KEY` 等密钥变量**不会**从 shell 环境变量自动读取。在终端里 `export KIMI_API_KEY=xxx` 不会让任何供应商获得密钥——必须写在 `config.toml` 的 `[providers.<name>]` 段或 `[providers.<name>.env]` 子表里。
@@ -24,6 +24,18 @@ export KIMI_CODE_HOME="/path/to/custom/kimi-code"
 
 数据目录的完整结构见[数据路径](./data-locations.md)。
 
+### `KIMI_DISABLE_TELEMETRY`
+
+设为 `1` 关闭匿名遥测上报（也接受 `true`/`yes`/`y`，不区分大小写）：
+
+```sh
+export KIMI_DISABLE_TELEMETRY=1
+```
+
+### `KIMI_MODEL_*` 系列
+
+不修改 `config.toml` 临时切换模型——设置 `KIMI_MODEL_NAME` 后，CLI 在内存里合成一个临时供应商，重启后失效。详见[用环境变量定义模型](#用环境变量定义模型kimi_model)。
+
 ## 供应商凭证键（写在 config.toml 里）
 
 下面这些键名不是直接从 shell 读取的——它们是写在 `config.toml` 的 `[providers.<name>.env]` 子表里、作为 `api_key` / `base_url` 备用来源的键名。CLI 只从配置文件读取，不从 `process.env` 读取。
@@ -38,18 +50,18 @@ KIMI_BASE_URL = "https://api.moonshot.ai/v1"
 
 各供应商对应的键名：
 
-| 键名 | 适用供应商 | 用途 | 默认值 |
-| --- | --- | --- | --- |
-| `KIMI_API_KEY` | Kimi / Moonshot | API 密钥 | 无 |
-| `KIMI_BASE_URL` | Kimi / Moonshot | API 基础 URL | `https://api.moonshot.ai/v1` |
-| `ANTHROPIC_API_KEY` | Anthropic | API 密钥 | 无 |
-| `ANTHROPIC_BASE_URL` | Anthropic | API 基础 URL | Anthropic SDK 默认值 |
-| `OPENAI_API_KEY` | OpenAI（`openai` 和 `openai_responses`） | API 密钥 | 无 |
-| `OPENAI_BASE_URL` | OpenAI（`openai` 和 `openai_responses`） | API 基础 URL | `https://api.openai.com/v1` |
-| `GOOGLE_API_KEY` | Google GenAI、Vertex AI | API 密钥 | 无 |
-| `VERTEXAI_API_KEY` | Vertex AI | API 密钥（不用 ADC 时） | 无 |
-| `GOOGLE_CLOUD_PROJECT` | Vertex AI | GCP 项目 ID | 无 |
-| `GOOGLE_CLOUD_LOCATION` | Vertex AI | GCP 区域 | 无 |
+| 键名 | 适用供应商 | 默认值 |
+| --- | --- | --- |
+| `KIMI_API_KEY` | Kimi / Moonshot | 无 |
+| `KIMI_BASE_URL` | Kimi / Moonshot | `https://api.moonshot.ai/v1` |
+| `ANTHROPIC_API_KEY` | Anthropic | 无 |
+| `ANTHROPIC_BASE_URL` | Anthropic | Anthropic SDK 默认值 |
+| `OPENAI_API_KEY` | OpenAI（`openai` 和 `openai_responses`） | 无 |
+| `OPENAI_BASE_URL` | OpenAI（`openai` 和 `openai_responses`） | `https://api.openai.com/v1` |
+| `GOOGLE_API_KEY` | Google GenAI、Vertex AI | 无 |
+| `VERTEXAI_API_KEY` | Vertex AI | 无 |
+| `GOOGLE_CLOUD_PROJECT` | Vertex AI | 无 |
+| `GOOGLE_CLOUD_LOCATION` | Vertex AI | 无 |
 
 ::: warning
 `GOOGLE_APPLICATION_CREDENTIALS`（服务账号 JSON 路径）是唯一走系统环境变量的例外——它由 Google SDK 自身通过 ADC 流程读取，CLI 不参与。其他所有键名都必须写在 `[providers.<name>.env]` 子表里。

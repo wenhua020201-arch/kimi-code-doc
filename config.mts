@@ -48,7 +48,7 @@ export default defineAdditionalConfig({
               { text: 'Hooks', link: '/kimi-code-cli/customization/hooks' },
               { text: 'MCP', link: '/kimi-code-cli/customization/mcp' },
               { text: 'Plugins', link: '/kimi-code-cli/customization/plugins' },
-              { text: 'Kimi Datasource', link: '/kimi-code-cli/customization/datasource' },
+              { text: '官方插件', link: '/kimi-code-cli/customization/datasource' },
               { text: 'Agent Skills', link: '/kimi-code-cli/customization/skills' },
             ],
           },
