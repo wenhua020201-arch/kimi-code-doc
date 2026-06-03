@@ -153,13 +153,17 @@ Plugin MCP servers only start in new sessions. To enable or disable a server:
 
 ## Official Plugins
 
-The Kimi Code official marketplace provides reviewed, official plugins. Run `/plugins` in the TUI and go to the **Marketplace** tab to browse and install.
+The Kimi Code official marketplace hosts reviewed official plugins. Currently available:
 
-Currently available official plugins:
+**[Kimi Datasource](./datasource.md)** — Query financial market data, macroeconomic indicators, corporate registration records, and academic literature in natural language, with no account registration or API calls required.
 
-- **[Kimi Datasource](./datasource.md)** — Query financial market data, macroeconomic indicators, corporate registration records, and academic literature in natural language, with no account registration or API calls required. See the [Official Plugins documentation](./datasource.md) for installation steps and usage examples.
+Installation:
 
----
+1. Run `/plugins` and select **Marketplace**
+2. Find **Kimi Datasource** and press `Space` to install
+3. Run `/new` to start a new session after installation
+
+For data capabilities and usage examples, see the [Official Plugins documentation](./datasource.md).
 
 ## Security Model
 
