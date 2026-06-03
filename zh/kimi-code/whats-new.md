@@ -14,13 +14,13 @@
 </div>
 <div class="wn-content">
 
-**不用一轮一轮地催了——自主 Goal 模式（实验）**：给 Kimi 一个目标，它会持续推进、自己决定下一步，直到完成或遇到真正需要你决策的阻塞。输入 `/goal <目标>` 启动，用 `/goal pause` / `/goal resume` / `/goal cancel` 随时介入。需提前设置 `KIMI_CODE_EXPERIMENTAL_GOAL_COMMAND=1`。→ [自主 goal](/kimi-code-cli/reference/slash-commands#自主-goal实验功能)
+**自主 Goal 模式（实验）**：输入 `/goal <目标>` 后，Kimi 会在多个轮次里持续推进同一个目标，直到完成、被暂停或遇到阻塞，省去了一轮一轮手动催的步骤。用 `/goal pause` / `/goal resume` / `/goal cancel` 管理进度，需提前设置 `KIMI_CODE_EXPERIMENTAL_GOAL_COMMAND=1` 启用。→ [自主 goal](/kimi-code-cli/reference/slash-commands#自主-goal实验功能)
 
-**Agent 遇到问题不再卡住——后台结构化提问**：以前 Agent 碰到需要你确认的小问题，整个流程就停在那儿等。现在它会把问题挂到后台，继续推进其他步骤，你回来看到的是进度，而不是空白的等待界面。→ [AskUserQuestion](/kimi-code-cli/reference/tools#协作类)
+**后台结构化提问**：Agent 遇到需要你做选择的问题时，会将提问挂到后台，同时继续处理其他步骤，不再因为一个小问题卡住整个流程。→ [AskUserQuestion](/kimi-code-cli/reference/tools#协作类)
 
-**Shell 里直接管理供应商——`kimi provider` 子命令**：不用进 TUI，在终端直接增删供应商。`kimi provider add <url>` 从自定义 registry 批量导入，`catalog list / catalog add` 从 models.dev 公共目录挑选。适合脚本或 CI 场景。→ [kimi provider](/kimi-code-cli/reference/kimi-command#kimi-provider)
+**`kimi provider` 子命令**：直接在 shell 里管理供应商，无需打开 TUI。`kimi provider add <url>` 从自定义 registry 批量导入，`catalog list / catalog add` 从 models.dev 公共目录导入，适合脚本或 CI 场景。→ [kimi provider](/kimi-code-cli/reference/kimi-command#kimi-provider)
 
-此外：**后台自动更新**默认开启（可在 `tui.toml` 中关闭）；**上下文压缩**时待办列表会附在摘要里，Agent 恢复后不会忘记之前做到哪一步。
+此外：**后台自动更新**默认开启（可在 `tui.toml` 中关闭）；**上下文压缩**时会把当前待办列表附在摘要里，防止 Agent 忘记中断前的进度。
 
 </div>
 </div>
@@ -34,11 +34,11 @@
 </div>
 <div class="wn-content">
 
-**切换模型不用再改配置文件——`/provider` 交互式管理器**：TUI 内输入 `/provider` 打开可视化界面，所有已配置的供应商一览无余，新增、删除、切换都在这里完成，按供应商分标签页选择模型。从此告别手改 `config.toml`。→ [平台与模型](/kimi-code-cli/configuration/providers-and-models#provider-与供应商管理)
+**`/provider` 交互式供应商管理器**：在 TUI 中输入 `/provider` 打开可视化管理界面，查看所有已配置供应商、添加新来源、删除旧条目，切换模型时按供应商分标签页选择，不需要手动改 `config.toml`。→ [平台与模型](/kimi-code-cli/configuration/providers-and-models#provider-与供应商管理)
 
-**自定义端点也能精确控制 Thinking——`KIMI_MODEL_ADAPTIVE_THINKING`**：接非官方命名的自定义端点时，Kimi 无法自动判断模型是否支持 adaptive thinking。这个环境变量让你显式指定，不再靠猜。→ [模型字段](/kimi-code-cli/configuration/configuration-files#models)
+**`KIMI_MODEL_ADAPTIVE_THINKING` 环境变量**：可强制开启或关闭 adaptive thinking，专为自定义命名端点设计——当模型名无法自动解析 Claude 版本时，用这个变量显式指定，不再依赖自动推断。→ [模型字段](/kimi-code-cli/configuration/configuration-files#models)
 
-此外：定时任务触发时间改为按**本地时区**显示，不再是 UTC。
+此外：定时任务触发时间现在以**本地时区**格式显示，不再是 UTC。
 
 </div>
 </div>
@@ -52,11 +52,11 @@
 </div>
 <div class="wn-content">
 
-**临时换模型不用动配置文件——`KIMI_MODEL_*` 环境变量通道**：设两个环境变量（`KIMI_MODEL_NAME` + `KIMI_MODEL_API_KEY`）就能让 Kimi Code 切到指定模型，重启后自动失效。供应商类型、Base URL、上下文长度、Thinking 配置都有对应的 `KIMI_MODEL_*` 变量可覆盖——测试新模型或在 CI 里切换端点从此不需要碰 `config.toml`。→ [用环境变量定义模型](/kimi-code-cli/configuration/environment-variables#用环境变量定义模型-kimi-model)
+**`KIMI_MODEL_*` 环境变量通道**：设置 `KIMI_MODEL_NAME` 和 `KIMI_MODEL_API_KEY` 就能让 Kimi Code 使用指定模型，完全不需要修改 `config.toml`，重启后自动失效。供应商类型、Base URL、上下文长度、Thinking 配置均可通过对应的 `KIMI_MODEL_*` 变量覆盖，适合临时测试或 CI 环境快速切换。→ [用环境变量定义模型](/kimi-code-cli/configuration/environment-variables#用环境变量定义模型-kimi-model)
 
-**一行命令装社区插件——GitHub URL 直接安装**：`/plugins install https://github.com/<owner>/<repo>` 即可安装最新 release，也支持指定分支、tag 或 commit 锁定版本。Plugin 管理器会标注来源信任等级（`kimi-official` / `curated` / `third-party`），方便判断风险。→ [安装与管理](/kimi-code-cli/customization/plugins#安装与管理)
+**从 GitHub URL 直接安装 Plugin**：`/plugins install https://github.com/<owner>/<repo>` 安装最新 release，也支持指定分支、tag 或 commit。Plugin 管理器标注来源信任等级：`kimi-official`（官方）、`curated`（精选）、`third-party`（其他）。→ [安装与管理](/kimi-code-cli/customization/plugins#安装与管理)
 
-**长任务不再被强制打断——移除默认步数上限**：之前 Agent 每轮最多执行 1000 步就会停下来，现在已取消这个限制。如果你需要重新设一个上限，在 `config.toml` 里配置 `max_steps_per_turn`。→ [loop\_control](/kimi-code-cli/configuration/configuration-files#loop_control)
+**移除默认步数上限**：之前每轮 Agent 最多执行 1000 步，现已取消，长任务不再被强制打断。如需重新限制，可在 `config.toml` 里手动设 `max_steps_per_turn`。→ [loop\_control](/kimi-code-cli/configuration/configuration-files#loop_control)
 
 </div>
 </div>
@@ -70,7 +70,7 @@
 </div>
 <div class="wn-content">
 
-**让 Kimi 定时帮你做事——定时任务**：用自然语言就能设置定时计划，Kimi 按 cron 节奏自动执行，或到点提醒你回来检查。计划绑定当前会话，`kimi resume` 后继续触发，不需要你守着。
+**定时任务**：在会话里用自然语言设定 cron 计划或一次性提醒，Kimi 会在指定时间自动执行，计划绑定当前会话，`kimi resume` 后重新加载继续触发。
 
 ```
 每个工作日上午 9 点帮我汇总 CI 失败情况
@@ -79,9 +79,9 @@
 
 → [定时任务](/kimi-code-cli/reference/tools#定时任务)
 
-**无人值守但不乱跑——`/auto` 权限模式**：比 `--yolo` 更克制的自动化模式。开启后工具审批自动处理、Agent 不向你提问，但它仍然保留了权限判断，不会盲目执行危险操作。适合不想频繁确认但又不放心完全放开的场景。→ [交互与输入](/kimi-code-cli/interaction#yolo--auto-模式)
+**`/auto` 权限模式**：新增 `/auto` 命令和 `--auto` 启动参数。开启后工具审批自动处理，Agent 不会向用户提问，比 `--yolo` 更克制——保留权限判断，不会盲目执行危险操作，适合无人值守但不想完全放开的场景。→ [交互与输入](/kimi-code-cli/interaction#yolo--auto-模式)
 
-此外：`Ctrl-O` 展开工具输出时 Bash 命令显示完整内容；待办列表面板超出 5 行时折叠显示 `+N more`。
+此外：`Ctrl-O` 展开工具输出时 Bash 命令显示完整内容；待办列表面板最多显示 5 行，超出部分显示 `+N more`。
 
 </div>
 </div>
@@ -95,11 +95,11 @@
 </div>
 <div class="wn-content">
 
-**社区工具可以直接接进来了——Plugin 系统上线**：Plugin 是比 MCP 更高一级的打包单元——一个 Plugin 可以同时带 Agent Skills、MCP servers，装上就能用，不用单独配置每一项。`/plugins` 打开交互式管理器，`Space` 安装或更新，`M` 管理 MCP server 开关。官方 marketplace 同步上线，Kimi Datasource 数据插件已上架。→ [Plugins](/kimi-code-cli/customization/plugins)
+**Plugin 系统上线**：支持按用户安装 Plugin，每个 Plugin 可以携带 Agent Skills、在会话启动时自动加载 Skill，以及声明自己的 MCP servers。`/plugins` 打开交互式管理器，`Space` 安装或更新，`M` 管理 MCP server 开关。官方 marketplace 同步上线，包含 Kimi Datasource 等官方插件。→ [Plugins](/kimi-code-cli/customization/plugins)
 
-**对话记录可以保存下来了——会话导出**：`/export-md` 把当前会话导出为可读的 Markdown 文件，方便归档或分享；`/export-debug-zip` 打包完整会话目录（含诊断日志），提交反馈时直接附上。→ [会话与上下文](/kimi-code-cli/sessions#导出会话)
+**会话导出**：`/export-md` 把当前会话导出为可读的 Markdown 文件；`/export-debug-zip` 打包会话目录（含诊断日志）为 ZIP，适合提交反馈时附上。→ [会话与上下文](/kimi-code-cli/sessions#导出会话)
 
-**只读操作不再弹审批——权限系统重构**：工作目录外的只读文件操作不再打断你，只有真正有副作用的操作才需要确认。会话级审批现在精确匹配调用，路径匹配改为大小写不敏感。→ [权限配置](/kimi-code-cli/configuration/configuration-files#permission)
+**权限系统重构**：工作目录外的只读操作不再触发审批，减少不必要的确认打断；会话级审批现在精确匹配调用，路径匹配改为大小写不敏感。→ [权限配置](/kimi-code-cli/configuration/configuration-files#permission)
 
 </div>
 </div>
@@ -113,11 +113,11 @@
 </div>
 <div class="wn-content">
 
-**DeepSeek、Qwen 等带思考的模型直接能用——OpenAI 兼容推理模型支持**：`openai` 供应商现在自动识别各家的推理字段（`reasoning_content`、`reasoning_details`、`reasoning`），不需要额外配置。通过 One API、新月等网关接入的托管服务也同样适用。→ [openai 供应商](/kimi-code-cli/configuration/providers-and-models#openai)
+**OpenAI 兼容推理模型开箱即用**：`openai` 供应商现在自动识别响应中的推理字段（`reasoning_content`、`reasoning_details`、`reasoning`），对含有思考历史的请求自动注入 `reasoning_effort`。DeepSeek、Qwen、One API 等网关托管服务无需额外配置即可使用 thinking。→ [openai 供应商](/kimi-code-cli/configuration/providers-and-models#openai)
 
-**退出登录不再误操作——`/logout` 支持选择供应商**：以前 `/logout` 会退出当前供应商，没有确认。现在弹出选择器列出所有已登录供应商，当前项默认高亮，手动选择再退出。
+**`/logout` 支持选择供应商**：弹出选择器列出所有已登录供应商，当前供应商默认高亮，避免误退出其他供应商的登录态。
 
-**更容易加新供应商——`/connect` 命令**：从 models.dev 公共目录搜索供应商并一键配置，不用手写 TOML。（v0.7.0 起已升级为更完整的 `/provider` 命令。）
+**`/connect` 命令**：从 models.dev 公共目录选择供应商并配置，内置搜索过滤，无需手写 TOML。（v0.7.0 起已升级为功能更完整的 `/provider` 命令。）
 
 </div>
 </div>
