@@ -1,169 +1,150 @@
 # 环境变量
 
-Kimi Code CLI 支持通过环境变量覆盖配置或控制运行行为。本页列出所有支持的环境变量。
+Kimi Code CLI 通过环境变量来控制数据目录位置、OAuth 端点，以及少数运行时开关。最常用的三个场景：用 `KIMI_CODE_HOME` 把数据目录迁到别处、用 `KIMI_DISABLE_TELEMETRY` 关闭遥测、用 `KIMI_MODEL_*` 系列不改配置文件就切换模型。
 
-::: warning 📢 版本说明
-Kimi Code CLI 已完成重大版本升级，底层从 Python/uv 迁移至 Node.js，带来更简单的安装方式、更快的启动速度和全新的终端界面。本页内容仅适用于旧版 Kimi Code CLI。旧版将逐渐停止维护，建议尽快完成升级。查看[版本升级](/kimi-code-cli/cli-migration)了解详情。
-本文档正在重建中，新版功能细节暂请移步 [Kimi Code CLI 文档站](https://moonshotai.github.io/kimi-code/zh/)。
+::: warning 重要：API 密钥不在这里配置
+`KIMI_API_KEY`、`ANTHROPIC_API_KEY`、`OPENAI_API_KEY` 等密钥变量**不会**从 shell 环境变量自动读取。在终端里 `export KIMI_API_KEY=xxx` 不会让任何供应商获得密钥——必须写在 `config.toml` 的 `[providers.<name>]` 段或 `[providers.<name>.env]` 子表里。
+
+唯一的例外是 `KIMI_MODEL_*` 系列，它是一个显式通道，*确实*会从 shell 读取凭证——详见[用环境变量定义模型](#用环境变量定义模型-kimi-model)。
+
+背景说明见[配置覆盖：供应商凭证](./overrides-and-precedence.md#供应商凭证)。
 :::
 
-## Kimi 环境变量
+## 核心路径
 
-以下环境变量在使用 `kimi` 类型的供应商时生效，用于覆盖供应商和模型配置。
+### `KIMI_CODE_HOME`
 
-| 环境变量 | 说明 |
-| --- | --- |
-| `KIMI_BASE_URL` | API 基础 URL |
-| `KIMI_API_KEY` | API 密钥 |
-| `KIMI_MODEL_NAME` | 模型标识符 |
-| `KIMI_MODEL_MAX_CONTEXT_SIZE` | 最大上下文长度（token 数） |
-| `KIMI_MODEL_CAPABILITIES` | 模型能力，逗号分隔（如 `thinking,image_in`） |
-| `KIMI_MODEL_TEMPERATURE` | 生成参数 `temperature` |
-| `KIMI_MODEL_TOP_P` | 生成参数 `top_p` |
-| `KIMI_MODEL_MAX_TOKENS` | 生成参数 `max_tokens` |
-
-### `KIMI_BASE_URL`
-
-覆盖配置文件中供应商的 `base_url` 字段。
+覆盖数据根目录，默认 `~/.kimi-code`。设置后，配置文件、会话、日志、OAuth 凭据等全部数据都落到新路径下：
 
 ```sh
-export KIMI_BASE_URL="https://api.kimi.com/coding/v1"
+export KIMI_CODE_HOME="/path/to/custom/kimi-code"
 ```
 
-### `KIMI_API_KEY`
+> 确保目录可写。多个 `kimi` 实例共用同一个 `KIMI_CODE_HOME` 会共享配置和凭证。
 
-覆盖配置文件中供应商的 `api_key` 字段。用于在不修改配置文件的情况下注入 API 密钥，适合 CI/CD 环境。
+数据目录的完整结构见[数据路径](./data-locations.md)。
 
-```sh
-export KIMI_API_KEY="sk-xxx"
+## 供应商凭证键（写在 config.toml 里）
+
+下面这些键名不是直接从 shell 读取的——它们是写在 `config.toml` 的 `[providers.<name>.env]` 子表里、作为 `api_key` / `base_url` 备用来源的键名。CLI 只从配置文件读取，不从 `process.env` 读取。
+
+这样设计是为了让你保留熟悉的键名写法，同时把密钥放在配置文件里统一管理：
+
+```toml
+[providers.kimi.env]
+KIMI_API_KEY = "sk-xxx"
+KIMI_BASE_URL = "https://api.moonshot.ai/v1"
 ```
 
-### `KIMI_MODEL_NAME`
+各供应商对应的键名：
 
-覆盖配置文件中模型的 `model` 字段（API 调用时使用的模型标识符）。
+| 键名 | 适用供应商 | 用途 | 默认值 |
+| --- | --- | --- | --- |
+| `KIMI_API_KEY` | Kimi / Moonshot | API 密钥 | 无 |
+| `KIMI_BASE_URL` | Kimi / Moonshot | API 基础 URL | `https://api.moonshot.ai/v1` |
+| `ANTHROPIC_API_KEY` | Anthropic | API 密钥 | 无 |
+| `ANTHROPIC_BASE_URL` | Anthropic | API 基础 URL | Anthropic SDK 默认值 |
+| `OPENAI_API_KEY` | OpenAI（`openai` 和 `openai_responses`） | API 密钥 | 无 |
+| `OPENAI_BASE_URL` | OpenAI（`openai` 和 `openai_responses`） | API 基础 URL | `https://api.openai.com/v1` |
+| `GOOGLE_API_KEY` | Google GenAI、Vertex AI | API 密钥 | 无 |
+| `VERTEXAI_API_KEY` | Vertex AI | API 密钥（不用 ADC 时） | 无 |
+| `GOOGLE_CLOUD_PROJECT` | Vertex AI | GCP 项目 ID | 无 |
+| `GOOGLE_CLOUD_LOCATION` | Vertex AI | GCP 区域 | 无 |
+
+::: warning
+`GOOGLE_APPLICATION_CREDENTIALS`（服务账号 JSON 路径）是唯一走系统环境变量的例外——它由 Google SDK 自身通过 ADC 流程读取，CLI 不参与。其他所有键名都必须写在 `[providers.<name>.env]` 子表里。
+:::
+
+供应商类型与字段的完整说明见[平台与模型](./providers-and-models.md)。
+
+## OAuth 与托管端点
+
+这组变量用于将 OAuth 认证和托管服务端点指向自建或测试环境，日常使用不需要设置。
+
+| 环境变量 | 用途 | 默认值 |
+| --- | --- | --- |
+| `KIMI_CODE_OAUTH_HOST` | OAuth 认证 host，优先级最高 | 未设时回退到 `KIMI_OAUTH_HOST` |
+| `KIMI_OAUTH_HOST` | OAuth 认证 host，作为上一个的 fallback | 未设时使用 `https://auth.kimi.com` |
+| `KIMI_CODE_BASE_URL` | OAuth 登录后的托管 API base URL | `https://api.kimi.com/coding/v1` |
+
+::: warning
+`KIMI_CODE_BASE_URL`（OAuth 托管服务，指向 `kimi.com`）和 `KIMI_BASE_URL`（API 密钥直连，指向 `moonshot.ai`）是两个不同的变量，请按场景区分。
+:::
+
+## 用环境变量定义模型（`KIMI_MODEL_*`）
+
+测试时想换个模型但不想动 `config.toml`？设置 `KIMI_MODEL_NAME` 后，CLI 会从 `KIMI_MODEL_*` 系列变量在内存里合成出一个临时供应商和模型别名，不写回配置文件。优先级高于 `config.toml` 的 `default_model`，但低于启动时 `-m <alias>` 选项。
 
 ```sh
 export KIMI_MODEL_NAME="kimi-for-coding"
-```
-
-### `KIMI_MODEL_MAX_CONTEXT_SIZE`
-
-覆盖配置文件中模型的 `max_context_size` 字段。必须是正整数。
-
-```sh
+export KIMI_MODEL_API_KEY="YOUR_API_KEY"
+export KIMI_MODEL_BASE_URL="https://api.example.com/v1"
 export KIMI_MODEL_MAX_CONTEXT_SIZE="262144"
+export KIMI_MODEL_CAPABILITIES="image_in,thinking"
+kimi
 ```
 
-### `KIMI_MODEL_CAPABILITIES`
+完整变量列表：
 
-覆盖配置文件中模型的 `capabilities` 字段。多个能力用逗号分隔，支持的值为 `thinking`、`always_thinking`、`image_in` 和 `video_in`。
+| 环境变量 | 必填 | 用途 | 默认值 |
+| --- | --- | --- | --- |
+| `KIMI_MODEL_NAME` | 是（同时是启用开关） | 发送给 API 的模型 ID | — |
+| `KIMI_MODEL_API_KEY` | 是 | API 密钥 | — |
+| `KIMI_MODEL_PROVIDER_TYPE` | 否 | 供应商类型：`kimi`、`anthropic`、`openai` | `kimi` |
+| `KIMI_MODEL_BASE_URL` | 否 | API 基础 URL | 各类型有各自默认值 |
+| `KIMI_MODEL_MAX_CONTEXT_SIZE` | 否 | 最大上下文长度（token 数） | `262144`（256K） |
+| `KIMI_MODEL_CAPABILITIES` | 否 | 逗号分隔的能力标签，与自动探测的能力取并集 | `image_in,thinking` |
+| `KIMI_MODEL_DISPLAY_NAME` | 否 | 在 `/model` 中显示的名称 | 回退到 `KIMI_MODEL_NAME` |
+| `KIMI_MODEL_MAX_OUTPUT_SIZE` | 否 | 单次输出上限（仅 `anthropic`） | 模型默认值 |
+| `KIMI_MODEL_REASONING_KEY` | 否 | 推理字段名覆盖（仅 `openai`） | 自动探测 |
+| `KIMI_MODEL_DEFAULT_THINKING` | 否 | 新会话的默认 Thinking 开关 | 跟随全局默认 |
+| `KIMI_MODEL_THINKING_MODE` | 否 | Thinking 触发策略：`auto`/`on`/`off` | — |
+| `KIMI_MODEL_THINKING_EFFORT` | 否 | Thinking 强度：`low`/`medium`/`high`/`xhigh`/`max` | — |
+| `KIMI_MODEL_ADAPTIVE_THINKING` | 否 | 强制开启或关闭 adaptive thinking（仅 `anthropic`） | 按模型名推断 |
 
-```sh
-export KIMI_MODEL_CAPABILITIES="thinking,image_in"
-```
+设置了 `KIMI_MODEL_NAME` 但缺少必填变量时，启动会立即失败并给出明确提示。
 
-### `KIMI_MODEL_TEMPERATURE`
+## 运行时开关
 
-设置生成参数 `temperature`，控制输出的随机性。值越高输出越随机，值越低输出越确定。
+控制遥测、后台任务、plugin marketplace 等子系统行为的开关变量：
 
-```sh
-export KIMI_MODEL_TEMPERATURE="0.7"
-```
+| 环境变量 | 用途 | 合法值 |
+| --- | --- | --- |
+| `KIMI_DISABLE_TELEMETRY` | 关闭匿名遥测上报 | `1`、`true`、`yes`、`y`（不区分大小写） |
+| `KIMI_CODE_BACKGROUND_KEEP_ALIVE_ON_EXIT` | 会话关闭时是否保留后台任务，优先级高于 `config.toml` | 真值：`1`/`true`/`yes`/`on`；假值：`0`/`false`/`no`/`off` |
+| `KIMI_CODE_PLUGIN_MARKETPLACE_URL` | 替换 `/plugins` 加载的 marketplace JSON | URL 或本地路径 |
+| `KIMI_SHELL_PATH` | Windows 上覆盖 Git Bash 路径（自动探测失败时使用） | 绝对路径 |
+| `KIMI_MODEL_MAX_COMPLETION_TOKENS` | 单步 LLM 请求的 `max_completion_tokens` 硬上限，仅对 `kimi` 供应商生效 | 正整数；`0` 或负数禁用 clamp |
+| `KIMI_DISABLE_CRON` | 禁用定时任务工具（`CronCreate` 拒绝新计划，已有任务不触发） | `1` 表示禁用 |
 
-### `KIMI_MODEL_TOP_P`
+## 诊断日志
 
-设置生成参数 `top_p`（nucleus sampling），控制输出的多样性。
+这组变量控制日志级别和文件滚动，进程启动时读取一次：
 
-```sh
-export KIMI_MODEL_TOP_P="0.9"
-```
+| 环境变量 | 用途 | 默认值 |
+| --- | --- | --- |
+| `KIMI_LOG_LEVEL` | 日志级别：`off`、`error`、`warn`、`info`、`debug` | `info` |
+| `KIMI_LOG_GLOBAL_MAX_BYTES` | 全局日志文件单个最大字节数 | `6291456`（6 MB） |
+| `KIMI_LOG_GLOBAL_FILES` | 全局日志文件保留份数 | `5` |
+| `KIMI_LOG_SESSION_MAX_BYTES` | 会话级日志文件单个最大字节数 | `5242880`（5 MB） |
+| `KIMI_LOG_SESSION_FILES` | 会话级日志文件保留份数 | `3` |
 
-### `KIMI_MODEL_MAX_TOKENS`
+## 系统环境变量
 
-设置生成参数 `max_tokens`，限制单次回复的最大 token 数。
+CLI 还会读取一些标准系统变量来检测运行环境，不会修改它们：
 
-```sh
-export KIMI_MODEL_MAX_TOKENS="4096"
-```
+- `HOME`：解析默认数据路径
+- `VISUAL`、`EDITOR`：外部编辑器命令（`VISUAL` 优先）
+- `PATH`：定位 `rg`、`git` 等依赖
+- `NO_COLOR`、`FORCE_COLOR`：控制颜色输出（遵循 [no-color.org](https://no-color.org) 约定）
+- `CI`：非空且非 `"0"` 时关闭主题检测，回退深色主题
+- `TERM_PROGRAM`、`TERM`、`TMUX`：检测终端特性和通知支持
+- `DISPLAY`、`WAYLAND_DISPLAY`、`XDG_SESSION_TYPE`：检测 Linux 图形会话（用于剪贴板和图片功能）
+- `WSL_DISTRO_NAME`、`WSLENV`：检测 WSL，用于剪贴板 PowerShell 桥接
+- `LOCALAPPDATA`：Windows 上探测 Git Bash 安装路径
 
-## OpenAI 兼容环境变量
+## 下一步
 
-以下环境变量在使用 `openai_legacy` 或 `openai_responses` 类型的供应商时生效。
-
-| 环境变量 | 说明 |
-| --- | --- |
-| `OPENAI_BASE_URL` | API 基础 URL |
-| `OPENAI_API_KEY` | API 密钥 |
-
-### `OPENAI_BASE_URL`
-
-覆盖配置文件中供应商的 `base_url` 字段。
-
-```sh
-export OPENAI_BASE_URL="https://api.openai.com/v1"
-```
-
-### `OPENAI_API_KEY`
-
-覆盖配置文件中供应商的 `api_key` 字段。
-
-```sh
-export OPENAI_API_KEY="sk-xxx"
-```
-
-## 其他环境变量
-
-| 环境变量 | 说明 |
-| --- | --- |
-| `KIMI_SHARE_DIR` | 自定义共享目录路径（默认 `~/.kimi`） |
-| `KIMI_CLI_NO_AUTO_UPDATE` | 禁用自动更新检查 |
-| `KIMI_CLI_PASTE_CHAR_THRESHOLD` | 粘贴文本折叠的字符数阈值（默认 `1000`） |
-| `KIMI_CLI_PASTE_LINE_THRESHOLD` | 粘贴文本折叠的行数阈值（默认 `15`） |
-
-### `KIMI_SHARE_DIR`
-
-自定义 Kimi Code CLI 的共享目录路径。默认路径为 `~/.kimi`，配置、会话、日志等运行时数据存储在此目录下。
-
-```sh
-export KIMI_SHARE_DIR="/path/to/custom/kimi"
-```
-
-> `KIMI_SHARE_DIR` 不影响 Agent Skills 的搜索路径。Skills 是跨工具共享的能力扩展（与 Claude、Codex 等兼容），与应用运行时数据是不同类型的数据。如需覆盖 Skills 路径，请使用 `--skills-dir` 参数。
-
-### `KIMI_CLI_NO_AUTO_UPDATE`
-
-设置为 `1`、`true`、`t`、`yes` 或 `y`（不区分大小写）时，禁用 Shell 模式下的后台自动更新检查。
-
-```sh
-export KIMI_CLI_NO_AUTO_UPDATE="1"
-```
-
-> 如果你通过 Nix 或其他包管理器安装 Kimi Code CLI，通常会自动设置此环境变量，因为更新由包管理器处理。
-
-### `KIMI_CLI_PASTE_CHAR_THRESHOLD`
-
-在 Agent 模式下，当粘贴文本的字符数达到此阈值时，文本会被折叠为占位符（如 `[Pasted text #1 +10 lines]`）显示，提交时自动展开为完整内容。默认值为 `1000`。
-
-```sh
-export KIMI_CLI_PASTE_CHAR_THRESHOLD="1000"
-```
-
-### `KIMI_CLI_PASTE_LINE_THRESHOLD`
-
-在 Agent 模式下，当粘贴文本的行数达到此阈值时，文本会被折叠为占位符显示。默认值为 `15`。
-
-```sh
-export KIMI_CLI_PASTE_LINE_THRESHOLD="15"
-```
-
-> 部分终端（如通过 SSH 连接的 XShell）在粘贴多行文本后，可能出现中文/日文/韩文等 CJK 输入法无法正常工作的问题，表现为 IME 候选窗口不弹出或输入无响应，需要按 Ctrl+C 后才能恢复。
->
-> 这是因为多行文本在输入缓冲区中会导致终端光标定位信息错乱，影响 IME 的组合窗口定位。你可以通过降低行数阈值来规避此问题——将包含换行的粘贴内容折叠为单行占位符：
->
-> ```sh
-> export KIMI_CLI_PASTE_LINE_THRESHOLD="2"
-> ```
->
-> 设置后，任何包含换行的粘贴内容都会被自动折叠，避免多行文本进入输入缓冲区。单行粘贴（如 URL、短命令）不受影响。
->
-> 注意：两个阈值的判断逻辑是"满足任一即折叠"（字符数 **或** 行数），因此只需调低行数阈值即可。不建议将字符数阈值设为很小的值（如 `1`），否则所有非空粘贴（包括单行短文本）都会被折叠。
+- [配置覆盖](./overrides-and-precedence.md) — 环境变量、CLI 选项、配置文件的优先级关系
+- [数据路径](./data-locations.md) — `KIMI_CODE_HOME` 影响的完整目录结构
+- [平台与模型](./providers-and-models.md) — 各供应商类型的完整接入示例

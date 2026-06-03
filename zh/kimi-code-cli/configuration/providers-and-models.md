@@ -1,158 +1,150 @@
 # 平台与模型
 
-Kimi Code CLI 支持多种 LLM 平台，可以通过配置文件或 `/login` 命令进行配置。
+Kimi Code CLI 支持同时接入多家 LLM 平台——用 Kimi Code 托管服务一键登录、用 Anthropic API key 接 Claude、用 OpenAI 兼容协议连接第三方推理服务。每个供应商对应一种 API 协议，模型在供应商之上声明自己的名称、上下文长度和能力。本页介绍如何在 `config.toml` 里配置各种供应商。
 
-::: warning 📢 版本说明
-Kimi Code CLI 已完成重大版本升级，底层从 Python/uv 迁移至 Node.js，带来更简单的安装方式、更快的启动速度和全新的终端界面。本页内容仅适用于旧版 Kimi Code CLI。旧版将逐渐停止维护，建议尽快完成升级。查看[版本升级](/kimi-code-cli/cli-migration)了解详情。
-本文档正在重建中，新版功能细节暂请移步 [Kimi Code CLI 文档站](https://moonshotai.github.io/kimi-code/zh/)。
+## 支持的供应商类型
+
+`providers` 表里的 `type` 字段决定使用哪种协议实现：
+
+| 类型 | 协议 | 典型用途 |
+| --- | --- | --- |
+| `kimi` | OpenAI 兼容 | Kimi Code 托管服务、Kimi Platform API 密钥 |
+| `anthropic` | Anthropic Messages | Claude 系列模型 |
+| `openai` | OpenAI Chat Completions | OpenAI 及兼容服务、DeepSeek、Qwen 等 |
+| `openai_responses` | OpenAI Responses API | OpenAI 较新的 Responses 接口 |
+| `google-genai` | Google GenAI | Gemini API |
+| `vertexai` | Google GenAI on Vertex | Google Cloud Vertex AI |
+
+所有供应商默认以流式方式与模型交互。thinking、视觉、工具调用等能力按模型名前缀自动匹配，通常不需要手动声明。
+
+**凭证优先级**：`api_key` 直接字段 > `[providers.<name>.env]` 子表键 > 两者都缺时启动报错。CLI 不会从 shell 环境变量自动取凭证——详见[配置覆盖：供应商凭证](./overrides-and-precedence.md#供应商凭证)。
+
+## `/provider` — 交互式供应商管理
+
+不想手动编辑 TOML？在 TUI 里输入 `/provider` 打开**供应商管理器**，可以以交互方式添加或删除供应商。
+
+管理器按来源把供应商显示为一行行条目。操作方式：
+
+- ↑/↓ 移动光标，←/→ 翻页
+- `d` 键删除当前供应商（有 `[y/N]` 确认）
+- 在 `[ Add New Platform ]` 行按 Enter 添加新供应商
+
+添加时有两条路径：
+
+- **Known third-party provider**：从 [models.dev](https://models.dev/) 拉取模型目录，选供应商 → 输入 API 密钥 → 选默认模型
+- **Custom registry (api.json)**：粘贴自定义 registry 地址和 Bearer token，CLI 自动创建 `providers` / `models` 条目
+
+::: warning
+通过 `/login` 登录的 Kimi Code OAuth 托管账号不会在 `/provider` 里显示，请用 `/login` 和 `/logout` 管理。
 :::
 
-## 平台选择
+非交互环境下也可以用 shell 命令完成同样操作：[`kimi provider`](../reference/kimi-command.md#kimi-provider)。
 
-最简单的配置方式是在 Shell 模式下运行 `/login` 命令（别名 `/setup`），按照向导完成平台和模型的选择：
+## `kimi`
 
-1. 选择 API 平台
-2. 输入 API 密钥
-3. 从可用模型列表中选择模型
+用于对接 Moonshot AI 的 OpenAI 兼容接口，包括 Kimi Code 托管服务和 Kimi Platform API 密钥。
 
-配置完成后，Kimi Code CLI 会自动保存设置到 `~/.kimi/config.toml` 并重新加载。
-
-`/login` 目前支持以下平台：
-
-| 平台 | 说明 |
-| --- | --- |
-| Kimi Code | Kimi Code 平台，支持搜索和抓取服务 |
-| [platform.kimi.com](https://platform.kimi.com) | 中国区 API 端点 |
-| [platform.kimi.ai](https://platform.kimi.ai) | 全球区 API 端点 |
-
-如需使用其他平台，请手动编辑配置文件。
-
-## 供应商类型
-
-`providers` 配置中的 `type` 字段指定 API 供应商类型。不同类型使用不同的 API 协议和客户端实现。
-
-| 类型 | 说明 |
-| --- | --- |
-| `kimi` | Kimi API |
-| `openai_legacy` | OpenAI Chat Completions API |
-| `openai_responses` | OpenAI Responses API |
-| `anthropic` | Anthropic Claude API |
-| `gemini` | Google Gemini API |
-| `vertexai` | Google Vertex AI |
-
-### `kimi`
-
-用于连接 Kimi API，包括 Kimi Code 和 Kimi Platform。
+- 默认 `base_url`：`https://api.moonshot.ai/v1`
+- 凭证键名：`KIMI_API_KEY`、`KIMI_BASE_URL`
+- 额外能力：支持视频上传
 
 ```toml
-[providers.kimi-for-coding]
+[providers.kimi]
 type = "kimi"
-base_url = "https://api.kimi.com/coding/v1"
-api_key = "sk-xxx"
+base_url = "https://api.moonshot.ai/v1"
+api_key = "sk-xxxxx"
 ```
 
-### `openai_legacy`
+> 使用 Kimi Code 托管服务时，`/login` 登录后会自动配置 `base_url` 和凭证，无需手动填写。
 
-兼容 OpenAI Chat Completions API 的平台，包括 OpenAI 官方 API 和各种兼容服务。
+## `anthropic`
+
+用于对接 Claude API。标准 Claude 模型自动启用视觉、工具调用及 Thinking（如支持）；自定义或未覆盖的模型需在 `[models.<alias>]` 里显式声明 `capabilities`。
+
+- 默认 `base_url`：跟随 Anthropic SDK 默认值
+- 凭证键名：`ANTHROPIC_API_KEY`、`ANTHROPIC_BASE_URL`
+- 默认 `max_tokens`：按模型自动推断。如需覆盖，在模型别名上设 `max_output_size`
+
+```toml
+[providers.anthropic]
+type = "anthropic"
+api_key = "sk-ant-xxxxx"
+
+[models."claude-opus-4-7"]
+provider = "anthropic"
+model = "claude-opus-4-7"
+max_context_size = 200000
+# max_output_size = 32000  # 可选，省略时使用模型推断的默认值
+```
+
+## `openai`
+
+用于对接 OpenAI Chat Completions 协议，也可连接任何兼容该协议的第三方服务（覆盖 `base_url` 即可）。
+
+第三方推理模型（DeepSeek、Qwen、One API 等）开箱即用：CLI 自动处理 `reasoning_content` 字段和 `reasoning_effort` 注入。如果你的网关用非标准字段名返回推理内容，在模型别名上设 `reasoning_key` 覆盖。
+
+- 默认 `base_url`：`https://api.openai.com/v1`
+- 凭证键名：`OPENAI_API_KEY`、`OPENAI_BASE_URL`
 
 ```toml
 [providers.openai]
-type = "openai_legacy"
+type = "openai"
 base_url = "https://api.openai.com/v1"
-api_key = "sk-xxx"
+api_key = "sk-xxxxx"
 ```
 
-### `openai_responses`
+## `openai_responses`
 
-用于 OpenAI Responses API（较新的 API 格式）。
+对应 OpenAI 较新的 Responses API，始终以流式方式工作。配置方式与 `openai` 相同。
+
+- 默认 `base_url`：`https://api.openai.com/v1`
+- 凭证键名：`OPENAI_API_KEY`、`OPENAI_BASE_URL`
 
 ```toml
 [providers.openai-responses]
 type = "openai_responses"
 base_url = "https://api.openai.com/v1"
-api_key = "sk-xxx"
+api_key = "sk-xxxxx"
 ```
 
-### `anthropic`
+## `google-genai`
 
-用于连接 Anthropic Claude API。
+用于直连 Google Gemini API。thinking、视觉及多模态能力按模型名自动识别。
 
-```toml
-[providers.anthropic]
-type = "anthropic"
-base_url = "https://api.anthropic.com"
-api_key = "sk-ant-xxx"
-```
-
-### `gemini`
-
-用于连接 Google Gemini API。
+- 凭证键名：`GOOGLE_API_KEY`
 
 ```toml
 [providers.gemini]
-type = "gemini"
-base_url = "https://generativelanguage.googleapis.com"
-api_key = "xxx"
+type = "google-genai"
+api_key = "xxxxx"
 ```
 
-### `vertexai`
+## `vertexai`
 
-用于连接 Google Vertex AI。需要通过 `env` 字段设置必要的环境变量。
+与 `google-genai` 共用实现，`type = "vertexai"` 时切换到 Vertex AI 访问路径。
+
+认证走 Google Cloud 标准 ADC 流程（`gcloud auth application-default login` 或 `GOOGLE_APPLICATION_CREDENTIALS` 服务账号 JSON），这部分与 Kimi Code 无关。**项目 ID 和区域必须写在 `[providers.vertexai.env]` 子表里**——直接在 shell 里 `export GOOGLE_CLOUD_PROJECT` 不会被 CLI 读取。
 
 ```toml
 [providers.vertexai]
 type = "vertexai"
-base_url = "https://xxx-aiplatform.googleapis.com"
-api_key = ""
-env = { GOOGLE_CLOUD_PROJECT = "your-project-id" }
+
+[providers.vertexai.env]
+GOOGLE_CLOUD_PROJECT = "my-gcp-project"
+GOOGLE_CLOUD_LOCATION = "us-central1"
 ```
 
-所有供应商类型都支持通过 `custom_headers` 字段添加自定义 HTTP 请求头。详见「配置文件」。
-
-## 模型能力
-
-模型配置中的 `capabilities` 字段声明模型支持的能力。这会影响 Kimi Code CLI 的功能可用性。
-
-| 能力 | 说明 |
-| --- | --- |
-| `thinking` | 支持 Thinking 模式（深度思考），可开关 |
-| `always_thinking` | 始终使用 Thinking 模式（不可关闭） |
-| `image_in` | 支持图片输入 |
-| `video_in` | 支持视频输入 |
-
-```toml
-[models.gemini-3-pro-preview]
-provider = "gemini"
-model = "gemini-3-pro-preview"
-max_context_size = 262144
-capabilities = ["thinking", "image_in"]
+```sh
+gcloud auth application-default login   # 一次性完成认证
+kimi
 ```
 
-### `thinking`
+## OAuth 与凭证注入
 
-声明模型支持 Thinking 模式。启用后，模型会在回答前进行更深入的推理，适合复杂问题。在 Shell 模式下，可以通过 `/model` 命令切换模型和 Thinking 模式，或在启动时通过 `--thinking` / `--no-thinking` 参数控制。
+Kimi Code 托管服务使用 OAuth 而非静态 API 密钥。运行 `/login` 后，内置的认证工具链会自动写入并刷新凭证，`config.toml` 里无需手动配置这部分内容。
 
-### `always_thinking`
+## 下一步
 
-表示模型始终使用 Thinking 模式，无法关闭。当前 Kimi Code 平台暂无此类模型。
-
-### `image_in`
-
-启用图片输入能力后，可以在对话中粘贴图片（`Ctrl-V`）。
-
-### `video_in`
-
-启用视频输入能力后，可以在对话中发送视频内容。
-
-## 搜索和抓取服务
-
-`SearchWeb` 和 `FetchURL` 工具依赖外部服务，目前仅 Kimi Code 平台提供这些服务。
-
-使用 `/login` 选择 Kimi Code 平台时，搜索和抓取服务会自动配置。
-
-| 服务 | 对应工具 | 未配置时的行为 |
-| --- | --- | --- |
-| `moonshot_search` | `SearchWeb` | 工具不可用 |
-| `moonshot_fetch` | `FetchURL` | 回退到本地抓取 |
-
-使用其他平台时，`FetchURL` 工具仍可使用，但会回退到本地抓取。
+- [配置文件](./configuration-files.md) — `providers` 和 `models` 表的完整字段参考
+- [配置覆盖](./overrides-and-precedence.md) — 供应商凭证的解析优先级规则
+- [环境变量](./environment-variables.md) — 各供应商对应的凭证键名列表

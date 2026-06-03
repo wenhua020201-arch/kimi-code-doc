@@ -1,263 +1,256 @@
-# `kimi` 命令
+# kimi 命令
 
-`kimi` 是 Kimi Code CLI 的主命令，用于启动交互式会话或执行单次查询。
+`kimi` 是 Kimi Code CLI 的主命令，用于在终端中启动一次交互式会话。不带任何参数运行时，它会在当前工作目录下开启一个新会话；配合不同的 flag，可以续上历史会话、跳过审批、从 Plan 模式开始，或者指定自定义的 Skills 目录。
 
 ```sh
-kimi [OPTIONS] COMMAND [ARGS]
+kimi [options]
+kimi <subcommand> [options]
 ```
 
-::: warning 📢 版本说明
-Kimi Code CLI 已完成重大版本升级，底层从 Python/uv 迁移至 Node.js，带来更简单的安装方式、更快的启动速度和全新的终端界面。本页内容仅适用于旧版 Kimi Code CLI。旧版将逐渐停止维护，建议尽快完成升级。查看[版本升级](/kimi-code-cli/cli-migration)了解详情。
-本文档正在重建中，新版功能细节暂请移步 [Kimi Code CLI 文档站](https://moonshotai.github.io/kimi-code/zh/)。
-:::
+## 主命令选项
 
-
-## 基本信息
+所有 flag 都是可选的，直接运行 `kimi` 即可进入交互式会话：
 
 | 选项 | 简写 | 说明 |
-|------|------|------|
-| `--version` | `-V` | 显示版本号并退出 |
+| --- | --- | --- |
+| `--version` | `-V` | 打印版本号并退出 |
 | `--help` | `-h` | 显示帮助信息并退出 |
-| `--verbose` | | 输出详细运行信息 |
-| `--debug` | | 记录调试日志（输出到 `~/.kimi/logs/kimi.log`） |
+| `--session [id]` | `-S` | 恢复一个会话。带 ID 时直接打开指定会话；不带 ID 时进入交互式选择器 |
+| `--continue` | `-C` | 继续当前工作目录下最近一次的会话，无需手动指定 ID |
+| `--model <model>` | `-m` | 为本次启动指定模型别名。省略时新会话使用配置文件中的 `default_model` |
+| `--prompt <prompt>` | `-p` | 非交互执行单次 prompt，并把 Assistant 输出流式写到 stdout。该模式不会打开 TUI |
+| `--output-format <format>` | | 设置非交互输出格式，支持 `text` 与 `stream-json`。仅可与 `--prompt` 一起使用，默认 `text` |
+| `--yolo` | `-y` | 自动批准普通工具调用，跳过审批请求 |
+| `--auto` | | 以 auto 权限模式启动；工具审批自动处理，Agent 不会向用户提问 |
+| `--plan` | | 以 Plan 模式启动新会话，AI 会优先使用只读工具进行探索和规划 |
+| `--skills-dir <dir>` | | 从指定目录加载 Skills，替换自动发现的用户和项目目录。可重复传入 |
 
-## Agent 配置
-
-| 选项 | 说明 |
-|------|------|
-| `--agent NAME` | 使用内置 Agent，可选值：`default`、`okabe` |
-| `--agent-file PATH` | 使用自定义 Agent 文件 |
-
-`--agent` 和 `--agent-file` 互斥，不能同时使用。详见 [Agent 与子 Agent](/kimi-code-cli/customization/sub-agents)。
-
-## 配置文件
-
-| 选项 | 说明 |
-|------|------|
-| `--config STRING` | 加载 TOML/JSON 配置字符串 |
-| `--config-file PATH` | 加载配置文件（默认 `~/.kimi/config.toml`） |
-
-`--config` 和 `--config-file` 互斥。配置字符串和文件均支持 TOML 和 JSON 格式。详见 [配置文件](/kimi-code-cli/configuration/configuration-files)。
-
-## 模型选择
-
-| 选项 | 简写 | 说明 |
-|------|------|------|
-| `--model NAME` | `-m` | 指定 LLM 模型，覆盖配置文件中的默认模型 |
-
-## 工作目录
-
-| 选项 | 简写 | 说明 |
-|------|------|------|
-| `--work-dir PATH` | `-w` | 指定工作目录（默认当前目录） |
-| `--add-dir PATH` | | 添加额外目录到工作区范围，可多次指定 |
-
-工作目录决定了文件操作的根目录。在工作目录内可使用相对路径，操作工作目录外的文件需使用绝对路径。
-
-`--add-dir` 可以将工作目录之外的目录纳入工作区范围，使所有文件工具可以访问该目录中的文件。添加的目录会随会话状态持久化。运行中也可以通过 [`/add-dir`](/kimi-code-cli/reference/slash-commands#add-dir) 斜杠命令添加。
-
-## 会话管理
-
-| 选项 | 简写 | 说明 |
-|------|------|------|
-| `--continue` | `-C` | 继续当前工作目录的上一个会话 |
-| `--session [ID]` / `--resume [ID]` | `-S` / `-r` | 恢复会话。带 ID 时恢复指定会话（不存在则创建新会话）；不带 ID 时打开交互式会话选择器（仅 Shell 模式） |
-
-`--continue` 和 `--session`/`--resume` 互斥。
-
-## 输入与命令
-
-| 选项 | 简写 | 说明 |
-|------|------|------|
-| `--prompt TEXT` | `-p` | 传入用户提示，不进入交互模式 |
-| `--command TEXT` | `-c` | `--prompt` 的别名 |
-
-使用 `--prompt`（或 `--command`）时，Kimi Code CLI 会处理完查询后退出（除非指定 `--print`，否则仍以交互模式显示结果）。
-
-## 循环控制
-
-| 选项 | 说明 |
-|------|------|
-| `--max-steps-per-turn N` | 单轮最大步数，覆盖配置文件中的 `loop_control.max_steps_per_turn` |
-| `--max-retries-per-step N` | 单步最大重试次数，覆盖配置文件中的 `loop_control.max_retries_per_step` |
-| `--max-ralph-iterations N` | Ralph 循环模式的迭代次数；`0` 表示关闭；`-1` 表示无限 |
-
-### Ralph 循环
-
-[Ralph](https://ghuntley.com/ralph/) 是一种把 Agent 放进循环的技术：同一条提示词会被反复喂给 Agent，让它围绕一个任务持续迭代。
-
-当 `--max-ralph-iterations` 非 `0` 时，Kimi Code CLI 会进入 Ralph 循环模式，自动循环执行任务，直到 Agent 输出 `<choice>STOP</choice>` 或达到迭代上限。
-
-## UI 模式
-
-| 选项 | 说明 |
-|------|------|
-| `--print` | 以 Print 模式运行（非交互式），隐式启用 `--yolo` |
-| `--quiet` | `--print --output-format text --final-message-only` 的快捷方式 |
-| `--acp` | 以 ACP 服务器模式运行（已弃用，请使用 `kimi acp`） |
-| `--wire` | 以 Wire 服务器模式运行（实验性） |
-
-四个选项互斥，只能选择一个。默认使用 Shell 模式。详见 [Print 模式](/kimi-code-cli/core-operations#Print-模式) 和 [Wire 模式](/kimi-code-cli/customization/wire-protocol)。
-
-## Print 模式选项
-
-以下选项仅在 `--print` 模式下有效：
-
-| 选项 | 说明 |
-|------|------|
-| `--input-format FORMAT` | 输入格式：`text`（默认）或 `stream-json` |
-| `--output-format FORMAT` | 输出格式：`text`（默认）或 `stream-json` |
-| `--final-message-only` | 仅输出最终的 assistant 消息 |
-
-`stream-json` 格式使用 JSONL（每行一个 JSON 对象），用于程序化集成。
-
-## MCP 配置
-
-| 选项 | 说明 |
-|------|------|
-| `--mcp-config-file PATH` | 加载 MCP 配置文件，可多次指定 |
-| `--mcp-config JSON` | 加载 MCP 配置 JSON 字符串，可多次指定 |
-
-默认加载 `~/.kimi/mcp.json`（如果存在）。详见 [Model Context Protocol](/kimi-code-cli/customization/mcp)。
-
-## 审批控制
-
-| 选项 | 简写 | 说明 |
-|------|------|------|
-| `--yolo` | `-y` | 自动批准所有操作 |
-| `--yes` | | `--yolo` 的别名 |
-| `--auto-approve` | | `--yolo` 的别名 |
+`-r` / `--resume` 是 `--session` 的隐藏别名；`--yes` 和 `--auto-approve` 是 `--yolo` 的隐藏别名，在帮助信息中不显示。
 
 ::: warning 注意
-YOLO 模式下，所有文件修改和 Shell 命令都会自动执行，请谨慎使用。
+`--yolo` 会跳过普通工具调用的人工确认，包括文件写入和 Shell 命令执行，请只在受信任的工作目录下使用。Plan 模式的退出审批不会被 `--yolo` 跳过；Plan 模式下的 `Bash` 按普通放行规则处理。
 :::
 
-## 计划模式
+### flag 冲突规则
 
-| 选项 | 说明 |
-|------|------|
-| `--plan` | 以计划模式启动新会话 |
+以下组合会在启动时被拒绝：
 
-使用 `--plan` 启动时，AI 只能使用只读工具探索代码库并编写实现计划。恢复已有会话时，`--plan` 会强制开启计划模式；不带 `--plan` 恢复的会话保留其原有状态。
+- `--continue` 与 `--session` 互斥——两者都表示"恢复历史会话"
+- `--yolo` 和 `--auto` 互斥——两种权限模式互斥
+- `--yolo` 与 `--auto` 不能与 `--continue` 或 `--session` 同时使用——恢复会话时沿用原会话的审批设置
+- `--plan` 不能与 `--continue` 或 `--session` 同时使用——Plan 模式只对新会话生效
+- `--prompt` 不能与 `--yolo`、`--auto` 或 `--plan` 同时使用——非交互模式固定使用 `auto` 权限
+- `--output-format` 只能与 `--prompt` 一起使用
 
-也可以在配置文件中设置 `default_plan_mode = true`，每次启动新会话时默认进入计划模式。详见 [配置文件](/kimi-code-cli/configuration/configuration-files)。
+如需在恢复会话时强制使用 YOLO 或 Plan 模式，请改在交互式会话内通过斜杠命令切换。
 
-## Thinking 模式
+## 典型用法
 
-| 选项 | 说明 |
-|------|------|
-| `--thinking` | 启用 thinking 模式 |
-| `--no-thinking` | 禁用 thinking 模式 |
+直接运行开启新会话：
 
-Thinking 模式需要模型支持。如果不指定，使用上次会话的设置。
+```sh
+kimi
+```
 
-## Skills 配置
+从上次中断的地方继续（自动找到当前目录最近的会话）：
 
-| 选项 | 说明 |
-|------|------|
-| `--skills-dir PATH` | 追加额外的 skills 目录（可重复指定） |
+```sh
+kimi --continue
+```
 
-不指定时，Kimi Code CLI 会按优先级自动发现用户级和项目级 Skills 目录。详见 [Agent Skills](/kimi-code-cli/customization/skills)。
+从历史会话列表中挑选，或直接指定已知 ID：
+
+```sh
+kimi --session
+kimi --session 01HZ...XYZ
+```
+
+跳过审批确认，适合已知安全的批处理任务：
+
+```sh
+kimi --yolo
+```
+
+让 Agent 自行处理一切，不再向用户提问：
+
+```sh
+kimi --auto
+```
+
+先阅读代码、产出实现计划，而不是立刻动手修改文件：
+
+```sh
+kimi --plan
+```
+
+### 自定义 Skills 目录
+
+有两种方式指定 Skills 目录，语义不同：
+
+- **`--skills-dir <dir>`**（CLI flag）：**替换**自动发现的用户和项目目录，仅对本次启动生效。可重复传入以叠加多个目录：
+
+  ```sh
+  kimi --skills-dir /path/to/team-skills --skills-dir ./local-skills
+  ```
+
+- **`extra_skill_dirs`**（`config.toml`）：**叠加**到自动发现的目录之上，长期生效，适合配置团队共享 Skills。详见 [Agent Skills](../customization/skills.md)。
+
+## 非交互执行
+
+在脚本或 CI 中运行单次 prompt 时，使用 `-p`：
+
+```sh
+kimi -p "Summarize the current repository status"
+```
+
+输出采用 transcript 样式：thinking 内容和 Assistant 正文都以 `• ` 开头，换行后两个空格缩进。Assistant 正文输出到 stdout；thinking、工具进度和"恢复会话"提示输出到 stderr。`-p` 模式不会请求人工审批，普通工具调用按 `auto` 权限策略处理，静态 deny 规则仍然生效。
+
+临时切换模型：
+
+```sh
+kimi -m kimi-code/kimi-for-coding -p "Explain the latest diff"
+```
+
+需要结构化读取输出时，使用 `stream-json` 格式——stdout 每行都是一个 JSON 对象：
+
+```sh
+kimi -p "List changed files" --output-format stream-json
+```
+
+`stream-json` 模式下，普通回复输出 Assistant 消息；模型调用工具时，先输出带 `tool_calls` 的 Assistant 消息，再输出对应的 Tool 消息，最后继续输出后续 Assistant 消息。thinking 内容不会写入 JSONL；工具进度和恢复会话提示仍写到 stderr。
 
 ## 子命令
 
-| 子命令 | 说明 |
-|--------|------|
-| [`kimi login`](#kimi-login) | 登录 Kimi 账号 |
-| [`kimi logout`](#kimi-logout) | 登出 Kimi 账号 |
-| [`kimi info`](/kimi-code-cli/reference/kimi-info) | 显示版本和协议信息 |
-| [`kimi acp`](/kimi-code-cli/reference/kimi-acp) | 启动多会话 ACP 服务器 |
-| [`kimi mcp`](/kimi-code-cli/reference/kimi-mcp) | 管理 MCP 服务器配置 |
-| [`kimi term`](/kimi-code-cli/reference/kimi-term) | 启动 Toad 终端 UI |
-| [`kimi export`](#kimi-export) | 导出会话为 ZIP 文件 |
-| [`kimi vis`](/kimi-code-cli/reference/kimi-vis) | 启动 Agent Tracing Visualizer（技术预览） |
-| [`kimi web`](/kimi-code-cli/reference/kimi-web) | 启动 Web UI 服务器 |
-
-### `kimi login`
-
-登录 Kimi 账号。执行后会自动打开浏览器，完成账号授权后自动配置可用的模型。
-
-```sh
-kimi login
-```
-
-### `kimi logout`
-
-登出 Kimi 账号。会清理存储的 OAuth 凭据并移除配置文件中的相关配置。
-
-```sh
-kimi logout
-```
+`kimi` 提供四个子命令：`export`（导出会话）、`migrate`（迁移旧版数据）、`upgrade`（检查更新）、`provider`（管理供应商）。
 
 ### `kimi export`
 
-将会话数据导出为 ZIP 文件。ZIP 中包含会话目录下的所有文件（`context.jsonl`、`wire.jsonl`、`state.json` 等）。
+把一个会话打包成 ZIP 文件，便于分享、归档或提交问题反馈。
 
 ```sh
-kimi export [<session_id>] [-o <output_path>] [--yes]
+kimi export [sessionId] [options]
 ```
+
+| 参数 / 选项 | 简写 | 说明 |
+| --- | --- | --- |
+| `sessionId` | | 要导出的会话 ID。省略时自动选择当前工作目录下最近一次的会话，并要求确认 |
+| `--output <path>` | `-o` | 输出 ZIP 文件路径。省略时写入当前目录下的默认文件名 |
+| `--yes` | `-y` | 跳过默认会话的确认提示，直接导出 |
+| `--no-include-global-log` | | 不打包全局诊断日志。默认包含 |
+
+导出包含目标会话目录内的所有文件。全局诊断日志（`~/.kimi-code/logs/kimi-code.log`）默认包含，因为它可能含有其他会话或项目的事件；不想分享时加 `--no-include-global-log`。
+
+```sh
+# 导出当前工作目录最近一次会话，跳过确认
+kimi export -y
+
+# 导出指定会话到自定义路径
+kimi export 01HZ...XYZ -o ./bug-report.zip
+
+# 排除全局诊断日志
+kimi export 01HZ...XYZ -o ./bug-report.zip --no-include-global-log
+```
+
+### `kimi migrate`
+
+将旧版 kimi-cli 的本地数据迁移到 kimi-code，包括历史会话和配置文件。纯交互式运行，会引导你完成全流程。
+
+```sh
+kimi migrate
+```
+
+完整迁移说明见[从 kimi-cli 迁移](../cli-migration.md)。
+
+### `kimi upgrade`
+
+立即检查最新版本并展示更新提示，选择操作后退出。
+
+```sh
+kimi upgrade
+```
+
+对全局 npm、pnpm、yarn、bun 以及 macOS / Linux native 安装，`kimi upgrade` 会展示更新选项；选择 `Install update now` 后运行对应的前台安装命令。当前安装方式无法自动升级时（如 Windows native 安装），改为打印手动更新命令。
+
+### `kimi provider`
+
+在 shell 中管理供应商，相当于 TUI 中 `/provider` 的非交互版本。适合脚本化部署、CI 初始化，以及在新机器上一行完成配置。
+
+```sh
+kimi provider <action> [options]
+```
+
+包含五个动作：
+
+#### `kimi provider add <url>`
+
+从自定义 registry（`api.json`）批量导入所有供应商。命令会拉取 registry，为每个条目创建 `[providers.<id>]` 和 `[models.<alias>]`，并写入 `source` 元数据，使 TUI 下次启动时自动刷新模型列表。
 
 | 参数 / 选项 | 说明 |
-|------|------|
-| `<session_id>` | 要导出的会话 ID。省略时，CLI 会预览并确认当前工作目录的上一个会话，然后再导出 |
-| `--output, -o` | 输出 ZIP 文件路径（默认为当前目录下的 `session-<id>.zip`） |
-| `--yes, -y` | 跳过默认会话的确认提示，直接导出 |
-
-::: info 新增
-新增于 1.20 版本。
-:::
-
-### `kimi vis`
-
-::: warning 注意
-技术预览功能，可能不稳定。
-:::
-
-启动 Agent Tracing Visualizer，通过浏览器查看和分析会话追踪数据。
+| --- | --- |
+| `<url>` | Registry 地址 |
+| `--api-key <key>` | 访问 registry 时携带的 Bearer token。未传时回退到环境变量 `KIMI_REGISTRY_API_KEY`，必填 |
 
 ```sh
-kimi vis [OPTIONS]
+kimi provider add https://registry.example.com/v1/models/api.json --api-key YOUR_KEY
+
+# 或通过环境变量（适合 CI / .envrc）
+KIMI_REGISTRY_API_KEY=YOUR_KEY kimi provider add https://registry.example.com/v1/models/api.json
 ```
 
-| 选项 | 简写 | 说明 |
-|------|------|------|
-| `--port INTEGER` | `-p` | 绑定的端口号（默认：`5495`） |
-| `--open / --no-open` | | 自动打开浏览器（默认：启用） |
-| `--reload` | | 启用自动重载（开发模式） |
+如果某个 provider id 已存在，会先删除再重新写入。不会自动设置默认模型，后续可用 `-m` 或 TUI 内的 `/model` 选择。
 
-详见 [Agent Tracing Visualizer](/kimi-code-cli/reference/kimi-vis)。
+#### `kimi provider remove <providerId>`
 
-### `kimi web`
-
-启动 Web UI 服务器，通过浏览器访问 Kimi Code CLI。
+删除指定供应商及其所有模型 alias。如果被删除的供应商正好是 `default_model` 所属，则同时清空 `default_model`。
 
 ```sh
-kimi web [OPTIONS]
+kimi provider remove kohub
 ```
 
-如果默认端口被占用，服务器会自动尝试下一个可用端口（默认范围 `5494`–`5503`），并在终端打印提示。
+#### `kimi provider list`
 
-| 选项 | 简写 | 说明 |
-|------|------|------|
-| `--host TEXT` | `-h` | 绑定的主机地址（默认：`127.0.0.1`） |
-| `--port INTEGER` | `-p` | 绑定的端口号（默认：`5494`） |
-| `--reload` | | 启用自动重载（开发模式） |
-| `--open / --no-open` | | 自动打开浏览器（默认：启用） |
-
-示例：
+按行打印每个已配置的供应商，含类型、模型数量、来源。加 `--json` 可输出原始的 `providers` 和 `models` 表，便于程序化处理。
 
 ```sh
-# 默认启动，自动打开浏览器
-kimi web
-
-# 指定端口
-kimi web --port 8080
-
-# 不自动打开浏览器
-kimi web --no-open
-
-# 绑定到所有网络接口（允许局域网访问）
-kimi web --host 0.0.0.0
+kimi provider list
+kimi provider list --json | jq '.providers | keys'
 ```
 
-详见 [Web UI](/kimi-code-cli/reference/kimi-web)。
+#### `kimi provider catalog list [providerId]`
+
+在不修改任何配置的情况下浏览公开的 [models.dev](https://models.dev/) 模型目录。不传参数时列出所有供应商及协议类型和模型数量；传 `providerId` 时列出该供应商下所有模型的上下文窗口和能力。
+
+| 参数 / 选项 | 说明 |
+| --- | --- |
+| `[providerId]` | 可选，要查看的供应商 id |
+| `--filter <substring>` | 按 id 或 name 大小写不敏感子串过滤 |
+| `--url <url>` | 覆盖 catalog 地址，默认 `https://models.dev/api.json` |
+| `--json` | 以 JSON 形式输出匹配片段 |
+
+```sh
+kimi provider catalog list
+kimi provider catalog list --filter anthropic
+kimi provider catalog list anthropic
+```
+
+#### `kimi provider catalog add <providerId>`
+
+按 id 从 catalog 直接导入一个已知供应商，协议类型、base URL、模型信息均由 catalog 提供，只需提供 API key。
+
+| 参数 / 选项 | 说明 |
+| --- | --- |
+| `<providerId>` | catalog 中的供应商 id，如 `anthropic`、`openai` |
+| `--api-key <key>` | 供应商 API key。未传时回退到 `KIMI_REGISTRY_API_KEY`，必填 |
+| `--default-model <modelId>` | 可选，导入后把 `default_model` 设为 `<providerId>/<modelId>` |
+| `--url <url>` | 覆盖 catalog 地址，默认 `https://models.dev/api.json` |
+
+```sh
+kimi provider catalog list anthropic          # 先看可选的模型
+kimi provider catalog add anthropic --api-key sk-ant-... --default-model claude-opus-4-7
+```
+
+## 下一步
+
+- [斜杠命令](./slash-commands.md) — 交互式 TUI 内的控制命令速查
+- [配置文件](../configuration/configuration-files.md) — `default_model`、权限模式等启动参数的持久化配置
+- [Agent Skills](../customization/skills.md) — `--skills-dir` 加载的 Skill 文件格式

@@ -1,324 +1,177 @@
-# 自定义插件 (Beta)
+# Plugins
 
-> Beta 功能：插件系统目前处于 Beta 阶段，具体的实现细节和配置定义可能会在未来版本中调整。请谨慎在生产环境中使用，并关注后续更新。
+Plugins 把可复用的 Kimi Code CLI 能力打包成可安装单元——可以添加 [Agent Skills](./skills.md)、在会话启动时自动加载指定 Skill，也可以声明 MCP servers 来提供真实工具能力。适合把工作流共享给团队、连接外部服务，或从官方 marketplace 安装扩展。
 
-插件系统让你可以为 Kimi Code CLI 添加自定义工具，扩展 AI 的能力。与 MCP 服务器不同，插件是轻量级的本地工具包，适合封装项目特定的脚本和实用程序。
+Kimi Code CLI 对 plugin 采用保守的加载策略：安装 plugin 时不会执行其中的 Python、Node.js、Shell、hook 或命令脚本。
 
-::: warning 📢 版本说明
-Kimi Code CLI 已完成重大版本升级，底层从 Python/uv 迁移至 Node.js，带来更简单的安装方式、更快的启动速度和全新的终端界面。本页内容仅适用于旧版 Kimi Code CLI。旧版将逐渐停止维护，建议尽快完成升级。查看[版本升级](/kimi-code-cli/cli-migration)了解详情。
-本文档正在重建中，新版功能细节暂请移步 [Kimi Code CLI 文档站](https://moonshotai.github.io/kimi-code/zh/)。
-:::
+## 安装与管理
 
-## 插件是什么
+在 TUI 中运行 `/plugins` 打开 plugin 管理器，可以在这里完成所有日常操作。常用按键：
 
-一个插件就是一个包含 `plugin.json` 文件的目录。插件可以声明多个「工具」，每个工具是一个可执行命令（Python、TypeScript、Shell 脚本等），AI 可以调用这些工具来完成特定任务。
+| 按键 | 操作 |
+| --- | --- |
+| `Enter` 或 `→` | 打开选中项，或安装 marketplace 中的 plugin |
+| `Space` | 启用或禁用已安装 plugin；在 marketplace 中安装或更新 plugin |
+| `M` | 管理选中 plugin 的 MCP servers |
+| `←` 或 `Esc` | 返回上一层 |
 
-例如，你可以创建一个插件来：
+也可以直接使用斜杠命令：
 
-- 封装内部 API 的调用脚本
-- 提供项目特定的代码生成工具
-- 集成专有服务或数据库查询
+| 命令 | 说明 |
+| --- | --- |
+| `/plugins` | 打开交互式 plugin 管理器 |
+| `/plugins list` | 列出已安装 plugins |
+| `/plugins install <path-or-url>` | 从本地目录、zip URL 或 GitHub 仓库 URL 安装 |
+| `/plugins marketplace [source]` | 浏览官方 marketplace；可选传入 marketplace JSON 的路径或 URL |
+| `/plugins info <id>` | 查看 plugin 详情和 diagnostics |
+| `/plugins enable <id>` | 启用 plugin |
+| `/plugins disable <id>` | 禁用 plugin |
+| `/plugins remove <id>` | 移除 plugin（需二次确认） |
+| `/plugins reload` | 重载 `installed.json` 和各 plugin manifest |
+| `/plugins mcp enable <id> <server>` | 启用 plugin 声明的 MCP server |
+| `/plugins mcp disable <id> <server>` | 禁用 plugin 声明的 MCP server |
 
-插件与 Agent Skills 的区别：
+**GitHub URL 支持四种形式：**
 
-- **Skills**：通过 `SKILL.md` 提供知识性指导，AI 读取后遵循其中的规范
-- **Plugins**：通过 `plugin.json` 声明可执行工具，AI 可以直接调用工具获取结果
+- `https://github.com/<owner>/<repo>`：安装最新 release；无 release 时回落到默认分支
+- `https://github.com/<owner>/<repo>/tree/<ref>`：安装指定分支、tag 或短 commit SHA
+- `https://github.com/<owner>/<repo>/releases/tag/<tag>`：钉死具体 tag
+- `https://github.com/<owner>/<repo>/commit/<sha>`：钉死具体 commit
 
-## 安装插件
+网络请求只走 `github.com` 重定向和 `codeload.github.com` 下载，不调用 `api.github.com`。
 
-使用 `kimi plugin` 命令管理插件。
+**几点注意事项：**
 
-**从本地目录安装**
+- Plugin 变更只对新会话生效。安装、启用/禁用、移除或重载 plugin 后，需通过 `/new` 开启新会话；当前会话不会更新。
+- 本地安装会被拷贝到 `$KIMI_CODE_HOME/plugins/managed/<id>/`，CLI 始终从这份托管副本运行。安装后编辑原始源目录不会生效，需重新安装。
+- 移除 plugin 只会删除安装记录，托管副本和原始源文件仍保留在磁盘上。
+- Plugin 目前按用户安装，对所有项目生效，暂不支持项目级安装范围。
 
-```sh
-kimi plugin install /path/to/my-plugin
+Plugin 管理器会展示每个安装的来源和信任徽章：`kimi-official`（来自官方地址）、`curated`（来自精选地址）、`third-party`（其他所有情况）。
+
+## Plugin manifest
+
+Plugin 是一个带 manifest 的目录或 zip 文件。Manifest 可以放在以下任一位置：
+
+```text
+<plugin_root>/kimi.plugin.json
+<plugin_root>/.kimi-plugin/plugin.json
 ```
 
-**从 ZIP 文件安装**
+两个文件同时存在时，以 `kimi.plugin.json` 为准。
 
-```sh
-kimi plugin install my-plugin.zip
-```
-
-**从 Git 仓库安装**
-
-```sh
-# 安装根目录的插件
-kimi plugin install https://github.com/user/repo.git
-
-# 安装子目录中的插件（多插件仓库）
-kimi plugin install https://github.com/user/repo.git/plugins/my-plugin
-
-# 指定分支（使用浏览器 URL 格式）
-kimi plugin install https://github.com/user/repo/tree/develop/plugins/my-plugin
-```
-
-当 Git 仓库根目录没有 `plugin.json` 时，Kimi Code CLI 会检查根目录及其直接子目录，并列出可用的插件供你选择。
-
-**列出已安装插件**
-
-```sh
-kimi plugin list
-```
-
-**查看插件详情**
-
-```sh
-kimi plugin info my-plugin
-```
-
-**移除插件**
-
-```sh
-kimi plugin remove my-plugin
-```
-
-## 创建插件
-
-创建插件只需要三步：
-
-1. 创建一个目录
-2. 编写 `plugin.json` 文件
-3. 实现工具脚本
-
-**目录结构**
-
-```
-my-plugin/
-├── plugin.json       # 插件配置（必需）
-├── config.json       # 插件配置（可选，用于凭证注入）
-└── scripts/          # 工具脚本
-    ├── greet.py
-    └── calc.ts
-```
-
-**`plugin.json` 格式**
+示例：
 
 ```json
 {
-  "name": "my-plugin",
+  "name": "kimi-finance",
   "version": "1.0.0",
-  "description": "My custom plugin for project X",
-  "config_file": "config.json",
-  "inject": {
-    "api_key": "api_key",
-    "endpoint": "base_url"
+  "description": "Finance data and analysis workflows for Kimi Code CLI",
+  "skills": "./skills/",
+  "sessionStart": {
+    "skill": "using-finance"
   },
-  "tools": [
-    {
-      "name": "greet",
-      "description": "Generate a greeting message",
-      "command": ["python3", "scripts/greet.py"],
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "Name to greet"
-          }
-        },
-        "required": ["name"]
-      }
-    }
-  ]
-}
-```
-
-**字段说明**
-
-| 字段 | 说明 | 是否必填 |
-|------|------|----------|
-| `name` | 插件名称，只能使用小写字母、数字和连字符 | 是 |
-| `version` | 插件版本，语义化版本格式 | 是 |
-| `description` | 插件描述 | 否 |
-| `config_file` | 配置文件路径，用于凭证注入 | 否 |
-| `inject` | 凭证注入映射，键为目标路径，值为源变量名 | 否 |
-| `tools` | 工具列表 | 否 |
-
-**工具字段说明**
-
-| 字段 | 说明 | 是否必填 |
-|------|------|----------|
-| `name` | 工具名称 | 是 |
-| `description` | 工具描述 | 是 |
-| `command` | 执行命令，字符串数组 | 是 |
-| `parameters` | JSON Schema 格式的参数定义 | 否 |
-
-## 凭证注入
-
-如果你的插件需要调用 LLM API，可以通过 `inject` 配置自动获取 Kimi Code CLI 的凭证配置。
-
-**`inject` 配置示例**
-
-```json
-{
-  "config_file": "config.json",
-  "inject": {
-    "llm.api_key": "api_key",
-    "llm.endpoint": "base_url"
+  "interface": {
+    "displayName": "Kimi Finance",
+    "shortDescription": "Market data and financial analysis workflows"
   }
 }
 ```
 
-**支持的注入变量**
+支持的字段：
 
-| 变量名 | 说明 |
-|--------|------|
-| `api_key` | LLM 提供商的 API 密钥，支持 OAuth token 和静态 API key |
-| `base_url` | LLM API 的基础 URL |
+| 字段 | 说明 |
+| --- | --- |
+| `name` | 必填，作为 plugin id。必须匹配 `[a-z0-9][a-z0-9_-]{0,63}` |
+| `version`、`description`、`keywords`、`author`、`homepage`、`license` | 展示元数据 |
+| `interface` | 在 `/plugins` 中展示的字段：`displayName`、`shortDescription`、`longDescription`、`developerName`、`websiteURL` |
+| `skills` | 一个或多个 `./` 路径，必须位于 plugin 根目录内。省略时根目录的 `SKILL.md` 被当作单个 Skill root |
+| `sessionStart.skill` | 在新会话或恢复会话开始时，把指定 plugin Skill 加载到主 Agent |
+| `skillInstructions` | 每次加载此 plugin 的 Skill 时一并附带的额外说明 |
+| `mcpServers` | MCP server 声明，默认启用，可从 `/plugins` 中禁用 |
 
-**`config.json` 模板**
+`tools`、`commands`、`hooks`、`apps`、`inject`、`configFile` 等不支持的运行时字段会显示为 diagnostics 并被忽略。
 
-```json
-{
-  "llm": {
-    "api_key": "",
-    "endpoint": ""
-  }
-}
-```
+## Skills 与会话启动
 
-安装时，Kimi Code CLI 会将当前配置的 API 密钥和 base URL 注入到指定的配置文件中。如果配置了 OAuth，会自动获取并注入有效的 token。之后在应用启动时，Kimi Code CLI 也会尝试将最新的凭证（如刷新后的 OAuth token）写入已安装插件的配置文件中。
+Plugin Skills 使用与普通 [Agent Skills](./skills.md) 相同的 `SKILL.md` 格式，典型目录结构如下：
 
-> 一般情况下，不需要为了更新凭证而重新安装插件：切换 LLM 提供商或重新授权后，重启 Kimi Code CLI 即可自动刷新配置文件中的凭证，插件工具在实际运行时也会通过环境变量获得当前有效的凭证。只有在修改了插件本身的配置结构（例如 `config_file` 或 `inject` 映射）时，才需要重新安装插件。
-
-> 关于 inject 键名：`inject` 中的键名（如 `llm.api_key`）也会被用作环境变量名传递给插件工具子进程。由于这些名称包含点号，在某些运行环境中访问可能不便（例如 POSIX shell 中 `$llm.api_key` 是无效的）。你可以通过字典/映射方式访问：
-> - **Node.js**: `process.env["llm.api_key"]`
-> - **Python**: `os.environ["llm.api_key"]`
-> 如果希望使用更友好的环境变量名，建议在插件中使用大写下划线格式（如 `LLM_API_KEY`），并相应调整配置文件结构。
-
-## 工具脚本规范
-
-工具脚本通过标准输入接收参数，通过标准输出返回结果。
-
-**输入格式**
-
-脚本从 `stdin` 接收 JSON 对象：
-
-```json
-{
-  "name": "World"
-}
-```
-
-**输出格式**
-
-脚本向 `stdout` 输出的内容会作为字符串返回给 Agent。如果需要结构化输出，建议输出 JSON 文本：
-
-```json
-{
-  "content": "Hello, World!"
-}
-```
-
-**Python 示例**
-
-```python
-#!/usr/bin/env python3
-import json
-import sys
-
-params = json.load(sys.stdin)
-name = params.get("name", "Guest")
-
-result = {"content": f"Hello, {name}!"}
-print(json.dumps(result))
-```
-
-**TypeScript 示例**
-
-```typescript
-#!/usr/bin/env tsx
-import * as readline from "readline";
-
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-  terminal: false,
-});
-
-let input = "";
-rl.on("line", (line) => {
-  input += line;
-});
-
-rl.on("close", () => {
-  const params = JSON.parse(input);
-  const name = params.name || "Guest";
-  console.log(JSON.stringify({ content: `Hello, ${name}!` }));
-});
-```
-
-## 附带 Skill
-
-插件可以在根目录（与 `plugin.json` 同级）放一个 `SKILL.md`。Kimi Code CLI 启动时会自动发现，无需额外注册——因为 `~/.kimi/plugins/` 会被整体作为一个 skills root 加载（skill 发现机制详见 [Skills](./skills.md)）。
-
-**目录结构**
-
-```
+```text
 my-plugin/
-├── plugin.json
-├── SKILL.md          # 可选：随插件分发的 skill
-└── scripts/
+  kimi.plugin.json
+  skills/
+    using-my-plugin/
+      SKILL.md
+    another-workflow/
+      SKILL.md
 ```
 
-Skill 名称优先取 `SKILL.md` frontmatter 中的 `name`，否则使用插件目录名。该 skill 以 `extra` 作用域被发现，因此同名的项目级或用户级 skill 仍会覆盖它。
+`sessionStart.skill` 在会话启动时把一个 plugin Skill 加载到主 Agent，适合放置初始化说明、工作流规则，或把其他工具中的术语映射到 Kimi Code CLI。它只注入文本，不执行代码。
 
-**限制**
+无论 Skill 通过哪种方式加载（`sessionStart.skill`、`/skill:<name>` 或模型自动调用），`skillInstructions` 都会随该 plugin 的 Skill 一起出现。
 
-- 一个插件只能被发现一个 `SKILL.md`。类似 `<plugin>/skills/<name>/SKILL.md` 的嵌套布局**不会**被扫到。
+## Plugin 中的 MCP servers
 
-## 完整示例
+当 plugin 需要真实工具能力时，可以在 manifest 中声明 `mcpServers`，复用 [MCP](./mcp.md) 的 schema。
+
+Stdio server（本地命令）：
 
 ```json
 {
-  "name": "sample-plugin",
-  "version": "1.0.0",
-  "description": "Sample plugin demonstrating Skills + Tools",
-  "tools": [
-    {
-      "name": "py_greet",
-      "description": "Generate a greeting message (Python tool)",
-      "command": ["python3", "scripts/greet.py"],
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "Name to greet"
-          },
-          "lang": {
-            "type": "string",
-            "enum": ["en", "zh", "ja"],
-            "description": "Language"
-          }
-        },
-        "required": ["name"]
-      }
-    },
-    {
-      "name": "ts_calc",
-      "description": "Evaluate a math expression (TypeScript tool)",
-      "command": ["npx", "tsx", "scripts/calc.ts"],
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "expression": {
-            "type": "string",
-            "description": "Math expression to evaluate"
-          }
-        },
-        "required": ["expression"]
-      }
+  "mcpServers": {
+    "finance": {
+      "command": "uvx",
+      "args": ["kimi-finance-mcp"]
     }
-  ]
+  }
 }
 ```
 
-## 插件安装位置
+HTTP server（远程服务）：
 
-插件安装在 `~/.kimi/plugins/` 目录下。每个插件是一个独立的子目录，包含完整的 `plugin.json` 和脚本文件。
+```json
+{
+  "mcpServers": {
+    "docs": {
+      "url": "https://example.com/mcp"
+    }
+  }
+}
+```
 
-> 插件与 MCP 服务器是互补的扩展机制：
-> - **MCP**：适合需要持续运行的服务、复杂的工具编排、跨进程通信
-> - **插件**：适合简单的脚本封装、项目特定的工具、快速原型开发
+对于 stdio servers，`command` 可以是 `PATH` 上的命令，也可以是 plugin 根目录内以 `./` 开头的路径。`cwd` 同理，必须以 `./` 开头并位于 plugin 根目录内，否则该 server 会被忽略。
+
+Plugin MCP servers 只会在新会话中启动。启用或禁用某个 server：
+
+```sh
+/plugins mcp disable kimi-finance finance
+/new
+
+/plugins mcp enable kimi-finance finance
+/new
+```
+
+## 官方插件
+
+Kimi Code 官方 marketplace 提供经过审核的官方插件，可直接通过 `/plugins marketplace` 浏览安装。
+
+目前可用的官方插件：
+
+- **[Kimi Datasource](./datasource.md)** — 通过自然语言查询金融行情、宏观经济、企业工商和学术文献，覆盖 6 个专业数据源，无需申请账号或调用 API
+
+---
+
+## 安全模型
+
+Plugin 的加载范围有限，以下操作不会在安装或会话启动时发生：
+
+- 不会执行命令型 plugin tools、hooks 或旧式工具运行时
+- 所有路径在解析符号链接后仍必须位于 plugin 根目录内
+- 已启用 plugin 的 MCP servers 只在新会话中启动，且可随时从 `/plugins` 禁用
+- 损坏的 manifest 或不安全路径会显示在 `/plugins info <id>` 的 diagnostics 中，不影响其他会话
+
+## 下一步
+
+- [Kimi Datasource](./datasource.md) — 官方数据插件：金融行情、企业工商、学术文献的安装与使用
+- [Agent Skills](./skills.md) — Skills 的文件格式与 frontmatter 字段参考
+- [MCP](./mcp.md) — Plugin MCP servers 的完整 schema 与权限配置

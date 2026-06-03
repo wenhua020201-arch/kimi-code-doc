@@ -1,220 +1,234 @@
 # 配置文件
 
-Kimi Code CLI 使用配置文件管理 API 供应商、模型、服务和运行参数，支持 TOML 和 JSON 两种格式。
+Kimi Code CLI 把所有长期偏好写进一份 TOML（一种结构清晰的纯文本配置格式）文件——比如使用哪个模型、填哪个 API 密钥、Agent 每轮最多跑几步。改一次，每次启动都生效。
 
-::: warning 📢 版本说明
-Kimi Code CLI 已完成重大版本升级，底层从 Python/uv 迁移至 Node.js，带来更简单的安装方式、更快的启动速度和全新的终端界面。本页内容仅适用于旧版 Kimi Code CLI。旧版将逐渐停止维护，建议尽快完成升级。查看[版本升级](/kimi-code-cli/cli-migration)了解详情。
-本文档正在重建中，新版功能细节暂请移步 [Kimi Code CLI 文档站](https://moonshotai.github.io/kimi-code/zh/)。
-:::
+默认位置：`~/.kimi-code/config.toml`，首次运行时自动创建。
 
 ## 配置文件位置
 
-默认配置文件位于 `~/.kimi/config.toml`。首次运行时，如果配置文件不存在，Kimi Code CLI 会自动创建一个默认的配置文件。
-
-你可以通过 `--config-file` 参数指定其他配置文件（TOML 或 JSON 格式均可）：
+CLI 从 `~/.kimi-code/config.toml` 读取配置。如需把数据目录迁移到别处，可用 `KIMI_CODE_HOME` 环境变量覆盖：
 
 ```sh
-kimi --config-file /path/to/config.toml
+export KIMI_CODE_HOME=/path/to/kimi-home
 ```
 
-在程序化调用 Kimi Code CLI 时，也可以通过 `--config` 参数直接传入完整的配置内容：
+此时配置文件路径变为 `$KIMI_CODE_HOME/config.toml`。无论目录在哪里，文件名固定是 `config.toml`。
 
-```sh
-kimi --config '{"default_model": "kimi-for-coding", "providers": {...}, "models": {...}}'
-```
+::: tip
+TOML 字段名一律用下划线（snake_case），如 `default_model`、`max_context_size`。字段名里若含 `.`，需用引号包住，例如 `[models."gpt-4.1"]`——否则 TOML 会把 `.` 解释为嵌套表分隔符。
+:::
 
-## 配置项
+## 完整示例
 
-配置文件包含以下顶层配置项：
-
-| 配置项 | 类型 | 说明 |
-| --- | --- | --- |
-| `default_model` | `string` | 默认使用的模型名称，必须是 `models` 中定义的模型 |
-| `default_thinking` | `boolean` | 默认是否开启 Thinking 模式（默认为 `false`） |
-| `default_yolo` | `boolean` | 默认是否开启 YOLO（自动审批）模式（默认为 `false`） |
-| `default_plan_mode` | `boolean` | 默认是否以计划模式启动新会话（默认为 `false`）；恢复的会话保留其原有状态 |
-| `default_editor` | `string` | 默认外部编辑器命令（如 `"vim"`、`"code --wait"`），为空时自动检测 |
-| `theme` | `string` | 终端配色主题，可选 `"dark"` 或 `"light"`（默认为 `"dark"`） |
-| `merge_all_available_skills` | `boolean` | 是否合并所有品牌目录中的 Skills（默认为 `false`） |
-| `providers` | `table` | API 供应商配置 |
-| `models` | `table` | 模型配置 |
-| `loop_control` | `table` | Agent 循环控制参数 |
-| `background` | `table` | 后台任务运行参数 |
-| `services` | `table` | 外部服务配置（搜索、抓取） |
-| `mcp` | `table` | MCP 客户端配置 |
-
-### 完整配置示例
+以下示例覆盖最常用的配置项，可直接复制后按需修改：
 
 ```toml
-default_model = "kimi-for-coding"
-default_thinking = false
-default_yolo = false
+default_model = "kimi-code/kimi-for-coding"
+default_thinking = true
+default_permission_mode = "manual"
 default_plan_mode = false
-default_editor = ""
-theme = "dark"
-merge_all_available_skills = false
+merge_all_available_skills = true
+telemetry = true
 
-[providers.kimi-for-coding]
+[providers."managed:kimi-code"]
 type = "kimi"
 base_url = "https://api.kimi.com/coding/v1"
-api_key = "sk-xxx"
+api_key = ""
 
-[models.kimi-for-coding]
-provider = "kimi-for-coding"
+[models."kimi-code/kimi-for-coding"]
+provider = "managed:kimi-code"
 model = "kimi-for-coding"
 max_context_size = 262144
 
+[thinking]
+mode = "auto"
+
 [loop_control]
-max_steps_per_turn = 100
 max_retries_per_step = 3
-max_ralph_iterations = 0
 reserved_context_size = 50000
-compaction_trigger_ratio = 0.85
 
 [background]
 max_running_tasks = 4
 keep_alive_on_exit = false
 agent_task_timeout_s = 900
 
-[services.moonshot_search]
-base_url = "https://api.kimi.com/coding/v1/search"
-api_key = "sk-xxx"
+[[permission.rules]]
+decision = "allow"
+pattern = "Read"
 
-[services.moonshot_fetch]
-base_url = "https://api.kimi.com/coding/v1/fetch"
-api_key = "sk-xxx"
+[[permission.rules]]
+decision = "deny"
+pattern = "Bash(rm -rf*)"
 
-[mcp.client]
-tool_call_timeout_ms = 60000
+[[hooks]]
+event = "PreToolUse"
+matcher = "Bash"
+command = "node ~/.kimi-code/hooks/check-bash.mjs"
+timeout = 5
 ```
 
-### `providers`
+## 顶层字段
 
-`providers` 定义 API 供应商连接信息。每个供应商使用一个唯一的名称作为 key。
+配置文件里的字段分两类：**顶层标量**直接控制默认行为，**嵌套表**（`providers`、`models`、`thinking` 等）各有独立结构，在下文各节单独说明。
+
+| 字段 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `default_model` | `string` | — | 默认模型别名，必须在 `models` 中定义 |
+| `default_thinking` | `boolean` | `false` | 新会话是否默认开启 Thinking（深度推理）模式；可在会话内从模型菜单切换。即使设为 `true`，`[thinking].mode = "off"` 也会强制关闭 |
+| `default_permission_mode` | `string` | `manual` | 新会话的默认权限模式，可选 `manual`（逐次询问）、`auto`（自动批准读操作）、`yolo`（全部自动批准） |
+| `default_plan_mode` | `boolean` | `false` | 新会话是否默认以 Plan 模式（先出计划再执行）启动 |
+| `merge_all_available_skills` | `boolean` | `true` | 是否合并所有目录中的 Agent Skills |
+| `extra_skill_dirs` | `array<string>` | — | 额外 Skill 搜索目录，叠加到默认目录之上 |
+| `telemetry` | `boolean` | `true` | 是否启用匿名遥测；显式设为 `false` 时关闭 |
+| `providers` | `table` | `{}` | API 供应商表 → [`providers`](#providers) |
+| `models` | `table` | — | 模型别名表 → [`models`](#models) |
+| `thinking` | `table` | — | Thinking 模式默认参数 → [`thinking`](#thinking) |
+| `loop_control` | `table` | — | Agent 循环控制参数 → [`loop_control`](#loop_control) |
+| `background` | `table` | — | 后台任务运行参数 → [`background`](#background) |
+| `services` | `table` | — | 内置外部服务配置 → [`services`](#services) |
+| `permission` | `table` | — | 初始权限规则 → [`permission`](#permission) |
+| `hooks` | `array<table>` | — | 生命周期 hook，详见 [Hooks](../customization/hooks.md) |
+
+以下各节对 `providers`、`models`、`thinking`、`loop_control`、`background`、`services`、`permission` 七个嵌套表逐一展开。
+
+## `providers`
+
+`providers` 表的每一项定义一个 API 供应商，以唯一名称为 key。CLI 只从这里读取凭证，**不会**从 shell 环境变量自动取后备值——在终端里 `export KIMI_API_KEY` 不会让供应商自动获得密钥，必须显式写在配置文件里（详见[配置覆盖](./overrides-and-precedence.md#供应商凭证)）。
 
 | 字段 | 类型 | 必填 | 说明 |
 | --- | --- | --- | --- |
-| `type` | `string` | 是 | 供应商类型 |
-| `base_url` | `string` | 是 | API 基础 URL |
-| `api_key` | `string` | 是 | API 密钥 |
-| `env` | `table` | 否 | 创建供应商实例前设置的环境变量 |
-| `custom_headers` | `table` | 否 | 请求时附加的自定义 HTTP 头 |
+| `type` | `string` | 是 | 供应商类型：`kimi`、`anthropic`、`openai`、`openai_responses`、`google-genai`、`vertexai` |
+| `api_key` | `string` | 否 | API 密钥，明文写在配置文件里 |
+| `base_url` | `string` | 否 | API 基础 URL |
+| `oauth` | `table` | 否 | OAuth 凭据引用（`storage`、`key` 两个字段），由登录流程自动注入，通常无需手写 |
+| `env` | `table<string, string>` | 否 | 供应商凭证的备用来源，详见下文 |
+| `custom_headers` | `table<string, string>` | 否 | 每次请求附加的自定义 HTTP 头 |
 
-示例：
+**`env` 子表**：可以把供应商惯用的键名（如 `KIMI_API_KEY`）写在 `[providers.<name>.env]` 里，作为 `api_key` / `base_url` 的备用来源。这个子表**只在配置文件里读取**，不会修改 shell 环境：
 
 ```toml
-[providers.moonshot-cn]
-type = "kimi"
-base_url = "https://api.moonshot.cn/v1"
-api_key = "sk-xxx"
-custom_headers = { "X-Custom-Header" = "value" }
+[providers.kimi.env]
+KIMI_API_KEY = "sk-xxx"
+KIMI_BASE_URL = "https://api.moonshot.ai/v1"
 ```
 
-### `models`
+优先级：`api_key` 字段 > `env` 子表键 > 两者都缺时启动报错。
 
-`models` 定义可用的模型。每个模型使用一个唯一的名称作为 key。
+## `models`
+
+`models` 表的每一项定义一个模型别名（即 `default_model` 或 `-m` 参数里使用的名称），以唯一名称为 key。
 
 | 字段 | 类型 | 必填 | 说明 |
 | --- | --- | --- | --- |
 | `provider` | `string` | 是 | 使用的供应商名称，必须在 `providers` 中定义 |
-| `model` | `string` | 是 | 模型标识符（API 中使用的模型名称） |
-| `max_context_size` | `integer` | 是 | 最大上下文长度（token 数） |
-| `capabilities` | `array` | 否 | 模型能力列表 |
+| `model` | `string` | 是 | 调用 API 时实际传给服务端的模型 ID |
+| `max_context_size` | `integer` | 是 | 最大上下文长度（token 数），必须 ≥ 1 |
+| `max_output_size` | `integer` | 否 | 单次请求的输出 token 上限（对应 `max_tokens`）。目前仅 `anthropic` 供应商读取；已识别的 Claude 系列会自动限制在服务端允许的最大值内 |
+| `capabilities` | `array<string>` | 否 | 显式追加的能力标签：`thinking`、`image_in`、`video_in`、`audio_in`、`tool_use`。与供应商自动识别的能力取并集，只能追加不能移除 |
+| `display_name` | `string` | 否 | UI 中显示的名称，未设时回退到 `model` |
+| `reasoning_key` | `string` | 否 | 仅 `openai` 供应商。当网关用非标准字段名返回推理内容时才需要设置；默认自动识别 `reasoning_content` / `reasoning_details` / `reasoning` |
+| `adaptive_thinking` | `boolean` | 否 | 仅 `anthropic` 供应商。强制开启或关闭 adaptive thinking，覆盖按模型名推断的逻辑。省略时自动推断（Claude ≥ 4.6 使用 adaptive） |
 
-示例：
-
-```toml
-[models.kimi-for-coding]
-provider = "kimi-for-coding"
-model = "kimi-for-coding"
-max_context_size = 262144
-capabilities = ["thinking", "image_in"]
-```
-
-### `loop_control`
-
-`loop_control` 控制 Agent 执行循环的行为。
-
-| 字段 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `max_steps_per_turn` | `integer` | `100` | 单轮最大步数 |
-| `max_retries_per_step` | `integer` | `3` | 单步最大重试次数 |
-| `max_ralph_iterations` | `integer` | `0` | 每个 User 消息后额外自动迭代次数；`0` 表示关闭；`-1` 表示无限 |
-| `reserved_context_size` | `integer` | `50000` | 预留给 LLM 响应生成的 token 数量 |
-| `compaction_trigger_ratio` | `float` | `0.85` | 触发自动压缩的上下文使用率阈值（0.5–0.99） |
-
-### `background`
-
-`background` 控制后台任务的运行行为。
-
-| 字段 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `max_running_tasks` | `integer` | `4` | 同时运行的最大后台任务数 |
-| `keep_alive_on_exit` | `boolean` | `false` | CLI 退出时是否保留后台任务运行 |
-| `agent_task_timeout_s` | `integer` | `900` | 后台 Agent 任务的最大运行时间（秒） |
-
-### `services`
-
-`services` 配置 Kimi Code CLI 使用的外部服务。
-
-#### `moonshot_search`
-
-配置网页搜索服务，启用后 `SearchWeb` 工具可用。
-
-| 字段 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| `base_url` | `string` | 是 | 搜索服务 API URL |
-| `api_key` | `string` | 是 | API 密钥 |
-| `custom_headers` | `table` | 否 | 请求时附加的自定义 HTTP 头 |
-
-#### `moonshot_fetch`
-
-配置网页抓取服务，启用后 `FetchURL` 工具优先使用此服务抓取网页内容。
-
-| 字段 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| `base_url` | `string` | 是 | 抓取服务 API URL |
-| `api_key` | `string` | 是 | API 密钥 |
-| `custom_headers` | `table` | 否 | 请求时附加的自定义 HTTP 头 |
-
-> 使用 `/login` 命令配置 Kimi Code 平台时，搜索和抓取服务会自动配置。
-
-### `mcp`
-
-`mcp` 配置 MCP 客户端行为。
-
-| 字段 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `client.tool_call_timeout_ms` | `integer` | `60000` | MCP 工具调用超时时间（毫秒） |
-
-### `hooks`
-
-`hooks` 配置生命周期 hook（Beta 功能）。
-
-使用 `[[hooks]]` 数组语法定义多个 hook：
+别名中含 `.` 时需要加引号：
 
 ```toml
-[[hooks]]
-event = "PreToolUse"
-matcher = "Shell"
-command = ".kimi/hooks/safety-check.sh"
-timeout = 10
-
-[[hooks]]
-event = "PostToolUse"
-matcher = "WriteFile"
-command = "prettier --write"
+[models."gpt-4.1"]
+provider = "openai"
+model = "gpt-4.1"
+max_context_size = 1047576
 ```
+
+无需修改配置文件也可以临时切换模型——通过 `KIMI_MODEL_*` 环境变量在内存里合成一个临时供应商，详见[用环境变量定义模型](./environment-variables.md#用环境变量定义模型-kimi-model)。
+
+## `thinking`
+
+`thinking` 设置 Thinking 模式的全局默认行为。`mode = "off"` 会强制关闭 Thinking，即使顶层 `default_thinking = true` 也不例外。
+
+| 字段 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `mode` | `string` | — | 触发策略：`auto`（由模型决定）、`on`（始终开启）、`off`（强制关闭） |
+| `effort` | `string` | `high` | Thinking 强度：`low`、`medium`、`high`、`xhigh`、`max`，实际可用等级由供应商决定 |
+
+## `loop_control`
+
+`loop_control` 控制 Agent 执行循环的步数上限、单步重试次数，以及触发上下文自动压缩的阈值。
+
+| 字段 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `max_steps_per_turn` | `integer` | — | 单轮最大步数；不设或设为 `0` 则无上限 |
+| `max_retries_per_step` | `integer` | `3` | 单步失败后的最大重试次数 |
+| `reserved_context_size` | `integer` | — | 预留给模型输出的 token 数；上下文窗口剩余量低于此值时触发自动压缩 |
+
+## `background`
+
+`background` 控制后台任务（通过 `Bash` 工具或 `Agent` 工具的 `run_in_background=true` 参数启动）的并发数和超时行为。
+
+| 字段 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `max_running_tasks` | `integer` | — | 同时运行的最大后台任务数 |
+| `keep_alive_on_exit` | `boolean` | `true` | 会话关闭时是否保留仍在运行的后台任务。设为 `false` 时，进程退出前会请求停止所有后台任务 |
+| `agent_task_timeout_s` | `integer` | — | 后台 Agent 任务的最长运行时间（秒） |
+
+`keep_alive_on_exit` 可被环境变量 `KIMI_CODE_BACKGROUND_KEEP_ALIVE_ON_EXIT` 覆盖，优先级高于配置文件。
+
+## `services`
+
+`services` 配置网页搜索（`moonshot_search`）和网页抓取（`moonshot_fetch`）两项内置服务。只识别这两个固定 key，其他 key 会被忽略。两项字段相同：
 
 | 字段 | 类型 | 必填 | 说明 |
 | --- | --- | --- | --- |
-| `event` | `string` | 是 | 事件类型 |
-| `command` | `string` | 是 | 要执行的 shell 命令 |
-| `matcher` | `string` | 否 | 正则表达式过滤条件 |
-| `timeout` | `integer` | 否 | 超时时间（秒），默认 30 |
+| `base_url` | `string` | 否 | 服务 API URL |
+| `api_key` | `string` | 否 | API 密钥 |
+| `oauth` | `table` | 否 | OAuth 凭据引用，结构同 `providers.*.oauth` |
+| `custom_headers` | `table<string, string>` | 否 | 请求时附加的自定义 HTTP 头 |
 
-## JSON 配置迁移
+```toml
+[services.moonshot_search]
+base_url = "https://api.moonshot.cn/v1/search"
+api_key = "sk-xxx"
 
-如果 `~/.kimi/config.toml` 不存在但 `~/.kimi/config.json` 存在，Kimi Code CLI 会自动将 JSON 配置迁移到 TOML 格式，并将原文件备份为 `config.json.bak`。
+[services.moonshot_fetch]
+base_url = "https://api.moonshot.cn/v1/fetch"
+api_key = "sk-xxx"
+```
 
-`--config-file` 指定的配置文件根据扩展名自动选择解析方式。`--config` 传入的配置内容会先尝试按 JSON 解析，失败后再尝试 TOML。
+## `permission`
+
+`permission` 设置会话启动时自动加载的权限规则，控制 Agent 调用工具时是否需要用户确认。规则用 `[[permission.rules]]` 数组表写出，按顺序匹配，第一条命中即生效。
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `decision` | `string` | 是 | 匹配后的处置：`allow`（直接放行）、`deny`（直接拒绝）、`ask`（每次询问） |
+| `scope` | `string` | 否 | 规则有效范围：`turn-override`、`session-runtime`、`project`、`user`；默认 `user` |
+| `pattern` | `string` | 是 | 匹配模式，格式为 `工具名` 或 `工具名(参数模式)`，如 `Read`、`Bash(rm -rf*)` |
+| `reason` | `string` | 否 | 规则说明，仅用于调试和审计 |
+
+内置工具名见[内置工具](../reference/tools.md)；MCP 工具和自定义工具只能按工具名匹配，不支持参数模式。
+
+```toml
+[[permission.rules]]
+decision = "allow"
+pattern = "Read"
+
+[[permission.rules]]
+decision = "allow"
+pattern = "Grep"
+
+[[permission.rules]]
+decision = "deny"
+pattern = "Bash(rm -rf*)"
+
+[[permission.rules]]
+decision = "ask"
+pattern = "Bash"
+```
+
+::: tip
+MCP server 的声明配置写在 `~/.kimi-code/mcp.json` 或项目内 `.kimi-code/mcp.json` 中，不在 `config.toml` 里。交互式配置入口是 `/mcp-config`，详见 [Model Context Protocol](../customization/mcp.md)。
+:::
+
+## 下一步
+
+- [平台与模型](./providers-and-models.md) — 各供应商类型（Kimi、Claude、OpenAI、Gemini）的接入示例
+- [配置覆盖](./overrides-and-precedence.md) — CLI 选项、配置文件、环境变量的优先级规则
+- [环境变量](./environment-variables.md) — `KIMI_CODE_HOME` 等运行时变量的完整列表

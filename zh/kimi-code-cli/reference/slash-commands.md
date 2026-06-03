@@ -1,46 +1,134 @@
-# 斜杠命令速查
+# 斜杠命令
 
-在输入框中输入 `/` 开头的命令即可触发。输入 `/` 后会显示补全菜单，可过滤选择。继续输入可模糊匹配，按 `Enter` 选择。例如 `/ses` 匹配 `/sessions`，`/h` 匹配 `/help`。
+斜杠命令是 Kimi Code CLI 在交互式 TUI 中提供的内置控制命令，涵盖账号配置、会话管理、模式切换、信息查询等操作。在输入框中输入 `/` 即可触发命令补全，候选列表随后续字符实时过滤；命令的别名也会一并参与匹配。
 
-部分斜杠命令在 Shell 模式下也可用：`/help`、`/version`、`/editor`、`/theme`、`/changelog`、`/feedback`、`/export`、`/import` 和 `/task`。
+输入完整命令名后按 `Enter` 执行。如果输入的 `/` 开头内容不匹配任何内置或 Skill 命令，则按普通消息发送给 Agent。
 
-::: warning 📢 版本说明
-Kimi Code CLI 已完成重大版本升级，底层从 Python/uv 迁移至 Node.js，带来更简单的安装方式、更快的启动速度和全新的终端界面。本页内容仅适用于旧版 Kimi Code CLI。旧版将逐渐停止维护，建议尽快完成升级。查看[版本升级](/kimi-code-cli/cli-migration)了解详情。
-本文档正在重建中，新版功能细节暂请移步 [Kimi Code CLI 文档站](https://moonshotai.github.io/kimi-code/zh/)。
+::: tip 提示
+部分命令仅在空闲（idle）状态下可用。会话正在流式输出或压缩上下文时执行这些命令会被拦截，需先按 `Esc` 或 `Ctrl-C` 中断。下表「随时可用」列标注了流式输出期间也可用的命令。
 :::
 
-| 命令 | 用途 |
-|------|------|
-| `/help` | 显示帮助信息（键盘快捷键、斜杠命令、已加载 Skills）。别名：`/h`、`/?`。按 `q` 退出分页器 |
-| `/version` | 显示版本号 |
-| `/changelog` | 显示最近版本的变更记录。别名：`/release-notes` |
-| `/feedback` | 提交反馈。网络失败时自动回退到 GitHub Issues |
-| `/login` | 登录或配置 API 平台。Kimi Code 自动 OAuth 授权；其他平台需输入 API 密钥。完成后自动保存到 `~/.kimi/config.toml` 并重新加载。别名：`/setup`。仅在使用默认配置文件时可用（通过 `--config` 或 `--config-file` 指定配置时无法使用） |
-| `/logout` | 登出当前平台，清理凭据并移除配置 |
-| `/model` | 切换模型和 Thinking 模式。先从 API 平台刷新模型列表，交互式选择后自动更新配置并重新加载。仅在使用默认配置文件时可用（通过 `--config` 或 `--config-file` 指定配置时无法使用） |
-| `/editor` | 设置外部编辑器。不带参数时交互式选择，也可直接指定如 `/editor vim`。配置后 `Ctrl-O` 使用此编辑器。详见键盘快捷键 |
-| `/theme` | 切换终端配色主题。`/theme dark` 或 `/theme light`。切换后保存到 `config.toml` 并重新加载。浅色主题会调整 Diff 高亮、任务浏览器、补全菜单、工具栏和 MCP 状态等所有 UI 组件。也可在配置文件中设置 `theme = "light"` |
-| `/reload` | 重新加载配置文件，无需退出 |
-| `/usage` | 显示 API 用量和配额信息，以进度条和剩余百分比展示。别名：`/status`。仅适用于 Kimi Code 平台 |
-| `/debug` | 显示上下文调试信息：消息数量、token 数、检查点数量、完整消息历史。在分页器中显示，按 `q` 退出 |
-| `/mcp` | 显示当前连接的 MCP 服务器和加载的工具。输出包括服务器连接状态（绿色=已连接）和每个服务器提供的工具列表 |
-| `/hooks` | 显示当前配置的 hooks。输出包括已配置 hook 的事件类型和数量；未配置时显示提示信息 |
-| `/new` | 创建新会话并立即切换。当前会话为空时自动清理 |
-| `/sessions` | 列出当前工作目录的所有会话，可切换。别名：`/resume`。方向键选择，`Enter` 确认，`Ctrl-C` 取消 |
-| `/title [text]` | 查看或设置会话标题（最长 200 字符）。`/title` 显示当前标题；`/title <text>` 设置新标题。首次对话后标题会自动从用户消息生成；手动设置后自动生成不再覆盖。别名：`/rename` |
-| `/undo` | 回退到之前的某个轮次并重试。弹出交互式选择器，展示所有历史轮次的用户消息（截断到 80 字符）。选中后 fork 出新会话，包含该轮次之前的所有历史，并将被选中轮次的用户消息预填到输入框方便编辑后重新发送。原会话始终保留。方向键选择，`Enter` 确认，`Ctrl-C` 取消 |
-| `/fork` | 从当前会话 fork 出新会话，复制完整对话历史。原会话保留不变 |
-| `/export [path]` | 将会话上下文导出为 Markdown。不带路径时导出到当前目录，文件名自动生成（格式 `kimi-export-<会话ID前8位>-<时间戳>.md`）；带路径时直接写入。导出内容包含会话元数据、对话概览和完整对话历史 |
-| `/import <file_path\|session_id>` | 从文件或其他会话导入上下文到当前会话。支持 Markdown、文本、代码等文本格式；不支持二进制文件（图片、PDF、压缩包）。不能导入当前会话自身 |
-| `/clear` | 清空当前会话上下文。别名：`/reset` |
-| `/compact [instructions]` | 手动压缩上下文以减少 token 使用。上下文过长时也会自动触发压缩。可附带自定义指引，如 `/compact 保留数据库相关的讨论` |
-| `/btw <question>` | 提出快速侧问，不打断主对话。在隔离上下文中运行，能看到对话历史但不修改它，工具调用被禁用。响应显示在可滚动模态面板中。仅交互式 Shell 模式可用。Wire 和 ACP 客户端可使用 `BtwBegin`/`BtwEnd` Wire 事件配合 `run_side_question()` API |
-| `/plan [on\|off\|view\|clear]` | 切换 Plan 模式。Plan 模式下 AI 只能使用只读工具探索代码库，将实施方案写入 plan 文件后提交审批。不带参数时为切换开关。开启后提示符变为 `📋`，状态栏显示蓝色 `plan` 标识 |
-| `/yolo` | 切换 YOLO 模式（自动批准所有操作）。开启后状态栏显示黄色 YOLO 标识。再次输入可关闭。**注意：会跳过所有确认，请确保了解可能的风险** |
-| `/web` | 切换到 Web UI。启动 Web 服务器并在浏览器中打开当前会话，可在 Web UI 中继续对话 |
-| `/vis` | 切换到 Agent Tracing Visualizer，查看 Wire 事件时间线、上下文和用量统计 |
-| `/skill:<name> [extra_text]` | 加载指定 Skill，将 SKILL.md 内容作为提示词发送。可附带额外文本追加到提示词之后，如 `/skill:code-style 加载代码风格规范`。Flow Skill 也可通过此命令调用，但此时只加载内容，不会自动执行流程。如需执行流程，请使用 `/flow:<name>` |
-| `/flow:<name>` | 执行指定的 Flow Skill。Agent 从 `BEGIN` 节点开始，按流程图定义依次处理每个节点，直到 `END` 节点。Flow Skill 也可通过 `/skill:<name>` 调用，但只加载内容不执行流程 |
-| `/add-dir [path]` | 将额外目录添加到工作区范围。不带参数时列出已添加的目录。添加后对所有文件工具可用，并随会话状态持久化。已在工作目录内的目录无需添加；启动时也可通过 `--add-dir` 参数添加 |
-| `/init` | 分析当前项目并生成 `AGENTS.md` 文件。会启动临时子会话分析代码库结构 |
-| `/task` | 打开交互式任务浏览器，查看和管理后台任务。三列 TUI 界面：左列任务列表、中列详细信息、右列输出预览。每秒自动刷新。支持 `Enter`/`O` 查看完整输出、`S` 停止、`Tab` 过滤、`R` 刷新、`Q`/`Esc` 退出。后台任务通过 `Shell` 工具的 `run_in_background=true` 启动，完成时系统自动通知 AI |
+## 账号与配置
+
+| 命令 | 别名 | 说明 | 随时可用 |
+| --- | --- | --- | --- |
+| `/login` | — | 选择账号或平台并登录：Kimi Code 走 OAuth 验证码流程，Kimi Platform 通过 API 密钥登录 | 否 |
+| `/logout` | — | 清除当前所选账号的凭据 | 否 |
+| `/provider` | — | 打开交互式供应商管理器，查看、添加和删除已配置的供应商。详见[平台与模型 — `/provider` 与供应商管理](../configuration/providers-and-models.md#provider-与供应商管理) | 是 |
+| `/model` | — | 切换当前会话使用的 LLM 模型 | 是 |
+| `/settings` | `/config` | 打开 TUI 内的设置面板 | 是 |
+| `/permission` | — | 选择权限模式 | 是 |
+| `/editor` | — | 配置 `Ctrl-G` 调起的外部编辑器 | 是 |
+| `/theme` | — | 切换终端 UI 配色主题 | 是 |
+
+## 会话管理
+
+| 命令 | 别名 | 说明 | 随时可用 |
+| --- | --- | --- | --- |
+| `/new` | `/clear` | 开启全新会话，丢弃当前上下文 | 否 |
+| `/sessions` | `/resume` | 浏览历史会话并切换/恢复 | 否 |
+| `/tasks` | `/task` | 浏览后台任务列表 | 是 |
+| `/fork` | — | 基于当前会话 fork 一份新会话，保留完整对话历史 | 否 |
+| `/title [<text>]` | `/rename` | 不带参数时显示当前会话标题；带参数时设置为新标题（最长 200 字符） | 是 |
+| `/compact [<instruction>]` | — | 压缩当前对话上下文，释放 token 占用；可附带自定义指令，提示模型压缩时保留哪些信息 | 否 |
+| `/init` | — | 分析当前代码库并生成 `AGENTS.md` | 否 |
+| `/export-md [<path>]` | `/export` | 将当前会话导出为 Markdown 文件 | 否 |
+| `/export-debug-zip` | — | 将当前会话导出为调试用 ZIP 压缩包（与 [`kimi export`](./kimi-command.md#kimi-export) 行为一致） | 否 |
+
+## 模式与运行控制
+
+| 命令 | 别名 | 说明 | 随时可用 |
+| --- | --- | --- | --- |
+| `/yolo [on\|off]` | `/yes` | 切换 YOLO 模式。不带参数时翻转；显式传 `on`/`off` 时强制设置。开启后跳过普通工具调用审批；Plan 模式的退出审批不受影响 | 是 |
+| `/auto [on\|off]` | — | 切换 auto 权限模式。开启后工具审批自动处理，Agent 不会向用户提问 | 是 |
+| `/plan [on\|off]` | — | 切换 Plan 模式。不带参数时翻转；显式传 `on`/`off` 时强制设置。单纯切换不会创建空计划文件 | 是 |
+| `/plan clear` | — | 清除当前 plan 方案 | 否 |
+| `/goal [...]` | — | 开始或管理一个自主 goal（实验功能，需启用 `KIMI_CODE_EXPERIMENTAL_GOAL_COMMAND=1`） | 见下文 |
+
+::: warning 注意
+`/yolo` 会跳过普通工具调用的审批确认，使用前请确保了解可能的风险。Plan 模式的退出审批不会被 `/yolo` 跳过；Plan 模式下的 `Bash` 也按 `/yolo` 的普通放行规则处理。
+:::
+
+## 自主 goal（实验功能）
+
+::: info
+`/goal` 是实验命令，需在启动 `kimi` 时设置环境变量启用：
+```sh
+KIMI_CODE_EXPERIMENTAL_GOAL_COMMAND=1 kimi
+```
+:::
+
+`/goal` 适用于你希望 Kimi Code 通过自动续跑的轮次持续处理的任务。在命令后写目标即可开始：
+
+```
+/goal 更新 checkout 文档，运行 docs build，如果 20 轮后仍被阻塞就停止
+```
+
+Kimi Code 会保存该目标，把它作为下一条 User 消息发送，然后持续运行后续轮次，直到 goal 停止。goal 有三种停止状态：
+
+- `complete`：目标已完成，Kimi Code 发送完成消息并清除该 goal
+- `paused`：你暂停了 goal、中断了当前轮次，或恢复了原本有 active goal 的会话
+- `blocked`：Kimi Code 因需要输入、无法完成目标、达到预算上限或遇到运行时失败而停止
+
+停止条件需要写在目标本身里，`/goal` 没有单独的停止限制 flag。
+
+管理当前 goal 的子命令：
+
+| 命令 | 作用 | 可用性 |
+| --- | --- | --- |
+| `/goal` 或 `/goal status` | 显示当前 goal 及其状态、已用时间、轮次数、token 数 | 随时可用 |
+| `/goal pause` | 暂停 active goal 并保留 | 随时可用 |
+| `/goal resume` | 恢复 paused 或 blocked goal | 仅空闲时 |
+| `/goal cancel` | 移除当前 goal | 随时可用 |
+| `/goal replace <objective>` | 用新目标替换已保存的 goal | 仅空闲时 |
+
+一个会话中只能保存一个 goal。如果目标需要以 `status`、`pause` 等子命令关键词开头，使用 `--` 分隔：
+
+```
+/goal -- cancel 函数需要在订单失败时返回可重试错误，并补充测试
+```
+
+在 `manual` 权限模式下，goal 可能会停下来等待工具调用审批，不适合无人值守场景。
+
+## 信息与状态
+
+| 命令 | 别名 | 说明 | 随时可用 |
+| --- | --- | --- | --- |
+| `/help` | `/h`、`/?` | 显示快捷键和所有可用命令 | 是 |
+| `/usage` | — | 显示 token 用量、上下文占用以及配额信息 | 是 |
+| `/status` | — | 显示当前会话运行时状态：版本、模型、工作目录、权限模式等 | 是 |
+| `/mcp` | — | 列出当前会话中的 MCP server 及连接状态 | 是 |
+| `/plugins` | — | 打开交互式 plugin 管理器 | 是 |
+| `/version` | — | 显示 Kimi Code CLI 版本号 | 是 |
+| `/feedback` | — | 提交反馈以改进 Kimi Code CLI | 是 |
+
+## 退出
+
+| 命令 | 别名 | 说明 | 随时可用 |
+| --- | --- | --- | --- |
+| `/exit` | `/quit`、`/q` | 退出 Kimi Code CLI | 否 |
+
+## Skill 动态命令
+
+已激活的 Skill 会自动注册为斜杠命令，统一以 `skill:` 作为命名空间前缀：
+
+```
+/skill:<name> [附加文本]
+```
+
+例如 `/skill:code-style` 加载名为 `code-style` 的 Skill 并发送给 Agent；命令后附带的文本拼接到 Skill 提示词之后。
+
+为方便输入，Skill 命令同时支持省略 `skill:` 前缀的简写形式 `/<name>`，前提是该名称未被内置命令占用——即 `/code-style` 会回退匹配到 `/skill:code-style`。
+
+Kimi Code CLI 随包内置了 `mcp-config` Skill，用于配置 MCP server 和处理 MCP OAuth 登录；可直接输入 `/mcp-config` 调用。
+
+::: info 说明
+所有 Skill 命令仅在空闲状态下可用。`flow` 类型的 Skill 同样通过 `/skill:<name>` 暴露，没有独立的 `/flow:` 命名空间。
+:::
+
+Skill 的安装与编写详见 [Agent Skills](../customization/skills.md)。
+
+## 下一步
+
+- [键盘快捷键](./keyboard-shortcuts.md) — TUI 键盘操作速查
+- [内置工具](./tools.md) — Agent 可调用的工具完整参考

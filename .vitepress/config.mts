@@ -25,6 +25,7 @@ export default defineConfig({
       }
     `]
   ],
+  ignoreDeadLinks: true,
   rewrites: {
     'zh/:rest*': ':rest*'
   },

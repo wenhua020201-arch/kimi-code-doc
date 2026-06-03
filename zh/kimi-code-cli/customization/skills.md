@@ -1,296 +1,128 @@
-# Skills
+# Agent Skills
 
-[Agent Skills](https://agentskills.io/) 是一个开放格式，用于为 AI Agent 添加专业知识和工作流程。Kimi Code CLI 支持加载 Agent Skills，扩展 AI 的能力。
+Agent Skills 是 Kimi Code CLI 扩展模型能力的轻量机制。一个 Skill 就是一份带 YAML frontmatter 的 Markdown 文档，描述某项专业知识或工作流程——例如项目的代码风格规范、PR review 流程、提交消息格式。
 
-::: warning 📢 版本说明
-Kimi Code CLI 已完成重大版本升级，底层从 Python/uv 迁移至 Node.js，带来更简单的安装方式、更快的启动速度和全新的终端界面。本页内容仅适用于旧版 Kimi Code CLI。旧版将逐渐停止维护，建议尽快完成升级。查看[版本升级](/kimi-code-cli/cli-migration)了解详情。
-本文档正在重建中，新版功能细节暂请移步 [Kimi Code CLI 文档站](https://moonshotai.github.io/kimi-code/zh/)。
-:::
-
-## Agent Skills 是什么
-
-一个 Skill 就是一个包含 `SKILL.md` 文件的目录。Kimi Code CLI 启动时会发现所有 Skills，并将它们的名称、路径和描述注入到系统提示词中。AI 会根据当前任务的需要，自行决定是否读取具体的 `SKILL.md` 文件来获取详细指引。
-
-例如，你可以创建一个「代码风格」Skill，告诉 AI 你项目的命名规范、注释风格等；或者创建一个「安全审计」Skill，让 AI 在审查代码时关注特定的安全问题。
-
-**Skills 与插件的区别**
-
-Kimi Code CLI 支持两种扩展机制：
-
-- **Skills**：通过 `SKILL.md` 提供知识性指导，AI 读取后遵循其中的规范。适合定义代码风格、工作流程、最佳实践等。
-- **插件**：通过 `plugin.json` 声明可执行工具，AI 可以直接调用工具获取结果。适合封装脚本、API 调用、数据库查询等。
-
-## Skill 发现
-
-Kimi Code CLI 采用分层加载机制发现 Skills，按以下优先级加载（先加载的同名 Skill 优先）：
-
-**内置 Skills**
-
-随软件包安装的 Skills，提供基础能力。
-
-**用户级 Skills**
-
-存放在用户主目录中，在所有项目中生效。候选目录分为两组，每组内按优先级选取第一个存在的目录，两组的结果独立合并（品牌组特异性更高，优先级更高）：
-
-- **品牌组**（互斥选一）：
-  1. `~/.kimi/skills/`
-  2. `~/.claude/skills/`
-  3. `~/.codex/skills/`
-- **通用组**（互斥选一）：
-  1. `~/.config/agents/skills/`（推荐）
-  2. `~/.agents/skills/`
-
-两组分别选出目录后合并加载。当同名 Skill 同时存在于品牌组和通用组时，品牌组的版本优先。
-
-如果你希望同时加载所有品牌目录中的 Skills（而非互斥选一），可以在配置文件中启用 `merge_all_available_skills`：
-
-```toml
-merge_all_available_skills = true
-```
-
-启用后，品牌组中所有存在的目录都会被加载并合并，同名 Skill 按 kimi > claude > codex 的优先级解析。通用组不受影响。
-
-**项目级 Skills**
-
-存放在项目目录中，仅在该项目工作目录下生效。同样分为两组独立查找：
-
-- **品牌组**（互斥选一）：
-  1. `.kimi/skills/`
-  2. `.claude/skills/`
-  3. `.codex/skills/`
-- **通用组**：`.agents/skills/`
-
-`merge_all_available_skills` 配置对项目层同样生效。
-
-你也可以通过 `--skills-dir` 参数指定额外的 Skills 目录。该参数可重复指定，指定后将替代自动发现的用户级和项目级目录：
-
-```sh
-kimi --skills-dir /path/to/my-skills --skills-dir /path/to/more-skills
-```
-
-> Skills 路径独立于 `KIMI_SHARE_DIR`。`KIMI_SHARE_DIR` 用于自定义配置、会话、日志等运行时数据的存储位置，不影响 Skills 的搜索路径。Skills 是跨工具共享的能力扩展（支持 Kimi CLI、Claude、Codex 等多个工具共用），与应用运行时数据是不同类型的数据。如需自定义 Skills 路径，请使用 `--skills-dir` 参数。
-
-## 内置 Skills
-
-Kimi Code CLI 内置了以下 Skills：
-
-- **kimi-cli-help**：Kimi Code CLI 帮助。解答关于 Kimi Code CLI 安装、配置、斜杠命令、键盘快捷键、MCP 集成、供应商、环境变量等问题。
-- **skill-creator**：Skill 创建指南。当你需要创建新的 Skill（或更新现有 Skill）来扩展 Kimi 的能力时，可以使用此 Skill 获取详细的创建指导和最佳实践。
+相比每次把同样的指引粘到提示词里，Skill 的优势在于：内容沉淀在文件里、可以跨项目和团队复用、可以通过斜杠命令一键加载，也可以让模型在需要时自动调用。
 
 ## 创建 Skill
 
-创建一个 Skill 只需要两步：
+Skill 文件需放在[已知的扫描目录](#skill-存放位置)中。支持两种文件结构：
 
-1. 在 skills 目录下创建一个子目录
-2. 在子目录中创建 `SKILL.md` 文件
+- **目录形式（推荐）**：在 Skills 目录下创建一个子目录，主文件命名为 `SKILL.md`，可在同目录下放置脚本、参考资料等辅助文件。同目录下同时存在 `<name>/SKILL.md` 和同名 `<name>.md` 时，以子目录为准。
+- **扁平形式**：直接使用单个 `.md` 文件，Skill 名称取文件名（去掉 `.md`）。
 
-**目录结构**
+### 文件格式
 
-一个 Skill 目录至少需要包含 `SKILL.md` 文件，也可以包含辅助目录来组织更复杂的内容：
-
-```
-~/.config/agents/skills/
-└── my-skill/
-    ├── SKILL.md          # 必需：主文件
-    ├── scripts/          # 可选：脚本文件
-    ├── references/       # 可选：参考文档
-    └── assets/           # 可选：其他资源
-```
-
-**`SKILL.md` 格式**
-
-`SKILL.md` 使用 YAML Frontmatter 定义元数据，后面是 Markdown 格式的提示词内容：
+`SKILL.md` 由 YAML frontmatter 和 Markdown 正文两部分组成：
 
 ```markdown
 ---
 name: code-style
-description: 我的项目代码风格规范
+description: 项目代码风格规范，定义命名、缩进、注释和文件组织
+type: prompt
+whenToUse: 当用户让我编写、修改或审查项目源代码时
+disableModelInvocation: false
+arguments:
+  - target
+  - mode
 ---
 
-## 代码风格
+请按下述规范处理代码：
 
-在这个项目中，请遵循以下规范：
-
-- 使用 4 空格缩进
-- 变量名使用 camelCase
-- 函数名使用 snake_case
-- 每个函数都需要 docstring
+- 缩进使用 2 空格
+- 变量名使用 `camelCase`，类型名使用 `PascalCase`
+- 公开函数必须带 TSDoc 注释
 - 单行不超过 100 字符
 ```
 
-**Frontmatter 字段**
+### Frontmatter 字段
 
-| 字段 | 说明 | 是否必填 |
-|------|------|----------|
-| `name` | Skill 名称，1-64 字符，只能使用小写字母、数字和连字符；省略时默认使用目录名 | 否 |
-| `description` | Skill 描述，1-1024 字符，说明 Skill 的用途和使用场景；省略时显示 "No description provided." | 否 |
-| `license` | 许可证名称或文件引用 | 否 |
-| `compatibility` | 环境要求说明，最多 500 字符 | 否 |
-| `metadata` | 额外的键值对属性 | 否 |
+| 字段 | 说明 |
+| --- | --- |
+| `name` | Skill 名称。目录型 `SKILL.md` 中为必填；扁平 `.md` 文件省略时使用文件名。名称大小写不敏感 |
+| `description` | 一行总结，模型用它来判断何时使用这个 Skill。目录型 `SKILL.md` 中为必填；扁平 `.md` 文件省略时回退到正文第一行非空内容（截至 240 字符） |
+| `type` | Skill 类型：`prompt`（默认）、`inline`（与 `prompt` 语义相同）、`flow`（只支持手动调用，不支持模型自动调用）。其他值会被跳过 |
+| `whenToUse` | 触发场景描述。也接受 `when-to-use`、`when_to_use` 写法 |
+| `disableModelInvocation` | 设为 `true` 时禁止模型自动调用此 Skill。也接受 `disable-model-invocation`、`disable_model_invocation` 写法 |
+| `arguments` | 命名参数列表，可写成字符串数组或空白分隔的字符串（如 `arguments: target mode`）。声明后，正文可用 `$<name>` 读取参数 |
 
-**最佳实践**
+::: warning 注意
+目录型 `SKILL.md` 中 `name` 和 `description` **必须**显式填写，省略任意一项均会导致解析失败。
+:::
 
-- 保持 `SKILL.md` 在 500 行以内，将详细内容移到 `scripts/`、`references/` 或 `assets/` 目录
-- 在 `SKILL.md` 中使用相对路径引用其他文件
-- 提供清晰的步骤指引、输入输出示例和边界情况说明
+### 正文占位符
 
-## 示例 Skill
+正文在发送给模型前会展开少量占位符：
 
-**PPT 制作**
+- `$ARGUMENTS`：调用时附带的完整原始参数字符串
+- `$ARGUMENTS[0]`、`$ARGUMENTS[1]` 及简写 `$0`、`$1`：按空白分词后的位置参数（从 0 开始）
+- `$<name>`：`arguments` 中声明的命名参数
+- `${KIMI_SKILL_DIR}`：当前 Skill 文件所在目录
+
+位置参数支持单双引号包裹，如 `/skill:commit "fix login" patch` 中 `$0` 展开为 `fix login`。若正文不含任何参数占位符，调用时附带的文本会以 `\n\nARGUMENTS: <文本>` 的形式追加到正文末尾。
+
+## Skill 存放位置
+
+Kimi Code CLI 按作用域分四档扫描，越具体的作用域优先级越高：**Project > User > Extra > Built-in**
+
+**用户级**（对所有项目生效）：
+- `~/.kimi-code/skills/`
+- `~/.agents/skills/`
+
+**项目级**（项目根 = 工作目录向上最近的含 `.git` 的目录）：
+- `.kimi-code/skills/`
+- `.agents/skills/`
+
+**额外目录**：通过 `config.toml` 顶层的 `extra_skill_dirs` 声明：
+
+```toml
+extra_skill_dirs = ["~/team-skills", ".agents/team-skills"]
+```
+
+**内置 Skills** 随 CLI 一起分发，优先级最低。
+
+## 调用 Skill
+
+用户通过斜杠命令主动调用：
+
+```
+/skill:code-style
+/skill:git-commits 修复登录接口的并发问题
+```
+
+模型也可以根据 `description` 和 `whenToUse` 自动调用 Skill（除非 `disableModelInvocation` 设为 `true` 或 `type` 为 `flow`）。Skill 调用时最多允许嵌套 3 层，超过后会被终止。
+
+## 完整示例
 
 ```markdown
 ---
-name: pptx
-description: 创建和编辑 PowerPoint 演示文稿
+name: review-pr
+description: 按团队标准审查一个 Pull Request，输出结构化的 review 报告
+type: prompt
+whenToUse: 当用户让我审查 PR、检查代码变更或评估提交质量时
+arguments:
+  - pr_ref
 ---
 
-## PPT 制作流程
+请按照以下流程审查用户指定的 PR：$pr_ref
 
-创建演示文稿时，遵循以下步骤：
-
-1. 分析内容结构，规划幻灯片大纲
-2. 选择合适的配色方案和字体
-3. 使用 python-pptx 库生成 .pptx 文件
-
-## 设计原则
-
-- 每页幻灯片聚焦一个主题
-- 文字简洁，使用要点而非长段落
-- 保持视觉层次清晰，标题、正文、注释有明确区分
-- 配色统一，避免超过 3 种主色
+1. 拉取并阅读 `$pr_ref` 的全部 diff。
+2. 对照以下检查项逐条核对：
+   - 是否包含对应的测试用例
+   - 公开 API 是否有文档更新
+   - 是否引入了新的依赖；若有，说明引入理由
+   - 错误处理是否覆盖了边界情况
+3. 参考同目录下的检查清单：`references/checklist.md`
+4. 输出一份 review 报告，包含：
+   - 总体结论（approve / request changes / comment）
+   - 必须修改项（blocking）
+   - 建议改进项（non-blocking）
+   - 值得肯定的地方
 ```
 
-**Python 项目规范**
+保存为 `~/.kimi-code/skills/review-pr/SKILL.md`，检查清单放在同目录的 `references/checklist.md`，重开会话后即可通过 `/skill:review-pr #1234` 调用，其中 `#1234` 会展开到 `$pr_ref`。
 
-```markdown
----
-name: python-project
-description: Python 项目开发规范，包括代码风格、测试和依赖管理
----
+## 下一步
 
-## Python 开发规范
-
-- 使用 Python 3.14+
-- 使用 ruff 进行代码格式化和 lint
-- 使用 pyright 进行类型检查
-- 测试使用 pytest
-- 依赖管理使用 uv
-
-代码风格：
-- 行长度限制 100 字符
-- 使用类型注解
-- 公开函数需要 docstring
-```
-
-**Git 提交规范**
-
-```markdown
----
-name: git-commits
-description: Git 提交信息规范，使用 Conventional Commits 格式
----
-
-## Git 提交规范
-
-使用 Conventional Commits 格式：
-
-类型(范围): 描述
-
-允许的类型：feat, fix, docs, style, refactor, test, chore
-
-示例：
-- feat(auth): 添加 OAuth 登录支持
-- fix(api): 修复用户查询返回空值的问题
-- docs(readme): 更新安装说明
-```
-
-## 使用斜杠命令加载 Skill
-
-`/skill:<name>` 斜杠命令让你可以将常用的提示词模板保存为 Skill，需要时快速调用。输入命令后，Kimi Code CLI 会读取对应的 `SKILL.md` 文件内容，并将其作为提示词发送给 Agent。
-
-例如：
-
-- `/skill:code-style`：加载代码风格规范
-- `/skill:pptx`：加载 PPT 制作流程
-- `/skill:git-commits 修复用户登录问题`：加载 Git 提交规范，同时附带额外的任务描述
-
-斜杠命令后面可以附带额外的文本，这些内容会追加到 Skill 提示词之后，作为用户的具体请求。
-
-> 如果只是普通对话，Agent 会根据上下文自动判断是否需要读取 Skill 内容，不需要手动调用。
-
-Skills 让你可以将团队的最佳实践和项目规范固化下来，确保 AI 始终遵循一致的标准。
-
-## Flow Skills
-
-Flow Skill 是一种特殊的 Skill 类型，它在 `SKILL.md` 中内嵌 Agent Flow 流程图，用于定义多步骤的自动化工作流。与普通 Skill 不同，Flow Skill 通过 `/flow:<name>` 命令调用，会按照流程图自动执行多个对话轮次。
-
-**创建 Flow Skill**
-
-创建 Flow Skill 需要在 Frontmatter 中设置 `type: flow`，并在内容中包含 Mermaid 或 D2 格式的流程图代码块：
-
-````markdown
----
-name: code-review
-description: 代码审查工作流
-type: flow
----
-
-```mermaid
-flowchart TD
-A([BEGIN]) --> B[分析代码变更，列出所有修改的文件和功能]
-B --> C{代码质量是否达标？}
-C -->|是| D[生成代码审查报告]
-C -->|否| E[列出问题并提出改进建议]
-E --> B
-D --> F([END])
-```
-````
-
-**流程图格式**
-
-支持 Mermaid 和 D2 两种格式：
-
-- **Mermaid**：使用 ` ```mermaid ` 代码块，[Mermaid Playground](https://www.mermaidchart.com/play) 可用于编辑和预览
-- **D2**：使用 ` ```d2 ` 代码块，[D2 Playground](https://play.d2lang.com) 可用于编辑和预览
-
-流程图必须包含一个 `BEGIN` 节点和一个 `END` 节点。普通节点的文本作为提示词发送给 Agent；分支节点需要 Agent 在输出中使用 `<choice>分支名</choice>` 选择下一步。
-
-**D2 格式示例**
-
-```
-BEGIN -> B -> C
-B: 分析现有代码，为 XXX 功能编写设计文档
-C: Review 设计文档是否足够详细
-C -> B: 否
-C -> D: 是
-D: 开始实现
-D -> END
-```
-
-对于多行标签，可以使用 D2 的块字符串语法（`|md`）：
-
-```
-BEGIN -> step -> END
-step: |md
-  # 详细指引
-
-  1. 分析代码结构
-  2. 检查潜在问题
-  3. 生成报告
-|
-```
-
-**执行 Flow Skill**
-
-Flow Skill 可以通过两种方式调用：
-
-- `/flow:<name>`：执行流程，Agent 会从 `BEGIN` 节点开始，按照流程图定义依次处理每个节点，直到到达 `END` 节点
-- `/skill:<name>`：与普通 Skill 一样，将 `SKILL.md` 内容作为提示词发送给 Agent（不自动执行流程）
-
-```sh
-# 执行流程
-/flow:code-review
-
-# 作为普通 Skill 加载
-/skill:code-review
-```
+- [Plugins](./plugins.md) — 把 Skills 打包成可安装单元，与团队共享
+- [Agent 与子 Agent](./sub-agents.md) — Skills 如何影响子 Agent 的行为

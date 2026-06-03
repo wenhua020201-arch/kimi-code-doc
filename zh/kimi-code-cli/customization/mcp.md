@@ -1,136 +1,97 @@
 # Model Context Protocol
 
-[Model Context Protocol (MCP)](https://modelcontextprotocol.io/) 是一个开放协议，让 AI 模型可以安全地与外部工具和数据源交互。Kimi Code CLI 支持连接 MCP 服务器，扩展 AI 的能力。
+[Model Context Protocol（MCP）](https://modelcontextprotocol.io/) 是一个开放协议，让模型可以安全地调用外部进程或服务暴露的工具——例如读取 GitHub issues、查询数据库、操作本地文件系统。Kimi Code CLI 作为 MCP client 接入这些外部工具，并把它们与内置工具（`Read`、`Bash`、`Grep` 等）一起暴露给 Agent 使用，行为上没有差异。
 
-::: warning 📢 版本说明
-Kimi Code CLI 已完成重大版本升级，底层从 Python/uv 迁移至 Node.js，带来更简单的安装方式、更快的启动速度和全新的终端界面。本页内容仅适用于旧版 Kimi Code CLI。旧版将逐渐停止维护，建议尽快完成升级。查看[版本升级](/kimi-code-cli/cli-migration)了解详情。
-本文档正在重建中，新版功能细节暂请移步 [Kimi Code CLI 文档站](https://moonshotai.github.io/kimi-code/zh/)。
-:::
+## 接入方式
 
-## MCP 是什么
+Kimi Code CLI 支持两种 MCP server 接入方式：
 
-MCP 服务器提供「工具」给 AI 使用。例如，一个数据库 MCP 服务器可以提供查询工具，让 AI 能够执行 SQL 查询；一个浏览器 MCP 服务器可以让 AI 控制浏览器进行自动化操作。
+- **stdio**：CLI 以子进程方式启动本地 MCP server，通过标准输入输出通信。适合本地命令行工具。
+- **HTTP**：CLI 连接一个已在运行的 HTTP 端点。适合远程服务或需要持久运行的进程。
 
-Kimi Code CLI 内置了一些工具（文件读写、Shell 命令、网页抓取等），通过 MCP 你可以添加更多工具，比如：
+## 配置
 
-- 访问特定 API 或数据库
-- 控制浏览器或其他应用
-- 与第三方服务集成（GitHub、Linear、Notion 等）
+MCP server 配置写在 `mcp.json` 中，分两层：
 
-## MCP 服务器管理
+- **用户级**：`~/.kimi-code/mcp.json`（或 `$KIMI_CODE_HOME/mcp.json`），跨项目共享
+- **项目级**：工作目录下的 `.kimi-code/mcp.json`，只对当前仓库生效
 
-使用 `kimi mcp` 命令管理 MCP 服务器。
+同名条目以项目级为准，覆盖用户级。
 
-**添加服务器**
+在 TUI 中运行 `/mcp-config` 可以交互式地新增、编辑或删除 server，无需手动编辑 JSON 文件。运行 `/mcp` 可查看当前所有 server 的连接状态。
 
-添加 HTTP 服务器：
-
-```sh
-# 基本用法
-kimi mcp add --transport http context7 https://mcp.context7.com/mcp
-
-# 带 Header
-kimi mcp add --transport http context7 https://mcp.context7.com/mcp \
-  --header "CONTEXT7_API_KEY: your-key"
-
-# 使用 OAuth 认证
-kimi mcp add --transport http --auth oauth linear https://mcp.linear.app/mcp
-```
-
-添加 stdio 服务器（本地进程）：
-
-```sh
-kimi mcp add --transport stdio chrome-devtools -- npx chrome-devtools-mcp@latest
-```
-
-**列出服务器**
-
-```sh
-kimi mcp list
-```
-
-在 Kimi Code CLI 运行时，也可以输入 `/mcp` 查看已连接的服务器和加载的工具。
-
-**移除服务器**
-
-```sh
-kimi mcp remove context7
-```
-
-**OAuth 授权**
-
-对于使用 OAuth 的服务器，需要先完成授权：
-
-```sh
-kimi mcp auth linear
-```
-
-这会打开浏览器完成 OAuth 流程。授权成功后，Kimi Code CLI 会保存 token 供后续使用。
-
-**测试服务器**
-
-```sh
-kimi mcp test context7
-```
-
-## MCP 配置文件
-
-MCP 服务器配置存储在 `~/.kimi/mcp.json`，格式与其他 MCP 客户端兼容：
+`mcp.json` 的结构：
 
 ```json
 {
   "mcpServers": {
-    "context7": {
-      "url": "https://mcp.context7.com/mcp",
-      "headers": {
-        "CONTEXT7_API_KEY": "your-key"
-      }
-    },
-    "chrome-devtools": {
+    "filesystem": {
       "command": "npx",
-      "args": ["chrome-devtools-mcp@latest"],
-      "env": {
-        "SOME_VAR": "value"
-      }
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"]
+    },
+    "linear": {
+      "url": "https://mcp.linear.app/mcp"
     }
   }
 }
 ```
 
-**临时加载配置**
+含 `command` 字段的条目为 stdio server，含 `url` 字段的条目为 HTTP server，通常不需要手写 `transport` 字段。
 
-使用 `--mcp-config-file` 参数可以加载其他位置的配置文件：
+可选字段：
 
-```sh
-kimi --mcp-config-file /path/to/mcp.json
+| 字段 | 类型 | 适用方式 | 说明 |
+| --- | --- | --- | --- |
+| `env` | `Record<string, string>` | stdio | 注入子进程的环境变量 |
+| `cwd` | `string` | stdio | 子进程工作目录 |
+| `headers` | `Record<string, string>` | HTTP | 附加到每次请求的静态请求头 |
+| `enabled` | `boolean` | 两者 | 设为 `false` 可禁用该 server |
+| `startupTimeoutMs` | `number` | 两者 | 连接超时，默认 `30000` 毫秒 |
+| `toolTimeoutMs` | `number` | 两者 | 单次工具调用超时 |
+| `enabledTools` | `string[]` | 两者 | 工具白名单 |
+| `disabledTools` | `string[]` | 两者 | 工具黑名单 |
+
+HTTP server 支持通过 `headers` 或 `bearerTokenEnvVar` 提供静态凭证。需要 OAuth 时，运行 `/mcp-config login <server-name>` 完成浏览器授权。
+
+Plugins 也可以在 manifest 中声明 MCP servers。Plugin 声明的 servers 默认启用，可以在 `/plugins` 中禁用或重新启用，然后开启新会话。详见 [Plugins](./plugins.md)。
+
+::: warning 注意
+项目级 `.kimi-code/mcp.json` 中的 stdio 条目会在会话启动时执行本地命令，只在你信任的仓库里启用。
+:::
+
+## 工具命名与权限
+
+MCP 工具按 `mcp__<server>__<tool>` 格式命名，例如 `mcp__github__create_issue`。权限规则中支持 `*` 和 `**` 通配，例如 `mcp__github__*` 命中该 server 下所有工具。MCP 工具参数不参与权限匹配。
+
+未命中权限规则的调用会触发审批请求；在审批弹窗中选择"Approve for this session"后，本次会话内的后续同类调用自动放行。
+
+也可以在 `config.toml` 的 `[[permission.rules]]` 中预置永久规则：
+
+```toml
+[[permission.rules]]
+decision = "allow"
+pattern = "mcp__github__*"
+
+[[permission.rules]]
+decision = "deny"
+pattern = "mcp__filesystem__write_file"
 ```
 
-使用 `--mcp-config` 参数可以直接传入 JSON 配置：
-
-```sh
-kimi --mcp-config '{"mcpServers": {"test": {"url": "https://..."}}}'
-```
-
-## 加载状态
-
-MCP 服务器在 Shell UI 启动后异步初始化，不会阻塞界面的使用。Shell 底部状态栏会实时显示连接进度，连接完成后自动切换为就绪状态。Web 界面也会同步显示各服务器的连接状态。
-
-如果配置了多个 MCP 服务器，加载时间可能较长，状态栏的进度指示可以帮助你了解当前连接情况。
+权限规则的完整语法见[配置文件：`permission`](../configuration/configuration-files.md#permission)。
 
 ## 安全性
 
-MCP 工具可能会访问和操作外部系统，需要注意安全风险。
+接入外部 MCP server 时需注意：
 
-**审批机制**
+- 只接入可信来源的 server
+- 在审批请求中核查工具名与参数是否合理
+- 对高风险工具（写文件、执行命令等）维持手动审批，避免用 `mcp__*` 通配放行全部工具
 
-Kimi Code CLI 对敏感操作（如文件修改、命令执行）会请求用户确认。MCP 工具也遵循同样的审批机制，所有 MCP 工具调用都会弹出确认提示。
+::: warning 注意
+在 YOLO 模式下，MCP 工具调用会被自动批准。仅在完全信任所接入的 MCP server 时使用此模式。
+:::
 
-**提示词注入风险**
+## 下一步
 
-MCP 工具返回的内容可能包含恶意指令，试图诱导 AI 执行危险操作。Kimi Code CLI 会对工具返回内容进行标记，帮助 AI 区分工具输出和用户指令，但你仍应：
-
-- 只使用可信来源的 MCP 服务器
-- 检查 AI 提议的操作是否合理
-- 对于高风险操作保持手动审批
-
-> 注意：在 YOLO 模式下，MCP 工具的操作也会被自动批准。建议仅在完全信任 MCP 服务器的情况下使用 YOLO 模式。
+- [Plugins](./plugins.md) — 在 plugin manifest 中声明 MCP server，一键打包和分发
+- [配置文件：`permission`](../configuration/configuration-files.md#permission) — 权限规则的完整字段参考

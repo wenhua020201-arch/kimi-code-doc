@@ -9,6 +9,7 @@ export default defineAdditionalConfig({
         text: 'Kimi Code',
         items: [
           { text: '产品概览', link: '/' },
+          { text: '最新动态', link: '/kimi-code/whats-new' },
           { text: '社区倡议', link: '/kimi-code/community-guidelines' },
           { text: '常见问题', link: '/kimi-code/faq' },
           { text: '错误参考', link: '/kimi-code/error-reference' },
@@ -18,8 +19,16 @@ export default defineAdditionalConfig({
         text: 'Kimi Code CLI',
         items: [
           { text: '📢 版本升级', link: '/kimi-code-cli/cli-migration' },
-          { text: '快速开始', link: '/kimi-code-cli/getting-started' },
-          { text: '核心操作', link: '/kimi-code-cli/core-operations' },
+          {
+            text: '指南',
+            collapsed: false,
+            items: [
+              { text: '开始使用', link: '/kimi-code-cli/getting-started' },
+              { text: '交互与输入', link: '/kimi-code-cli/interaction' },
+              { text: '会话与上下文', link: '/kimi-code-cli/sessions' },
+              { text: '常见使用案例', link: '/kimi-code-cli/use-cases' },
+            ],
+          },
           {
             text: '配置',
             collapsed: false,
@@ -35,13 +44,12 @@ export default defineAdditionalConfig({
             text: '定制化',
             collapsed: false,
             items: [
-              { text: '官方插件', link: '/kimi-code-cli/customization/official plugins' },
+              { text: 'Agent 与子 Agent', link: '/kimi-code-cli/customization/sub-agents' },
+              { text: 'Hooks', link: '/kimi-code-cli/customization/hooks' },
               { text: 'MCP', link: '/kimi-code-cli/customization/mcp' },
-              { text: 'Hooks (Beta)', link: '/kimi-code-cli/customization/hooks' },
-              { text: 'Skills', link: '/kimi-code-cli/customization/skills' },
-              { text: '自定义插件 (Beta)', link: '/kimi-code-cli/customization/plugins' },
-              { text: 'Agents 和 Subagents', link: '/kimi-code-cli/customization/sub-agents' },
-              { text: 'Wire Protocol', link: '/kimi-code-cli/customization/wire-protocol' },
+              { text: 'Plugins', link: '/kimi-code-cli/customization/plugins' },
+              { text: 'Kimi Datasource', link: '/kimi-code-cli/customization/datasource' },
+              { text: 'Agent Skills', link: '/kimi-code-cli/customization/skills' },
             ],
           },
           {
@@ -49,14 +57,9 @@ export default defineAdditionalConfig({
             collapsed: true,
             items: [
               { text: 'kimi 命令', link: '/kimi-code-cli/reference/kimi-command' },
-              { text: 'kimi acp 子命令', link: '/kimi-code-cli/reference/kimi-acp' },
-              { text: 'kimi info 子命令', link: '/kimi-code-cli/reference/kimi-info' },
-              { text: 'kimi mcp 子命令', link: '/kimi-code-cli/reference/kimi-mcp' },
-              { text: 'kimi term 子命令', link: '/kimi-code-cli/reference/kimi-term' },
-              { text: 'kimi vis 子命令', link: '/kimi-code-cli/reference/kimi-vis' },
-              { text: 'Web UI', link: '/kimi-code-cli/reference/kimi-web' },
-              { text: '斜杠命令速查', link: '/kimi-code-cli/reference/slash-commands' },
-              { text: '快捷键速查', link: '/kimi-code-cli/reference/keyboard-shortcuts' },
+              { text: '斜杠命令', link: '/kimi-code-cli/reference/slash-commands' },
+              { text: '内置工具', link: '/kimi-code-cli/reference/tools' },
+              { text: '键盘快捷键', link: '/kimi-code-cli/reference/keyboard-shortcuts' },
             ],
           },
         ],
