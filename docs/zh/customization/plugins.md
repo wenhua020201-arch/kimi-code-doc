@@ -153,11 +153,11 @@ Plugin MCP servers 只会在新会话中启动。启用或禁用某个 server：
 
 ## 官方插件
 
-Kimi Code 官方 marketplace 提供经过审核的官方插件，可直接通过 `/plugins marketplace` 浏览安装。
+Kimi Code 官方 marketplace 提供经过审核的官方插件，在 TUI 中运行 `/plugins`，进入 **Marketplace** 标签页即可浏览安装。
 
 目前可用的官方插件：
 
-- **[Kimi Datasource](./datasource.md)** — 通过自然语言查询金融行情、宏观经济、企业工商和学术文献，覆盖 6 个专业数据源，无需申请账号或调用 API
+- **[Kimi Datasource](./datasource.md)** — 通过自然语言查询金融行情、宏观经济、企业工商和学术文献，覆盖多个专业数据源，无需申请账号或调用 API。安装步骤与使用示例见[官方插件文档](./datasource.md)。
 
 ---
 
