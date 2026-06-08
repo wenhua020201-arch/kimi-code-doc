@@ -142,7 +142,7 @@ Rules:
   - ✗ `::: info 新增于 0.2.0` (title too long)
   - ✓ `::: info Changed` + content `Renamed in 0.2.0. ...`
   - ✗ `::: info Renamed in 0.2.0` (title too long)
-- **Callout syntax**: Always use exactly three colons (`:::`). Four colons (`::::`) turns the entire page into a highlighted block. Callouts cannot be nested; use a `>` blockquote inside a callout when a secondary note is needed.
+- **Callout syntax**: Use `:::` for standalone callouts. `::::` is valid only as the outer fence of a nested container and must be correctly closed; an unclosed or mismatched `::::` breaks page rendering. When nesting is not needed, use a `>` blockquote inside a callout for secondary notes instead.
 
 ## Writing style
 
@@ -150,7 +150,7 @@ Rules:
 - **Avoid fragmentation**: Don't turn every point into a subheading; use paragraph transitions instead. This applies to narrative content — explanations, motivations, and sequential reasoning that flow as connected prose.
 - **Global perspective**: "Getting Started" introduces core concepts only; detailed usage belongs in later pages.
 - **Progressive depth**: Guides → Customization → Configuration → Reference, information deepens gradually.
-- **No "next steps"**: VitePress already provides prev/next navigation; don't add manual `::: tip 接下来` blocks at page end.
+- **No nav tip blocks**: VitePress provides automatic prev/next navigation; don't add `::: tip 接下来` blocks at page end. A `## Next steps` section is appropriate when there are closely related follow-on pages — see [Page structure](#page-structure).
 - **One idea per paragraph**: Each paragraph makes one point. 3–4 sentences is the target; split when a paragraph exceeds 5 sentences.
 - **Map before detail**: Every page and every major section should open with one "map" sentence — what this section covers and how it relates to what came before — before expanding into details. Readers should know where they are before they dive in.
 
@@ -289,7 +289,7 @@ Run through this before marking any doc change ready for review.
 
 | Problem | Fix |
 |---|---|
-| `::::` four colons | Change to `:::` |
+| `::::` unclosed or mismatched | Close the fence or replace with `:::` if nesting is not needed |
 | Nested callout containers | Change inner one to `>` blockquote |
 | Banner before first `##` but also before opening content | Move to after opening sentences / blockquote / diagram |
 | Steps written as unordered list | Change to ordered list |
@@ -298,13 +298,13 @@ Run through this before marking any doc change ready for review.
 | Cross-reference written as "see …" with no link | Add inline link; prefer anchor to section, not just page top |
 | Concept depends on earlier definition but no back-link | Add `[term](#anchor)` |
 | Changed zh without changing en (or vice versa) | Update both locales |
-| Code block has no language tag | Add language (e.g., `sh`, `toml`, `json`) |
+| Code block has no language tag | Add language (e.g., `sh`, `toml`, `json`); exception: natural-language prompt examples may omit the tag |
 
 ### Kimi-specific consistency
 
 Before shipping, verify these values match the rest of the docs:
 
-- **Base URL**: matches the platform comparison table in the locale's `index.md`
+- **Base URL**: matches the [Kimi platform rules](#kimi-platform-rules) table above
 - **Upgrade command**: matches `guides/getting-started.md`
 - **Model ID**: use `kimi-for-coding`, not a versioned model name
 - **Login command**: `/login`, not `/setup`
