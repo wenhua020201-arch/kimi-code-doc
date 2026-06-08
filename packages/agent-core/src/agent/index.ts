@@ -46,6 +46,7 @@ import {
 } from './records';
 import { ReplayBuilder } from './replay';
 import { SkillManager } from './skill';
+import { SwarmMode } from './swarm';
 import { ToolManager } from './tool/index';
 import { TurnFlow } from './turn';
 import {
@@ -59,6 +60,7 @@ import type { Kaos } from '@moonshot-ai/kaos';
 import type { ToolServices } from '../tools/support/services';
 
 export type { AgentRecord, AgentRecordPersistence } from './records';
+export type { SwarmModeTrigger } from './swarm';
 export type { BuiltinTool, ToolInfo, ToolSource, UserToolRegistration } from './tool';
 export { buildGoalCompletionMessage } from './goal/completion';
 
@@ -91,7 +93,12 @@ export interface AgentOptions {
 
 export class Agent {
   readonly type: AgentType;
-  readonly kaos: Kaos;
+  private _kaos: Kaos;
+
+  get kaos(): Kaos {
+    return this._kaos;
+  }
+
   readonly kimiConfig?: KimiConfig;
   readonly homedir?: string;
   readonly rpc?: Partial<SDKAgentRPC>;
@@ -118,6 +125,7 @@ export class Agent {
   readonly injection: InjectionManager;
   readonly permission: PermissionManager;
   readonly planMode: PlanMode;
+  readonly swarmMode: SwarmMode;
   readonly usage: UsageRecorder;
   readonly skills: SkillManager | null;
   readonly tools: ToolManager;
@@ -129,7 +137,7 @@ export class Agent {
 
   constructor(options: AgentOptions) {
     this.type = options.type ?? 'main';
-    this.kaos = options.kaos;
+    this._kaos = options.kaos;
     this.kimiConfig = options.config;
     this.homedir = options.homedir;
     this.rpc = options.rpc;
@@ -169,6 +177,7 @@ export class Agent {
     this.injection = new InjectionManager(this);
     this.permission = new PermissionManager(this, options.permission);
     this.planMode = new PlanMode(this);
+    this.swarmMode = new SwarmMode(this);
     this.usage = new UsageRecorder(this);
     this.skills = options.skills ? new SkillManager(this, options.skills) : null;
     this.tools = new ToolManager(this);
@@ -178,6 +187,10 @@ export class Agent {
     );
     this.cron = this.type === 'sub' ? null : new CronManager(this);
     this.replayBuilder = new ReplayBuilder(this);
+  }
+
+  setKaos(kaos: Kaos) {
+    this._kaos = kaos;
   }
 
   get generate(): typeof generate {
@@ -354,6 +367,15 @@ export class Agent {
         this.planMode.cancel(payload.id);
       },
       clearPlan: () => this.planMode.clear(),
+      enterSwarm: (payload) => {
+        this.swarmMode.enter(payload.trigger);
+      },
+      exitSwarm: () => {
+        this.swarmMode.exit();
+      },
+      getSwarmMode: () => {
+        return this.swarmMode.isActive;
+      },
       beginCompaction: (payload) => {
         this.fullCompaction.begin({ source: 'manual', instruction: payload.instruction });
       },
@@ -421,6 +443,7 @@ export class Agent {
       maxContextTokens,
       contextUsage,
       planMode: this.planMode.isActive,
+      swarmMode: this.swarmMode.isActive,
       permission: this.permission.mode,
       usage,
     });

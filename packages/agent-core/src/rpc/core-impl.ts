@@ -50,6 +50,7 @@ import type {
   CreateGoalPayload,
   CreateSessionPayload,
   EmptyPayload,
+  EnterSwarmPayload,
   GoalControlPayload,
   GoalSnapshot,
   GoalToolResult,
@@ -183,6 +184,13 @@ export class KimiCore implements PromisableMethods<CoreAPI> {
   }
 
   async createSession(input: CreateSessionPayload): Promise<SessionSummary> {
+    return this.createSessionWithOverrides(input, {});
+  }
+
+  async createSessionWithOverrides(
+    input: CreateSessionPayload,
+    overrides: { kaos?: Kaos; persistenceKaos?: Kaos },
+  ): Promise<SessionSummary> {
     const options = input;
     const workDir = requiredWorkDir('createSession', options.workDir);
     const config = this.reloadProviderManager();
@@ -210,8 +218,11 @@ export class KimiCore implements PromisableMethods<CoreAPI> {
     // Session ctor attaches its own log sink. If anything in the setup-after-
     // ctor block throws, `session.close()` releases the sink (and mcp).
     const runtime = await this.resolveRuntime(config);
+    const parentKaos = overrides.kaos ?? (await this.getKaos());
+    const persistenceKaos = overrides.persistenceKaos ?? parentKaos;
     const session = new Session({
-      kaos: (await this.getKaos()).withCwd(workDir),
+      kaos: parentKaos.withCwd(workDir),
+      persistenceKaos,
       toolServices: runtime,
       config,
       id,
@@ -282,9 +293,19 @@ export class KimiCore implements PromisableMethods<CoreAPI> {
   }
 
   async resumeSession(input: ResumeSessionPayload): Promise<ResumeSessionResult> {
+    return this.resumeSessionWithOverrides(input, {});
+  }
+
+  async resumeSessionWithOverrides(
+    input: ResumeSessionPayload,
+    overrides: { kaos?: Kaos; persistenceKaos?: Kaos },
+  ): Promise<ResumeSessionResult> {
     const summary = await this.sessionStore.get(input.sessionId);
     const active = this.sessions.get(summary.id);
     if (active !== undefined) {
+      if (overrides.kaos !== undefined) {
+        active.setToolKaos(overrides.kaos.withCwd(summary.workDir));
+      }
       return resumeSessionResult(summary, active);
     }
 
@@ -298,8 +319,11 @@ export class KimiCore implements PromisableMethods<CoreAPI> {
     const pluginSessionStarts = this.plugins.enabledSessionStarts();
     const mcpConfig = this.mergePluginMcpConfig(withCallerMcp);
     const runtime = await this.resolveRuntime(config);
+    const parentKaos = overrides.kaos ?? (await this.getKaos());
+    const persistenceKaos = overrides.persistenceKaos ?? parentKaos;
     const session = new Session({
-      kaos: (await this.getKaos()).withCwd(summary.workDir),
+      kaos: parentKaos.withCwd(summary.workDir),
+      persistenceKaos,
       toolServices: runtime,
       config,
       id: summary.id,
@@ -521,6 +545,18 @@ export class KimiCore implements PromisableMethods<CoreAPI> {
 
   clearPlan({ sessionId, ...payload }: SessionAgentPayload<EmptyPayload>) {
     return this.sessionApi(sessionId).clearPlan(payload);
+  }
+
+  enterSwarm({ sessionId, ...payload }: SessionAgentPayload<EnterSwarmPayload>) {
+    return this.sessionApi(sessionId).enterSwarm(payload);
+  }
+
+  exitSwarm({ sessionId, ...payload }: SessionAgentPayload<EmptyPayload>) {
+    return this.sessionApi(sessionId).exitSwarm(payload);
+  }
+
+  getSwarmMode({ sessionId, ...payload }: SessionAgentPayload<EmptyPayload>) {
+    return this.sessionApi(sessionId).getSwarmMode(payload);
   }
 
   beginCompaction({ sessionId, ...payload }: SessionAgentPayload<BeginCompactionPayload>) {
@@ -765,6 +801,7 @@ export class KimiCore implements PromisableMethods<CoreAPI> {
     const explicitDirs = this.skillDirs.length > 0 ? this.skillDirs : undefined;
     return {
       userHomeDir: this.userHomeDir,
+      brandHomeDir: this.homeDir,
       explicitDirs,
       extraDirs: config.extraSkillDirs,
       pluginSkillRoots: this.plugins.pluginSkillRoots(),
@@ -943,6 +980,7 @@ async function resumeSessionResult(
     const context = await api.getContext({ agentId });
     const permission = await api.getPermission({ agentId });
     const plan = await api.getPlan({ agentId });
+    const swarmMode = await api.getSwarmMode({ agentId });
     const usage = await api.getUsage({ agentId });
     agents[agentId] = {
       type: agent.type,
@@ -951,6 +989,7 @@ async function resumeSessionResult(
       replay: agent.replayBuilder.buildResult(),
       permission,
       plan,
+      swarmMode,
       usage,
       tools: await api.getTools({ agentId }),
       toolStore: agent.tools.storeData(),
